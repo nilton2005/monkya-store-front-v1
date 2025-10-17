@@ -2,14 +2,13 @@
 
 import { TAGS } from 'lib/constants';
 import {
-  addToCart,
-  createCart,
-  getCart,
-  removeFromCart,
-  updateCart
-} from 'lib/shopify';
+    addToCart,
+    createCart,
+    getCart,
+    removeFromCart,
+    updateCart
+} from 'lib/local-shopify';
 import { revalidateTag } from 'next/cache';
-import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
 export async function addItem(
@@ -96,11 +95,11 @@ export async function updateItemQuantity(
 }
 
 export async function redirectToCheckout() {
-  let cart = await getCart();
-  redirect(cart!.checkoutUrl);
+  // Redirect to our custom checkout page instead of external service
+  redirect('/checkout');
 }
 
 export async function createCartAndSetCookie() {
   let cart = await createCart();
-  (await cookies()).set('cartId', cart.id!);
+  // For local system, we don't need to set a cookie since we use in-memory storage
 }
