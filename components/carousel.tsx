@@ -1,10 +1,11 @@
-import { getCollectionProducts } from 'lib/local-shopify';
+import { localProducts } from 'lib/local-data/exports';
 import Link from 'next/link';
+import CarouselClient from './carousel-client';
 import { GridTileImage } from './grid/tile';
 
 export async function Carousel() {
-  // Collections that start with `hidden-*` are hidden from the search page.
-  const products = await getCollectionProducts({ collection: 'hidden-homepage-carousel' });
+  // Mostrar todos los productos disponibles en el carrusel
+  const products = localProducts;
 
   if (!products?.length) return null;
 
@@ -12,7 +13,7 @@ export async function Carousel() {
   const carouselProducts = [...products, ...products, ...products];
 
   return (
-    <div className="w-full overflow-x-auto pb-6 pt-1">
+    <CarouselClient>
       <ul className="flex animate-carousel gap-4">
         {carouselProducts.map((product, i) => (
           <li
@@ -35,6 +36,6 @@ export async function Carousel() {
           </li>
         ))}
       </ul>
-    </div>
+    </CarouselClient>
   );
 }

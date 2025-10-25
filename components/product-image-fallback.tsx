@@ -6,17 +6,27 @@ import { useState } from 'react';
 interface ProductImageProps {
   src: string;
   alt: string;
-  width: number;
-  height: number;
+  width?: number;
+  height?: number;
+  fill?: boolean;
+  sizes?: string;
   className?: string;
 }
 
-export default function ProductImage({ src, alt, width, height, className }: ProductImageProps) {
+export default function ProductImage({ 
+  src, 
+  alt, 
+  width, 
+  height, 
+  fill,
+  sizes,
+  className 
+}: ProductImageProps) {
   const [imageError, setImageError] = useState(false);
 
   if (imageError || src.startsWith('/placeholder-')) {
     // Determinar color basado en el nombre del producto
-    const isBlack = alt.toLowerCase().includes('negra') || alt.toLowerCase().includes('black');
+    const isBlack = alt.toLowerCase().includes('negra') || alt.toLowerCase().includes('black') || alt.toLowerCase().includes('negro');
     const isGray = alt.toLowerCase().includes('gris') || alt.toLowerCase().includes('gray');
     const isHoodie = alt.toLowerCase().includes('hoodie');
     
@@ -34,10 +44,14 @@ export default function ProductImage({ src, alt, width, height, className }: Pro
       borderColor = 'border-gray-400';
     }
 
+    const style = fill 
+      ? {} 
+      : { width: width || 600, height: height || 600, aspectRatio: '1 / 1' };
+
     return (
       <div 
-        className={`${bgColor} ${textColor} ${borderColor} border-2 flex flex-col items-center justify-center ${className}`}
-        style={{ width, height, aspectRatio: '1 / 1' }}
+        className={`${bgColor} ${textColor} ${borderColor} border-2 flex flex-col items-center justify-center ${fill ? 'absolute inset-0' : ''} ${className}`}
+        style={style}
       >
         <div className="text-center p-4">
           <div className="text-2xl mb-2">
@@ -51,14 +65,22 @@ export default function ProductImage({ src, alt, width, height, className }: Pro
     );
   }
 
-  return (
-    <Image
-      src={src}
-      alt={alt}
-      width={width}
-      height={height}
-      className={className}
-      onError={() => setImageError(true)}
-    />
-  );
+  // Props comunes para el componente Image
+  const imageProps: any = {
+    src,
+    alt,
+    className,
+    onError: () => setImageError(true)
+  };
+
+  // Agregar width/height o fill según corresponda
+  if (fill) {
+    imageProps.fill = true;
+    if (sizes) imageProps.sizes = sizes;
+  } else {
+    imageProps.width = width || 600;
+    imageProps.height = height || 600;
+  }
+
+  return <Image {...imageProps} />;
 }

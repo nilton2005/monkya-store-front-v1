@@ -5,6 +5,7 @@ import { Menu } from 'lib/shopify/types';
 import Link from 'next/link';
 import { Suspense } from 'react';
 import MobileMenu from './mobile-menu';
+import NavbarClient from './navbar-client';
 import Search, { SearchSkeleton } from './search';
 
 const { SITE_NAME } = process.env;
@@ -13,7 +14,8 @@ export async function Navbar() {
   const menu = await getMenu('next-js-frontend-header-menu');
 
   return (
-    <nav className="relative flex items-center justify-between p-4 lg:px-6">
+    <NavbarClient>
+      <nav className="relative flex items-center justify-between p-4 lg:px-6">
       <div className="block flex-none md:hidden">
         <Suspense fallback={null}>
           <MobileMenu menu={menu} />
@@ -57,5 +59,6 @@ export async function Navbar() {
         </div>
       </div>
     </nav>
+    </NavbarClient>
   );
 }

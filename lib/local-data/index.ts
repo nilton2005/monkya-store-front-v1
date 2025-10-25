@@ -1,5 +1,5 @@
 import { Cart, Collection, Menu, Product } from '../shopify/types';
-import { localCollections, localMenu, localProducts } from './products';
+import { localCollections, localMenu, localProducts } from './auto-generator';
 
 // Cart local storage
 let localCart: Cart | null = null;
@@ -245,7 +245,7 @@ export async function getLocalCollection(handle: string): Promise<Collection | u
   return localCollections.find(collection => collection.handle === handle);
 }
 
-// Get collection products
+// Get collection products - MEJORADO CON SISTEMA AUTOMÁTICO
 export async function getLocalCollectionProducts({
   collection,
   reverse,
@@ -255,19 +255,28 @@ export async function getLocalCollectionProducts({
   reverse?: boolean;
   sortKey?: string;
 }): Promise<Product[]> {
+  console.log('🔍 Buscando colección:', collection);
+  console.log('📦 Total productos disponibles:', localProducts.length);
+  
   if (collection === '' || collection === 'all') {
+    console.log('✅ Retornando todos los productos');
     return getLocalProducts({ reverse, sortKey });
   }
 
+  // Filtrar productos por tags que incluyan el handle de la colección
   let products = localProducts.filter(product => {
-    if (collection === 't-shirts') {
-      return product.tags.includes('camiseta');
-    }
-    if (collection === 'hoodies') {
-      return product.tags.includes('hoodie');
-    }
-    return false;
+    const hasTag = product.tags.some(tag => tag === collection);
+    const inHandle = product.handle.includes(collection);
+    
+    console.log(`📌 Producto: ${product.title}`);
+    console.log(`   Tags: ${product.tags.join(', ')}`);
+    console.log(`   Handle: ${product.handle}`);
+    console.log(`   Match por tag: ${hasTag}, Match por handle: ${inHandle}`);
+    
+    return hasTag || inHandle;
   });
+  
+  console.log(`✨ Productos filtrados para "${collection}":`, products.length);
 
   // Apply sorting
   if (sortKey) {
