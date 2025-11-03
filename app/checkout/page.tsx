@@ -27,14 +27,14 @@ export default function CheckoutPage() {
   }
 
   const generateWhatsAppMessage = () => {
-    let message = `🛒 *NUEVO PEDIDO*\n\n`;
-    message += `👤 *Información del Cliente:*\n`;
+    let message = ` *NUEVO PEDIDO*\n\n`;
+    message += ` *Información del Cliente:*\n`;
     message += `• Nombre: ${customerInfo.name}\n`;
     message += `• Teléfono: ${customerInfo.phone}\n`;
     message += `• Email: ${customerInfo.email}\n`;
     message += `• Dirección: ${customerInfo.address}\n\n`;
     
-    message += `📦 *Productos:*\n`;
+    message += ` *Productos:*\n`;
     cart.lines.forEach((item, index) => {
       message += `${index + 1}. *${item.merchandise.product.title}*\n`;
       if (item.merchandise.title !== DEFAULT_OPTION) {
@@ -44,12 +44,12 @@ export default function CheckoutPage() {
       message += `   Precio: $${item.cost.totalAmount.amount}\n\n`;
     });
 
-    message += `💰 *Resumen del Pedido:*\n`;
+    message += ` *Resumen del Pedido:*\n`;
     message += `• Subtotal: $${cart.cost.subtotalAmount.amount}\n`;
     message += `• Envío: Calculado al procesar\n`;
     message += `• *Total: $${cart.cost.totalAmount.amount}*\n\n`;
     
-    message += `📱 *Enviado desde la tienda online*`;
+    message += ` *Enviado desde la tienda online*`;
 
     return encodeURIComponent(message);
   };

@@ -54,9 +54,9 @@ export const PRODUCTOS: SimpleProduct[] = [
     ],
     sizes: ['S', 'M', 'L', 'XL'],
     tags: ['tech', 'anthropic', 'exclusivo', 'premium'],
-    generalImages: {
-      hero: '/images-products/t-shirt/t-shirt_anthopic/man_style.png'
-    }
+    //generalImages: {
+    //  hero: '/images-products/t-shirt/t-shirt_anthopic/man_style.png'
+   // }
   },
   
   {
@@ -132,13 +132,13 @@ export const CATEGORY_CONFIG = {
     displayName: 'Camisetas',
     description: 'Camisetas cómodas y versátiles para cualquier ocasión',
     defaultTags: ['camiseta', 'algodón'],
-    icon: '👕'
+    icon: ''
   },
   hoodie: {
     displayName: 'Hoodies',
     description: 'Sudaderas con capucha perfectas para clima frío',
     defaultTags: ['hoodie', 'sudadera', 'capucha'],
-    icon: '🧥'
+    icon: ''
   },
   pantalon: {
     displayName: 'Pantalones',
