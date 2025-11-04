@@ -5,9 +5,11 @@ import Price from 'components/price';
 import { DEFAULT_OPTION } from 'lib/constants';
 import ProductImageFallback from 'components/product-image-fallback';
 import { useState } from 'react';
+import {useRouter} from 'next/navigation';
 
 export default function CheckoutPage() {
   const { cart } = useCart();
+  const router = useRouter();
   const [customerInfo, setCustomerInfo] = useState({
     name: '',
     phone: '',
@@ -54,7 +56,7 @@ export default function CheckoutPage() {
     return encodeURIComponent(message);
   };
 
-  const handleWhatsAppOrder = () => {
+  const handleWhatsAppOrder = async() => {
     if (!customerInfo.name || !customerInfo.phone) {
       alert('Por favor completa al menos tu nombre y teléfono');
       return;
@@ -65,6 +67,15 @@ export default function CheckoutPage() {
     const whatsappUrl = `https://wa.me/${phoneNumber.replace('+', '')}?text=${message}`;
     
     window.open(whatsappUrl, '_blank');
+
+    try {
+     const {clearLocalCart}  = await import('lib/local-data/index');
+     await clearLocalCart();
+     alert('!Pedido enviado!');
+     router.push('/');
+    } catch (error) {
+      console.log('Error limpiando carrito', error); 
+    }
   };
 
   return (
@@ -105,32 +116,6 @@ export default function CheckoutPage() {
                     required
                   />
                 </div>
-                
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    value={customerInfo.email}
-                    onChange={(e) => setCustomerInfo({ ...customerInfo, email: e.target.value })}
-                    className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
-                  />
-                </div>
-                
-                <div>
-                  <label htmlFor="address" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Dirección de entrega
-                  </label>
-                  <textarea
-                    id="address"
-                    rows={3}
-                    value={customerInfo.address}
-                    onChange={(e) => setCustomerInfo({ ...customerInfo, address: e.target.value })}
-                    className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
-                  />
-                </div>
               </div>
             </div>
 
@@ -140,8 +125,8 @@ export default function CheckoutPage() {
               <div className="rounded-lg border border-gray-200 bg-gray-50 p-6 dark:border-gray-700 dark:bg-gray-800">
                 {/* Products */}
                 <div className="space-y-4">
-                  {cart.lines.map((item, i) => (
-                    <div key={i} className="flex items-center space-x-4">
+                  {cart.lines.map((item) => (
+                    <div key={item.id || item.merchandise.id } className="flex items-center space-x-4">
                       <div className="relative h-16 w-16 overflow-hidden rounded-md border border-gray-300 bg-gray-300 dark:border-gray-600 dark:bg-gray-700">
                         <ProductImageFallback
                           className="h-full w-full object-cover"
@@ -199,7 +184,7 @@ export default function CheckoutPage() {
                   onClick={handleWhatsAppOrder}
                   className="mt-6 w-full rounded-md bg-green-600 px-4 py-3 text-white font-semibold hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors"
                 >
-                  🛒 Enviar Pedido por WhatsApp
+                   Enviar Pedido por WhatsApp
                 </button>
 
                 <p className="mt-4 text-center text-sm text-gray-500 dark:text-gray-400">

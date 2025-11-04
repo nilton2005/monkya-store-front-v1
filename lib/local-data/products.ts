@@ -388,7 +388,104 @@ export const localProducts: Product[] = [
       title: 'Hoodie Street Negra - Sudadera Urbana',
       description: 'Compra la hoodie street negra. Diseño moderno y juvenil perfecto para el estilo urbano.'
     }
-  }
+  },
+{
+    id: 'gid://product/1',
+    handle: 't-shirt-basic-white',
+    title: 'T-Shirt Básica Blanca',
+    description: 'Camiseta básica de algodón 100% en color blanco. Perfecta para uso diario.',
+    descriptionHtml: '<p>Camiseta básica de algodón 100% en color blanco. Perfecta para uso diario.</p>',
+    availableForSale: true,
+    updatedAt: '2024-01-01T00:00:00Z',
+    tags: ['camiseta', 'blanco', 'básico', 'algodón'],
+    featuredImage: {
+      url: '/placeholder-tshirt-white.jpg',
+      altText: 'T-Shirt Básica Blanca',
+      width: 600,
+      height: 600
+    },
+    images: [
+      {
+        url: '/placeholder-tshirt-white.jpg',
+        altText: 'T-Shirt Básica Blanca - Vista frontal',
+        width: 600,
+        height: 600
+      },
+      {
+        url: '/placeholder-tshirt-white-back.jpg',
+        altText: 'T-Shirt Básica Blanca - Vista trasera',
+        width: 600,
+        height: 600
+      }
+    ],
+    priceRange: {
+      maxVariantPrice: {
+        amount: '25.00',
+        currencyCode: 'USD'
+      },
+      minVariantPrice: {
+        amount: '20.00',
+        currencyCode: 'USD'
+      }
+    },
+    variants: [
+      {
+        id: 'gid://variant/1-s',
+        title: 'S / Blanco',
+        availableForSale: true,
+        selectedOptions: [
+          { name: 'Size', value: 'S' },
+          { name: 'Color', value: 'Blanco' }
+        ],
+        price: {
+          amount: '20.00',
+          currencyCode: 'USD'
+        }
+      },
+      {
+        id: 'gid://variant/1-m',
+        title: 'M / Blanco',
+        availableForSale: true,
+        selectedOptions: [
+          { name: 'Size', value: 'M' },
+          { name: 'Color', value: 'Blanco' }
+        ],
+        price: {
+          amount: '22.00',
+          currencyCode: 'USD'
+        }
+      },
+      {
+        id: 'gid://variant/1-l',
+        title: 'L / Blanco',
+        availableForSale: true,
+        selectedOptions: [
+          { name: 'Size', value: 'L' },
+          { name: 'Color', value: 'Blanco' }
+        ],
+        price: {
+          amount: '25.00',
+          currencyCode: 'USD'
+        }
+      }
+    ],
+    options: [
+      {
+        id: 'gid://option/size',
+        name: 'Size',
+        values: ['S', 'M', 'L']
+      },
+      {
+        id: 'gid://option/color',
+        name: 'Color',
+        values: ['Blanco']
+      }
+    ],
+    seo: {
+      title: 'T-Shirt Básica Blanca - Camiseta de Algodón',
+      description: 'Compra la mejor t-shirt básica blanca de algodón 100%. Perfecta para uso diario.'
+    }
+  },
 ];
 
 export const localCollections: Collection[] = [

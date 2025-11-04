@@ -1,13 +1,53 @@
 import { Cart, Collection, Menu, Product } from '../shopify/types';
 import { localCollections, localMenu, localProducts } from './auto-generator';
 
+
+// car local storage KEY
+const CART_STORAGE_KEY = 'monkya_cart';
+
 // Cart local storage
 let localCart: Cart | null = null;
 
+function saveCartToStorage(cart: Cart){
+  if(typeof window !== 'undefined'){
+    try {
+      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart)) ;
+    } catch (error) {
+      console.log('Erro guardando carrito: ', error)
+    }
+  }
+}
+
+// cargamos el carrito desde localStorage
+function loadCartFromStorage(): Cart | null{
+  if(typeof window !== 'undefined'){
+    try {
+      const stored = localStorage.getItem(CART_STORAGE_KEY); 
+    } catch (error) {
+      console.error('Error cargando carrito: ', error) 
+    }
+  }
+  return null;
+}
+
+// limpiar el carrito de localstorage
+function clearcartFromStorage(){
+  if(typeof window !== 'undefined'){
+    try {
+      localStorage.removeItem(CART_STORAGE_KEY);
+    } catch (error) {
+      console.error('Error limpiando carrito: ', error);
+    }
+  }
+}
+
+
+
 // Helper function to generate a random ID
 function generateId(): string {
-  return `local_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  return `local_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 }
+
 
 // Create a new empty cart
 export async function createLocalCart(): Promise<Cart> {
@@ -15,15 +55,16 @@ export async function createLocalCart(): Promise<Cart> {
     id: generateId(),
     checkoutUrl: '',
     cost: {
-      subtotalAmount: { amount: '0.00', currencyCode: 'USD' },
-      totalAmount: { amount: '0.00', currencyCode: 'USD' },
-      totalTaxAmount: { amount: '0.00', currencyCode: 'USD' }
+      subtotalAmount: { amount: '0.00', currencyCode: 'PEN' },
+      totalAmount: { amount: '0.00', currencyCode: 'PEN' },
+      totalTaxAmount: { amount: '0.00', currencyCode: 'PEN' }
     },
     lines: [],
     totalQuantity: 0
   };
   
   localCart = cart;
+  saveCartToStorage(cart);
   return cart;
 }
 
@@ -31,6 +72,11 @@ export async function createLocalCart(): Promise<Cart> {
 export async function addToLocalCart(
   lines: { merchandiseId: string; quantity: number }[]
 ): Promise<Cart> {
+
+  if(!localCart){
+    localCart = await createLocalCart();
+  }
+
   if (!localCart) {
     localCart = await createLocalCart();
   }
@@ -85,24 +131,39 @@ export async function addToLocalCart(
   }
 
   updateCartTotals();
+  saveCartToStorage(localCart);
   return localCart;
 }
 
 // Remove item from cart
 export async function removeFromLocalCart(lineIds: string[]): Promise<Cart> {
   if (!localCart) {
+    localCart = await loadCartFromStorage();
+  }
+  if (!localCart) {
     localCart = await createLocalCart();
   }
 
   localCart.lines = localCart.lines.filter(line => !lineIds.includes(line.id || ''));
   updateCartTotals();
+  saveCartToStorage(localCart);
   return localCart;
+}
+
+// limpiar el carrito despúes de hacer el pedido
+export async function clearLocalCart(): Promise<Cart>{
+  localCart = null;
+  clearCartFromStorage();
+  return createLocalCart();
 }
 
 // Update cart item quantity
 export async function updateLocalCart(
   lines: { id: string; merchandiseId: string; quantity: number }[]
 ): Promise<Cart> {
+  if (!localCart) {
+    localCart = await loadCartFromStorage();
+  }
   if (!localCart) {
     localCart = await createLocalCart();
   }
@@ -126,12 +187,23 @@ export async function updateLocalCart(
   }
 
   updateCartTotals();
+  saveCartToStorage(localCart);
   return localCart;
 }
 
 // Get current cart
 export async function getLocalCart(): Promise<Cart | undefined> {
+  if (!localCart) {
+    localCart = await loadCartFromStorage();
+  }
   return localCart || undefined;
+}
+
+// limpiar carrito, es necesario despues de completar pedido
+export async function clearCartFromStorage(): Promise<Cart> {
+  localCart = null;
+  clearCartFromStorage();
+  return createLocalCart(); 
 }
 
 // Helper function to update cart totals
