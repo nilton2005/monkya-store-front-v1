@@ -1,13 +1,13 @@
 'use client';
 
-import clsx from 'clsx';
 import { Dialog, Transition } from '@headlessui/react';
 import { ShoppingCartIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import clsx from 'clsx';
 import LoadingDots from 'components/loading-dots';
 import Price from 'components/price';
+import ProductImageFallback from 'components/product-image-fallback';
 import { DEFAULT_OPTION } from 'lib/constants';
 import { createUrl } from 'lib/utils';
-import ProductImageFallback from 'components/product-image-fallback';
 import Link from 'next/link';
 import { Fragment, useEffect, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
@@ -135,11 +135,13 @@ export default function CartModal() {
                                     width={64}
                                     height={64}
                                     alt={
+                                      item.customTitle ||
                                       item.merchandise.product.featuredImage
                                         .altText ||
                                       item.merchandise.product.title
                                     }
                                     src={
+                                      item.customImage ||
                                       item.merchandise.product.featuredImage.url
                                     }
                                   />
@@ -151,7 +153,7 @@ export default function CartModal() {
                                 >
                                   <div className="flex flex-1 flex-col text-base">
                                     <span className="leading-tight">
-                                      {item.merchandise.product.title}
+                                      {item.customTitle || item.merchandise.product.title}
                                     </span>
                                     {item.merchandise.title !==
                                     DEFAULT_OPTION ? (

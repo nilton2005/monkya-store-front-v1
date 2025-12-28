@@ -7,6 +7,7 @@ import { useProduct } from 'components/product/product-context';
 import { motion } from 'framer-motion';
 import { Product, ProductVariant } from 'lib/shopify/types';
 import { useActionState } from 'react';
+import { useAppStore } from 'storeIA/useAppStore';
 import { useCart } from './cart-context';
 
 function SubmitButton({
@@ -61,11 +62,20 @@ function SubmitButton({
   );
 }
 
-export function AddToCart({ product }: { product: Product }) {
+export function AddToCart({ product, isAIProduct }: { product: Product; isAIProduct?: boolean }) {
   const { variants, availableForSale } = product;
   const { addCartItem } = useCart();
   const { state } = useProduct();
+  const { finalProductImage, finalProductTitle } = useAppStore();
   const [message, formAction] = useActionState(addItem, null);
+
+  // 🔍 DEBUG: Ver qué hay en el store
+  console.log('🎨 AddToCart Debug:', {
+    isAIProduct,
+    hasFinalImage: !!finalProductImage,
+    finalImageLength: finalProductImage?.length || 0,
+    finalTitle: finalProductTitle
+  });
 
   const variant = variants.find((variant: ProductVariant) =>
     variant.selectedOptions.every(
@@ -74,22 +84,63 @@ export function AddToCart({ product }: { product: Product }) {
   );
   const defaultVariantId = variants.length === 1 ? variants[0]?.id : undefined;
   const selectedVariantId = variant?.id || defaultVariantId;
-  const addItemAction = formAction.bind(null, selectedVariantId);
+  
+  // Bind custom data ONLY if it's the AI product
+  const imageToSave = isAIProduct ? finalProductImage : undefined;
+  const titleToSave = isAIProduct ? finalProductTitle : undefined;
+
+  // If it's an AI product but we don't have the image (e.g. page refresh without persistence),
+  // we shouldn't allow adding to cart as it would add the base product.
+  const isMissingAIData = isAIProduct && !imageToSave;
+
+  console.log('🛒 Cart Data:', {
+    selectedVariantId,
+    imageToSave: imageToSave ? 'YES (length: ' + imageToSave.length + ')' : 'NO',
+    titleToSave,
+    isMissingAIData
+  });
+  
   const finalVariant = variants.find(
     (variant) => variant.id === selectedVariantId
   )!;
 
   return (
     <form
-      action={async () => {
-        addCartItem(finalVariant, product);
-        addItemAction();
+      action={async (formData) => {
+        if (isMissingAIData) {
+          console.error('❌ Missing AI data - cannot add to cart');
+          return;
+        }
+        
+        // Add custom data to FormData
+        formData.set('variantId', selectedVariantId || '');
+        if (imageToSave) formData.set('customImage', imageToSave);
+        if (titleToSave) formData.set('customTitle', titleToSave);
+        
+        console.log('✅ Adding to cart with:', {
+          variantId: selectedVariantId,
+          hasImage: !!imageToSave,
+          imageLength: imageToSave?.length,
+          hasTitle: !!titleToSave,
+          formDataKeys: Array.from(formData.keys())
+        });
+        
+        // First update optimistically without transition (form actions handle this automatically)
+        addCartItem(finalVariant, product, imageToSave || undefined, titleToSave || undefined);
+        
+        // Then call server action
+        await formAction(formData);
       }}
     >
       <SubmitButton
-        availableForSale={availableForSale}
+        availableForSale={availableForSale && !isMissingAIData}
         selectedVariantId={selectedVariantId}
       />
+      {isMissingAIData && (
+        <p className="mt-2 text-sm text-red-500">
+          Please regenerate your design in the AI Editor.
+        </p>
+      )}
       <p aria-live="polite" className="sr-only" role="status">
         {message}
       </p>

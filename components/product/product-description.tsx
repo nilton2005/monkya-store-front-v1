@@ -5,9 +5,15 @@ import Price from 'components/price';
 import Prose from 'components/prose';
 import { motion } from 'framer-motion';
 import { Product } from 'lib/shopify/types';
+import { useAppStore } from 'storeIA/useAppStore';
 import { VariantSelector } from './variant-selector';
 
-export function ProductDescription({ product }: { product: Product }) {
+export function ProductDescription({ product, isAIProduct }: { product: Product; isAIProduct?: boolean }) {
+  const { finalProductTitle } = useAppStore();
+  // Si tenemos un título personalizado (IA), lo usamos. Si no, usamos el del producto.
+  // Pero SOLO si estamos en el producto "IA Generated" (para evitar cambiar títulos de otros productos si el store quedó sucio)
+  const displayTitle = (isAIProduct && finalProductTitle) ? finalProductTitle : product.title;
+
   return (
     <>
       <motion.div 
@@ -22,7 +28,7 @@ export function ProductDescription({ product }: { product: Product }) {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
         >
-          {product.title}
+          {displayTitle}
         </motion.h1>
         <motion.div 
           className="mr-auto w-auto rounded-full bg-blue-600 p-2 text-sm text-white"
@@ -60,7 +66,7 @@ export function ProductDescription({ product }: { product: Product }) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.5 }}
       >
-        <AddToCart product={product} />
+        <AddToCart product={product} isAIProduct={isAIProduct} />
       </motion.div>
     </>
   );

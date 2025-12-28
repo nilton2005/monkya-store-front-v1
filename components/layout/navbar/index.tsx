@@ -7,6 +7,7 @@ import { Suspense } from 'react';
 import MobileMenu from './mobile-menu';
 import NavbarClient from './navbar-client';
 import Search, { SearchSkeleton } from './search';
+import { AIDesignButton } from 'components/ai-design/ai-button';
 
 const { SITE_NAME } = process.env;
 
@@ -54,7 +55,8 @@ export async function Navbar() {
             <Search />
           </Suspense>
         </div>
-        <div className="flex justify-end md:w-1/3">
+        <div className="flex items-center justify-end gap-3 md:w-1/3">
+          <AIDesignButton />
           <CartModal />
         </div>
       </div>

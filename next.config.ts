@@ -2,7 +2,10 @@ export default {
   experimental: {
     ppr: true,
     inlineCss: true,
-    useCache: true
+    useCache: true,
+    serverActions: {
+      bodySizeLimit: '10mb'
+    }
   },
   images: {
     formats: ['image/avif', 'image/webp'],

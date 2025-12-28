@@ -1,17 +1,17 @@
 'use client';
 
 import type {
-  Cart,
-  CartItem,
-  Product,
-  ProductVariant
+    Cart,
+    CartItem,
+    Product,
+    ProductVariant
 } from 'lib/shopify/types';
 import React, {
-  createContext,
-  use,
-  useContext,
-  useMemo,
-  useOptimistic
+    createContext,
+    use,
+    useContext,
+    useMemo,
+    useOptimistic
 } from 'react';
 
 type UpdateType = 'plus' | 'minus' | 'delete';
@@ -19,11 +19,11 @@ type UpdateType = 'plus' | 'minus' | 'delete';
 type CartAction =
   | {
       type: 'UPDATE_ITEM';
-      payload: { merchandiseId: string; updateType: UpdateType };
+      payload: { lineId: string; updateType: UpdateType };
     }
   | {
       type: 'ADD_ITEM';
-      payload: { variant: ProductVariant; product: Product };
+      payload: { variant: ProductVariant; product: Product; customImage?: string; customTitle?: string };
     };
 
 type CartContextType = {
@@ -68,7 +68,9 @@ function updateCartItem(
 function createOrUpdateCartItem(
   existingItem: CartItem | undefined,
   variant: ProductVariant,
-  product: Product
+  product: Product,
+  customImage?: string,
+  customTitle?: string
 ): CartItem {
   const quantity = existingItem ? existingItem.quantity + 1 : 1;
   const totalAmount = calculateItemCost(quantity, variant.price.amount);
@@ -92,7 +94,9 @@ function createOrUpdateCartItem(
         title: product.title,
         featuredImage: product.featuredImage
       }
-    }
+    },
+    customImage,
+    customTitle
   };
 }
 
@@ -135,10 +139,10 @@ function cartReducer(state: Cart | undefined, action: CartAction): Cart {
 
   switch (action.type) {
     case 'UPDATE_ITEM': {
-      const { merchandiseId, updateType } = action.payload;
+      const { lineId, updateType } = action.payload;
       const updatedLines = currentCart.lines
         .map((item) =>
-          item.merchandise.id === merchandiseId
+          item.id === lineId
             ? updateCartItem(item, updateType)
             : item
         )
@@ -163,19 +167,22 @@ function cartReducer(state: Cart | undefined, action: CartAction): Cart {
       };
     }
     case 'ADD_ITEM': {
-      const { variant, product } = action.payload;
+      const { variant, product, customImage, customTitle } = action.payload;
+      // Only merge if no custom image is present. Custom items are unique.
       const existingItem = currentCart.lines.find(
-        (item) => item.merchandise.id === variant.id
+        (item) => item.merchandise.id === variant.id && !item.customImage && !customImage
       );
       const updatedItem = createOrUpdateCartItem(
         existingItem,
         variant,
-        product
+        product,
+        customImage,
+        customTitle
       );
 
       const updatedLines = existingItem
         ? currentCart.lines.map((item) =>
-            item.merchandise.id === variant.id ? updatedItem : item
+            item.merchandise.id === variant.id && !item.customImage ? updatedItem : item
           )
         : [...currentCart.lines, updatedItem];
 
@@ -216,15 +223,15 @@ export function useCart() {
     cartReducer
   );
 
-  const updateCartItem = (merchandiseId: string, updateType: UpdateType) => {
+  const updateCartItem = (lineId: string, updateType: UpdateType) => {
     updateOptimisticCart({
       type: 'UPDATE_ITEM',
-      payload: { merchandiseId, updateType }
+      payload: { lineId, updateType }
     });
   };
 
-  const addCartItem = (variant: ProductVariant, product: Product) => {
-    updateOptimisticCart({ type: 'ADD_ITEM', payload: { variant, product } });
+  const addCartItem = (variant: ProductVariant, product: Product, customImage?: string, customTitle?: string) => {
+    updateOptimisticCart({ type: 'ADD_ITEM', payload: { variant, product, customImage, customTitle } });
   };
 
   return useMemo(

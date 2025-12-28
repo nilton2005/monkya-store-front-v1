@@ -13,21 +13,45 @@ import { redirect } from 'next/navigation';
 
 export async function addItem(
   prevState: any,
-  selectedVariantId: string | undefined
+  formData: FormData
 ) {
+  const selectedVariantId = formData.get('variantId') as string | null;
+  const customImage = formData.get('customImage') as string | null;
+  const customTitle = formData.get('customTitle') as string | null;
+
+  console.log('🔥 Server Action addItem received:', {
+    selectedVariantId,
+    hasCustomImage: !!customImage,
+    customImageLength: customImage?.length || 0,
+    customTitle
+  });
+
   if (!selectedVariantId) {
     return 'Error adding item to cart';
   }
 
+  // Validate image size (Next.js has a 4MB limit for Server Actions by default)
+  if (customImage && customImage.length > 4 * 1024 * 1024) {
+    console.error('❌ Image too large:', customImage.length, 'bytes');
+    return 'Image is too large. Please use a smaller image.';
+  }
+
   try {
-    await addToCart([{ merchandiseId: selectedVariantId, quantity: 1 }]);
+    await addToCart([{ 
+      merchandiseId: selectedVariantId, 
+      quantity: 1,
+      customImage: customImage || undefined,
+      customTitle: customTitle || undefined
+    }]);
     revalidateTag(TAGS.cart);
+    console.log('✅ Item added to cart successfully');
   } catch (e) {
+    console.error('❌ Error in addItem:', e);
     return 'Error adding item to cart';
   }
 }
 
-export async function removeItem(prevState: any, merchandiseId: string) {
+export async function removeItem(prevState: any, lineId: string) {
   try {
     const cart = await getCart();
 
@@ -36,7 +60,7 @@ export async function removeItem(prevState: any, merchandiseId: string) {
     }
 
     const lineItem = cart.lines.find(
-      (line) => line.merchandise.id === merchandiseId
+      (line) => line.id === lineId
     );
 
     if (lineItem && lineItem.id) {
@@ -53,11 +77,12 @@ export async function removeItem(prevState: any, merchandiseId: string) {
 export async function updateItemQuantity(
   prevState: any,
   payload: {
+    lineId: string;
     merchandiseId: string;
     quantity: number;
   }
 ) {
-  const { merchandiseId, quantity } = payload;
+  const { lineId, merchandiseId, quantity } = payload;
 
   try {
     const cart = await getCart();
@@ -67,7 +92,7 @@ export async function updateItemQuantity(
     }
 
     const lineItem = cart.lines.find(
-      (line) => line.merchandise.id === merchandiseId
+      (line) => line.id === lineId
     );
 
     if (lineItem && lineItem.id) {
@@ -84,6 +109,8 @@ export async function updateItemQuantity(
       }
     } else if (quantity > 0) {
       // If the item doesn't exist in the cart and quantity > 0, add it
+      // Note: This fallback might lose custom attributes if we are just re-adding by merchandiseId
+      // But updateItemQuantity is usually called on existing items.
       await addToCart([{ merchandiseId, quantity }]);
     }
 

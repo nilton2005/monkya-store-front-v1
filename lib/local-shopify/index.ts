@@ -33,7 +33,7 @@ export async function createCart(): Promise<Cart> {
 }
 
 export async function addToCart(
-  lines: { merchandiseId: string; quantity: number }[]
+  lines: { merchandiseId: string; quantity: number; customImage?: string; customTitle?: string }[]
 ): Promise<Cart> {
   return await addToLocalCart(lines);
 }

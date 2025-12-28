@@ -122,6 +122,25 @@ export const PRODUCTOS: SimpleProduct[] = [
     generalImages: {
       hero: '/images-products/Hoodie/hoodies-wakanda/hoodies-wakanda-man.png'
     }
+  },
+
+  // 🤖 IA GENERATED TEMPLATE
+  {
+    title: 'IA Generated',
+    description: 'Tu diseño único generado con Inteligencia Artificial. Impreso en nuestra camiseta premium de algodón.',
+    basePrice: 35,
+    category: 'camiseta',
+    colors: [
+      { 
+        name: 'Negro', 
+        code: '#000000',
+        images: {
+          front: '/images-products/t-shirt/t-shirt_anthopic/man_style.png', // Placeholder base
+        }
+      }
+    ],
+    sizes: ['S', 'M', 'L', 'XL'],
+    tags: ['ia', 'custom', 'generated', 'unique'],
   }
 ];
 

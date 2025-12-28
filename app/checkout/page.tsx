@@ -132,12 +132,12 @@ export default function CheckoutPage() {
                           className="h-full w-full object-cover"
                           width={64}
                           height={64}
-                          alt={item.merchandise.product.featuredImage.altText || item.merchandise.product.title}
-                          src={item.merchandise.product.featuredImage.url}
+                          alt={item.customTitle || item.merchandise.product.featuredImage.altText || item.merchandise.product.title}
+                          src={item.customImage || item.merchandise.product.featuredImage.url}
                         />
                       </div>
                       <div className="flex-1">
-                        <h3 className="font-medium">{item.merchandise.product.title}</h3>
+                        <h3 className="font-medium">{item.customTitle || item.merchandise.product.title}</h3>
                         {item.merchandise.title !== DEFAULT_OPTION && (
                           <p className="text-sm text-gray-500 dark:text-gray-400">
                             {item.merchandise.title}

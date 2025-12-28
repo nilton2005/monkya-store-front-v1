@@ -9,7 +9,7 @@ export default function NavbarClient({ children }: { children: ReactNode }) {
   const backgroundColor = useTransform(
     scrollY,
     [0, 100],
-    ['rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 0.95)']
+    ['rgba(0, 0, 0, 0)', 'rgba(0, 0, 0, 0.95)']
   );
   
   const backdropBlur = useTransform(
@@ -21,7 +21,7 @@ export default function NavbarClient({ children }: { children: ReactNode }) {
   const boxShadow = useTransform(
     scrollY,
     [0, 100],
-    ['0 0 0 0 rgba(0,0,0,0)', '0 4px 6px -1px rgba(0,0,0,0.1)']
+    ['0 0 0 0 rgba(0,0,0,0)', '0 4px 6px -1px rgba(0,0,0,0.3)']
   );
 
   return (

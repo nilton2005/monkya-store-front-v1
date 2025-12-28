@@ -72,6 +72,9 @@ export default async function ProductPage(props: { params: Promise<{ handle: str
     }
   };
 
+  // Determine if this is the AI generated product page
+  const isAIProduct = params.handle === 'ia-generated-camiseta';
+
   return (
     <ProductProvider>
       <script
@@ -93,17 +96,18 @@ export default async function ProductPage(props: { params: Promise<{ handle: str
                   src: image.url,
                   altText: image.altText
                 }))}
+                isAIProduct={isAIProduct}
               />
             </Suspense>
           </div>
 
           <div className="basis-full lg:basis-2/6">
             <Suspense fallback={null}>
-              <ProductDescription product={product} />
+              <ProductDescription product={product} isAIProduct={isAIProduct} />
             </Suspense>
           </div>
         </div>
-        <RelatedProducts id={product.id} />
+        {!isAIProduct && <RelatedProducts id={product.id} />}
       </div>
       <Footer />
     </ProductProvider>

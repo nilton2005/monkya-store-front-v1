@@ -1,81 +1,66 @@
 import { Cart, Collection, Menu, Product } from '../shopify/types';
 import { localCollections, localMenu, localProducts } from './auto-generator';
 
-
-// car local storage KEY
-const CART_STORAGE_KEY = 'monkya_cart';
-
-// Cart local storage
-let localCart: Cart | null = null;
-
-function saveCartToStorage(cart: Cart){
-  if(typeof window !== 'undefined'){
-    try {
-      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart)) ;
-    } catch (error) {
-      console.log('Erro guardando carrito: ', error)
-    }
-  }
+// Helper to get cart file path
+function getCartFilePath() {
+  const path = require('path');
+  return path.join(process.cwd(), 'local-cart.json');
 }
 
-// cargamos el carrito desde localStorage
-function loadCartFromStorage(): Cart | null{
-  if(typeof window !== 'undefined'){
-    try {
-      const stored = localStorage.getItem(CART_STORAGE_KEY); 
-    } catch (error) {
-      console.error('Error cargando carrito: ', error) 
+// Helper to read cart from file
+function readCartFromFile(): Cart | null {
+  try {
+    const fs = require('fs');
+    const filePath = getCartFilePath();
+    if (fs.existsSync(filePath)) {
+      const data = fs.readFileSync(filePath, 'utf-8');
+      return JSON.parse(data);
     }
+  } catch (error) {
+    console.error('Error reading cart from file:', error);
   }
   return null;
 }
 
-// limpiar el carrito de localstorage
-function clearcartFromStorage(){
-  if(typeof window !== 'undefined'){
-    try {
-      localStorage.removeItem(CART_STORAGE_KEY);
-    } catch (error) {
-      console.error('Error limpiando carrito: ', error);
-    }
+// Helper to write cart to file
+function writeCartToFile(cart: Cart) {
+  try {
+    const fs = require('fs');
+    const filePath = getCartFilePath();
+    fs.writeFileSync(filePath, JSON.stringify(cart, null, 2));
+  } catch (error) {
+    console.error('Error writing cart to file:', error);
   }
 }
-
-
 
 // Helper function to generate a random ID
 function generateId(): string {
   return `local_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 }
 
-
 // Create a new empty cart
 export async function createLocalCart(): Promise<Cart> {
   const cart: Cart = {
     id: generateId(),
-    checkoutUrl: '',
+    checkoutUrl: '/checkout',
     cost: {
-      subtotalAmount: { amount: '0.00', currencyCode: 'PEN' },
-      totalAmount: { amount: '0.00', currencyCode: 'PEN' },
-      totalTaxAmount: { amount: '0.00', currencyCode: 'PEN' }
+      subtotalAmount: { amount: '0.00', currencyCode: 'USD' },
+      totalAmount: { amount: '0.00', currencyCode: 'USD' },
+      totalTaxAmount: { amount: '0.00', currencyCode: 'USD' }
     },
     lines: [],
     totalQuantity: 0
   };
   
-  localCart = cart;
-  saveCartToStorage(cart);
+  writeCartToFile(cart);
   return cart;
 }
 
 // Add item to cart
 export async function addToLocalCart(
-  lines: { merchandiseId: string; quantity: number }[]
+  lines: { merchandiseId: string; quantity: number; customImage?: string; customTitle?: string }[]
 ): Promise<Cart> {
-
-  if(!localCart){
-    localCart = await createLocalCart();
-  }
+  let localCart = readCartFromFile();
 
   if (!localCart) {
     localCart = await createLocalCart();
@@ -88,10 +73,13 @@ export async function addToLocalCart(
     const product = findProductByVariantId(line.merchandiseId);
     if (!product) continue;
 
-    // Check if item already exists in cart
-    const existingLineIndex = localCart.lines.findIndex(
-      (cartLine) => cartLine.merchandise.id === line.merchandiseId
-    );
+    // Check if item already exists in cart (ONLY if no custom attributes)
+    // If it has custom attributes, we treat it as a unique item for now to avoid merging different custom designs
+    const existingLineIndex = (line.customImage || line.customTitle) 
+      ? -1 
+      : localCart.lines.findIndex(
+          (cartLine) => cartLine.merchandise.id === line.merchandiseId && !cartLine.customImage
+        );
 
     if (existingLineIndex >= 0) {
       // Update quantity
@@ -124,36 +112,44 @@ export async function addToLocalCart(
             title: product.title,
             featuredImage: product.featuredImage
           }
-        }
+        },
+        customImage: line.customImage, // 👈 Save custom image
+        customTitle: line.customTitle  // 👈 Save custom title
       };
       localCart.lines.push(cartItem);
     }
   }
 
-  updateCartTotals();
-  saveCartToStorage(localCart);
+  updateCartTotals(localCart);
+  writeCartToFile(localCart);
   return localCart;
 }
 
 // Remove item from cart
 export async function removeFromLocalCart(lineIds: string[]): Promise<Cart> {
+  let localCart = readCartFromFile();
+  
   if (!localCart) {
-    localCart = await loadCartFromStorage();
-  }
-  if (!localCart) {
-    localCart = await createLocalCart();
+    return await createLocalCart();
   }
 
   localCart.lines = localCart.lines.filter(line => !lineIds.includes(line.id || ''));
-  updateCartTotals();
-  saveCartToStorage(localCart);
+  updateCartTotals(localCart);
+  writeCartToFile(localCart);
   return localCart;
 }
 
 // limpiar el carrito despúes de hacer el pedido
 export async function clearLocalCart(): Promise<Cart>{
-  localCart = null;
-  clearCartFromStorage();
+  try {
+    const fs = require('fs');
+    const filePath = getCartFilePath();
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath);
+    }
+  } catch (error) {
+    console.error('Error clearing cart file:', error);
+  }
   return createLocalCart();
 }
 
@@ -161,11 +157,10 @@ export async function clearLocalCart(): Promise<Cart>{
 export async function updateLocalCart(
   lines: { id: string; merchandiseId: string; quantity: number }[]
 ): Promise<Cart> {
+  let localCart = readCartFromFile();
+
   if (!localCart) {
-    localCart = await loadCartFromStorage();
-  }
-  if (!localCart) {
-    localCart = await createLocalCart();
+    return await createLocalCart();
   }
 
   for (const line of lines) {
@@ -186,41 +181,30 @@ export async function updateLocalCart(
     }
   }
 
-  updateCartTotals();
-  saveCartToStorage(localCart);
+  updateCartTotals(localCart);
+  writeCartToFile(localCart);
   return localCart;
 }
 
 // Get current cart
 export async function getLocalCart(): Promise<Cart | undefined> {
-  if (!localCart) {
-    localCart = await loadCartFromStorage();
-  }
+  const localCart = readCartFromFile();
   return localCart || undefined;
 }
 
-// limpiar carrito, es necesario despues de completar pedido
-export async function clearCartFromStorage(): Promise<Cart> {
-  localCart = null;
-  clearCartFromStorage();
-  return createLocalCart(); 
-}
-
 // Helper function to update cart totals
-function updateCartTotals() {
-  if (!localCart) return;
-
+function updateCartTotals(cart: Cart) {
   let subtotal = 0;
   let totalQuantity = 0;
 
-  for (const line of localCart.lines) {
+  for (const line of cart.lines) {
     subtotal += parseFloat(line.cost.totalAmount.amount);
     totalQuantity += line.quantity;
   }
 
-  localCart.cost.subtotalAmount.amount = subtotal.toFixed(2);
-  localCart.cost.totalAmount.amount = subtotal.toFixed(2); // No taxes for now
-  localCart.totalQuantity = totalQuantity;
+  cart.cost.subtotalAmount.amount = subtotal.toFixed(2);
+  cart.cost.totalAmount.amount = subtotal.toFixed(2); // No taxes for now
+  cart.totalQuantity = totalQuantity;
 }
 
 // Helper function to find variant by ID

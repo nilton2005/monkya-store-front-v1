@@ -390,10 +390,10 @@ export const localProducts: Product[] = [
     }
   },
 {
-    id: 'gid://product/1',
-    handle: 't-shirt-basic-white',
+    id: 'gid://product/5',
+    handle: 't-shirt_eat_sleep_while',
     title: 'T-Shirt Básica Blanca',
-    description: 'Camiseta básica de algodón 100% en color blanco. Perfecta para uso diario.',
+    description: 'Camiseta básica material pima en color . Perfecta para uso diario',
     descriptionHtml: '<p>Camiseta básica de algodón 100% en color blanco. Perfecta para uso diario.</p>',
     availableForSale: true,
     updatedAt: '2024-01-01T00:00:00Z',
