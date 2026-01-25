@@ -32,6 +32,27 @@ type CartContextType = {
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
+// Helper function to enrich cart items with images from localStorage
+function enrichCartWithLocalImages(cart: Cart | undefined): Cart | undefined {
+  if (!cart || typeof window === 'undefined') return cart;
+
+  const enrichedLines = cart.lines.map((line) => {
+    if (line.customImageRef) {
+      try {
+        const storedImage = localStorage.getItem(line.customImageRef);
+        if (storedImage) {
+          return { ...line, customImage: storedImage };
+        }
+      } catch (error) {
+        console.error('Failed to retrieve image from localStorage:', error);
+      }
+    }
+    return line;
+  });
+
+  return { ...cart, lines: enrichedLines };
+}
+
 function calculateItemCost(quantity: number, price: string): string {
   return (Number(price) * quantity).toString();
 }
@@ -217,9 +238,15 @@ export function useCart() {
     throw new Error('useCart must be used within a CartProvider');
   }
 
-  const initialCart = use(context.cartPromise);
+  const serverCart = use(context.cartPromise);
+  
+  // Enrich cart with localStorage images using useMemo to prevent infinite loops
+  const enrichedCart = useMemo(() => {
+    return enrichCartWithLocalImages(serverCart);
+  }, [serverCart]);
+
   const [optimisticCart, updateOptimisticCart] = useOptimistic(
-    initialCart,
+    enrichedCart,
     cartReducer
   );
 

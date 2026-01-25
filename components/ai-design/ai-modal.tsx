@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { X } from 'lucide-react';
-import { useEffect } from 'react';
-import dynamic from 'next/dynamic';
+import { X } from "lucide-react";
+import dynamic from "next/dynamic";
+import { useEffect } from "react";
 
 // Importar dinámicamente para evitar problemas de SSR
-const AIDesignEditor = dynamic(() => import('./ai-editor'), {
+const AIDesignEditor = dynamic(() => import("./ai-editor"), {
   ssr: false,
   loading: () => (
     <div className="flex items-center justify-center h-full">
@@ -23,24 +23,24 @@ export function AIDesignModal({ isOpen, onClose }: AIDesignModalProps) {
   // Prevenir scroll del body cuando el modal está abierto
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     }
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     };
   }, [isOpen]);
 
   // Cerrar con ESC
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === "Escape") onClose();
     };
     if (isOpen) {
-      window.addEventListener('keydown', handleEsc);
+      window.addEventListener("keydown", handleEsc);
     }
-    return () => window.removeEventListener('keydown', handleEsc);
+    return () => window.removeEventListener("keydown", handleEsc);
   }, [isOpen, onClose]);
 
   if (!isOpen) return null;
@@ -75,7 +75,9 @@ export function AIDesignModal({ isOpen, onClose }: AIDesignModalProps) {
             </div>
             <div>
               <h2 className="text-xl font-bold text-white">Diseñador AI</h2>
-              <p className="text-sm text-gray-400">Crea diseños únicos con inteligencia artificial</p>
+              <p className="text-sm text-gray-400">
+                Crea diseños únicos con inteligencia artificial
+              </p>
             </div>
           </div>
           <button

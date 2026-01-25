@@ -16,13 +16,12 @@ export async function addItem(
   formData: FormData
 ) {
   const selectedVariantId = formData.get('variantId') as string | null;
-  const customImage = formData.get('customImage') as string | null;
+  const customImageRef = formData.get('customImageRef') as string | null;
   const customTitle = formData.get('customTitle') as string | null;
 
   console.log('🔥 Server Action addItem received:', {
     selectedVariantId,
-    hasCustomImage: !!customImage,
-    customImageLength: customImage?.length || 0,
+    customImageRef,
     customTitle
   });
 
@@ -30,17 +29,11 @@ export async function addItem(
     return 'Error adding item to cart';
   }
 
-  // Validate image size (Next.js has a 4MB limit for Server Actions by default)
-  if (customImage && customImage.length > 4 * 1024 * 1024) {
-    console.error('❌ Image too large:', customImage.length, 'bytes');
-    return 'Image is too large. Please use a smaller image.';
-  }
-
   try {
     await addToCart([{ 
       merchandiseId: selectedVariantId, 
       quantity: 1,
-      customImage: customImage || undefined,
+      customImageRef: customImageRef || undefined,
       customTitle: customTitle || undefined
     }]);
     revalidateTag(TAGS.cart);

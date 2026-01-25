@@ -136,6 +136,7 @@ export const ImageCanvas: React.FC = () => {
       id: `stroke-${Date.now()}`,
       points: currentStroke,
       brushSize,
+      color: '#FFFFFF', // Default white color for mask
     });
     setCurrentStroke([]);
   };

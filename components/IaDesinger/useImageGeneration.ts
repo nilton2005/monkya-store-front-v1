@@ -1,8 +1,8 @@
 import { useMutation } from '@tanstack/react-query';
-import { geminiService, GenerationRequest, EditRequest } from '../../services/geminiService';
 import { useAppStore } from 'storeIA/useAppStore';
+import { EditRequest, geminiService, GenerationRequest } from '../../services/geminiService';
+import { Asset, Edit, Generation } from '../../types';
 import { generateId } from '../../utils/imageUtils';
-import { Generation, Edit, Asset } from '../../types';
 
 export const useImageGeneration = () => {
   const { addGeneration, setIsGenerating, setCanvasImage, setCurrentProject, currentProject } = useAppStore();
@@ -31,19 +31,10 @@ export const useImageGeneration = () => {
           id: generateId(),
           prompt: request.prompt,
           parameters: {
-            aspectRatio: '1:1',
             seed: request.seed,
             temperature: request.temperature
           },
-          sourceAssets: request.referenceImage ? [{
-            id: generateId(),
-            type: 'original',
-            url: `data:image/png;base64,${request.referenceImages[0]}`,
-            mime: 'image/png',
-            width: 1024,
-            height: 1024,
-            checksum: request.referenceImages[0].slice(0, 32)
-          }] : request.referenceImages ? request.referenceImages.map((img, index) => ({
+          sourceAssets: request.referenceImages && request.referenceImages.length > 0 ? request.referenceImages.map((img, index) => ({
             id: generateId(),
             type: 'original' as const,
             url: `data:image/png;base64,${img}`,
@@ -58,7 +49,9 @@ export const useImageGeneration = () => {
         };
 
         addGeneration(generation);
-        setCanvasImage(outputAssets[0].url);
+        if (outputAssets[0]) {
+          setCanvasImage(outputAssets[0].url);
+        }
         
         // Create project if none exists
         if (!currentProject) {

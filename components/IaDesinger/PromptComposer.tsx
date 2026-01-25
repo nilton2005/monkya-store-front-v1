@@ -49,7 +49,8 @@ export const PromptComposer: React.FC = () => {
     if (selectedTool === 'generate') {
       const referenceImages = uploadedImages
         .filter(img => img.includes('base64,'))
-        .map(img => img.split('base64,')[1]);
+        .map(img => img.split('base64,')[1])
+        .filter((img): img is string => img !== undefined);
         
       generate({
         prompt: currentPrompt,

@@ -2,10 +2,11 @@
 
 import { useCart } from 'components/cart/cart-context';
 import Price from 'components/price';
-import { DEFAULT_OPTION } from 'lib/constants';
 import ProductImageFallback from 'components/product-image-fallback';
+import { DEFAULT_OPTION } from 'lib/constants';
+import { clearAllAIImages } from 'lib/localStorage-utils';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import {useRouter} from 'next/navigation';
 
 export default function CheckoutPage() {
   const { cart } = useCart();
@@ -33,8 +34,7 @@ export default function CheckoutPage() {
     message += ` *Información del Cliente:*\n`;
     message += `• Nombre: ${customerInfo.name}\n`;
     message += `• Teléfono: ${customerInfo.phone}\n`;
-    message += `• Email: ${customerInfo.email}\n`;
-    message += `• Dirección: ${customerInfo.address}\n\n`;
+   
     
     message += ` *Productos:*\n`;
     cart.lines.forEach((item, index) => {
@@ -69,10 +69,17 @@ export default function CheckoutPage() {
     window.open(whatsappUrl, '_blank');
 
     try {
-     const {clearLocalCart}  = await import('lib/local-data/index');
-     await clearLocalCart();
-     alert('!Pedido enviado!');
-     router.push('/');
+      // Clear cart from server
+      const {clearLocalCart}  = await import('lib/local-data/index');
+      await clearLocalCart();
+      
+      // Clear ALL AI images from localStorage since order is complete
+      console.log('🧹 Clearing all AI images after order completion...');
+      const cleared = clearAllAIImages();
+      console.log(`✅ Cleared ${cleared} AI image(s) from localStorage`);
+      
+      alert('¡Pedido enviado!');
+      router.push('/');
     } catch (error) {
       console.log('Error limpiando carrito', error); 
     }

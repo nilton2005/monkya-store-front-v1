@@ -3,11 +3,13 @@
 ## ✅ Lo que ya está listo:
 
 1. **Botón AI en el Navbar** ✨
+
    - Ubicación: Al lado del carrito de compras
    - Ícono: Sparkles (✨) con animación de pulso
    - Click: Abre modal fullscreen
 
 2. **Modal AI Design** 🖼️
+
    - Fullscreen en móvil
    - 95% del viewport en desktop
    - Cierra con: ESC, X, o click fuera
@@ -96,9 +98,9 @@ const queryClient = new QueryClient({
 
 function AIEditorContent() {
   useKeyboardShortcuts();
-  
+
   const { showPromptPanel, setShowPromptPanel, showHistory, setShowHistory } = useAppStore();
-  
+
   React.useEffect(() => {
     const checkMobile = () => {
       const isMobile = window.innerWidth < 768;
@@ -107,7 +109,7 @@ function AIEditorContent() {
         setShowHistory(false);
       }
     };
-    
+
     checkMobile();
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
@@ -116,7 +118,7 @@ function AIEditorContent() {
   return (
     <div className="h-full bg-gray-900 text-gray-100 flex flex-col">
       <Header />
-      
+
       <div className="flex-1 flex overflow-hidden">
         <div className={`flex-shrink-0 transition-all duration-300 ${!showPromptPanel && "w-8"}`}>
           <PromptComposer />
@@ -159,16 +161,19 @@ pnpm install zustand konva react-konva
 ## 🎯 Funcionalidades del AI Design Editor:
 
 1. **Generación de imágenes con IA** 🤖
+
    - Powered by Google Gemini
    - Prompts en lenguaje natural
    - Historial de generaciones
 
 2. **Editor de máscaras** 🎭
+
    - Edición de áreas específicas
    - Inpainting para modificaciones locales
    - Outpainting para expandir imágenes
 
 3. **Historial** 📚
+
    - Guarda todas las generaciones
    - Cache en localStorage
    - Navegación fácil entre versiones
@@ -184,6 +189,7 @@ pnpm install zustand konva react-konva
 ### Cambiar colores del modal:
 
 En `ai-modal.tsx`:
+
 ```typescript
 // Cambiar tema oscuro
 className="bg-gray-900"  → className="bg-black"
@@ -196,10 +202,10 @@ className="from-blue-500 to-purple-600"  → className="from-teal-500 to-green-6
 
 ```typescript
 // Desktop
-className="md:h-[90vh] md:w-[95vw]"
+className = "md:h-[90vh] md:w-[95vw]";
 // Cambiar a:
-className="md:h-[80vh] md:w-[90vw]"  // Más pequeño
-className="md:h-full md:w-full"      // Fullscreen
+className = "md:h-[80vh] md:w-[90vw]"; // Más pequeño
+className = "md:h-full md:w-full"; // Fullscreen
 ```
 
 ## 🎨 Uso en la tienda:

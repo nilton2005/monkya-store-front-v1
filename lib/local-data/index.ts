@@ -1,210 +1,16 @@
+import {
+    addItemToCookie,
+    clearCartCookie,
+    getCartFromCookie,
+    removeItemFromCookie,
+    updateItemQuantityInCookie
+} from '../cart-cookies';
 import { Cart, Collection, Menu, Product } from '../shopify/types';
 import { localCollections, localMenu, localProducts } from './auto-generator';
-
-// Helper to get cart file path
-function getCartFilePath() {
-  const path = require('path');
-  return path.join(process.cwd(), 'local-cart.json');
-}
-
-// Helper to read cart from file
-function readCartFromFile(): Cart | null {
-  try {
-    const fs = require('fs');
-    const filePath = getCartFilePath();
-    if (fs.existsSync(filePath)) {
-      const data = fs.readFileSync(filePath, 'utf-8');
-      return JSON.parse(data);
-    }
-  } catch (error) {
-    console.error('Error reading cart from file:', error);
-  }
-  return null;
-}
-
-// Helper to write cart to file
-function writeCartToFile(cart: Cart) {
-  try {
-    const fs = require('fs');
-    const filePath = getCartFilePath();
-    fs.writeFileSync(filePath, JSON.stringify(cart, null, 2));
-  } catch (error) {
-    console.error('Error writing cart to file:', error);
-  }
-}
 
 // Helper function to generate a random ID
 function generateId(): string {
   return `local_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
-}
-
-// Create a new empty cart
-export async function createLocalCart(): Promise<Cart> {
-  const cart: Cart = {
-    id: generateId(),
-    checkoutUrl: '/checkout',
-    cost: {
-      subtotalAmount: { amount: '0.00', currencyCode: 'USD' },
-      totalAmount: { amount: '0.00', currencyCode: 'USD' },
-      totalTaxAmount: { amount: '0.00', currencyCode: 'USD' }
-    },
-    lines: [],
-    totalQuantity: 0
-  };
-  
-  writeCartToFile(cart);
-  return cart;
-}
-
-// Add item to cart
-export async function addToLocalCart(
-  lines: { merchandiseId: string; quantity: number; customImage?: string; customTitle?: string }[]
-): Promise<Cart> {
-  let localCart = readCartFromFile();
-
-  if (!localCart) {
-    localCart = await createLocalCart();
-  }
-
-  for (const line of lines) {
-    const variant = findVariantById(line.merchandiseId);
-    if (!variant) continue;
-
-    const product = findProductByVariantId(line.merchandiseId);
-    if (!product) continue;
-
-    // Check if item already exists in cart (ONLY if no custom attributes)
-    // If it has custom attributes, we treat it as a unique item for now to avoid merging different custom designs
-    const existingLineIndex = (line.customImage || line.customTitle) 
-      ? -1 
-      : localCart.lines.findIndex(
-          (cartLine) => cartLine.merchandise.id === line.merchandiseId && !cartLine.customImage
-        );
-
-    if (existingLineIndex >= 0) {
-      // Update quantity
-      const existingLine = localCart.lines[existingLineIndex];
-      if (existingLine) {
-        existingLine.quantity += line.quantity;
-        existingLine.cost.totalAmount.amount = (
-          parseFloat(existingLine.cost.totalAmount.amount) +
-          parseFloat(variant.price.amount) * line.quantity
-        ).toFixed(2);
-      }
-    } else {
-      // Add new line
-      const cartItem = {
-        id: generateId(),
-        quantity: line.quantity,
-        cost: {
-          totalAmount: {
-            amount: (parseFloat(variant.price.amount) * line.quantity).toFixed(2),
-            currencyCode: variant.price.currencyCode
-          }
-        },
-        merchandise: {
-          id: line.merchandiseId,
-          title: variant.title,
-          selectedOptions: variant.selectedOptions,
-          product: {
-            id: product.id,
-            handle: product.handle,
-            title: product.title,
-            featuredImage: product.featuredImage
-          }
-        },
-        customImage: line.customImage, // 👈 Save custom image
-        customTitle: line.customTitle  // 👈 Save custom title
-      };
-      localCart.lines.push(cartItem);
-    }
-  }
-
-  updateCartTotals(localCart);
-  writeCartToFile(localCart);
-  return localCart;
-}
-
-// Remove item from cart
-export async function removeFromLocalCart(lineIds: string[]): Promise<Cart> {
-  let localCart = readCartFromFile();
-  
-  if (!localCart) {
-    return await createLocalCart();
-  }
-
-  localCart.lines = localCart.lines.filter(line => !lineIds.includes(line.id || ''));
-  updateCartTotals(localCart);
-  writeCartToFile(localCart);
-  return localCart;
-}
-
-// limpiar el carrito despúes de hacer el pedido
-export async function clearLocalCart(): Promise<Cart>{
-  try {
-    const fs = require('fs');
-    const filePath = getCartFilePath();
-    if (fs.existsSync(filePath)) {
-      fs.unlinkSync(filePath);
-    }
-  } catch (error) {
-    console.error('Error clearing cart file:', error);
-  }
-  return createLocalCart();
-}
-
-// Update cart item quantity
-export async function updateLocalCart(
-  lines: { id: string; merchandiseId: string; quantity: number }[]
-): Promise<Cart> {
-  let localCart = readCartFromFile();
-
-  if (!localCart) {
-    return await createLocalCart();
-  }
-
-  for (const line of lines) {
-    const lineIndex = localCart.lines.findIndex(cartLine => cartLine.id === line.id);
-    if (lineIndex >= 0) {
-      if (line.quantity <= 0) {
-        localCart.lines.splice(lineIndex, 1);
-      } else {
-        const variant = findVariantById(line.merchandiseId);
-        const cartLine = localCart.lines[lineIndex];
-        if (variant && cartLine) {
-          cartLine.quantity = line.quantity;
-          cartLine.cost.totalAmount.amount = (
-            parseFloat(variant.price.amount) * line.quantity
-          ).toFixed(2);
-        }
-      }
-    }
-  }
-
-  updateCartTotals(localCart);
-  writeCartToFile(localCart);
-  return localCart;
-}
-
-// Get current cart
-export async function getLocalCart(): Promise<Cart | undefined> {
-  const localCart = readCartFromFile();
-  return localCart || undefined;
-}
-
-// Helper function to update cart totals
-function updateCartTotals(cart: Cart) {
-  let subtotal = 0;
-  let totalQuantity = 0;
-
-  for (const line of cart.lines) {
-    subtotal += parseFloat(line.cost.totalAmount.amount);
-    totalQuantity += line.quantity;
-  }
-
-  cart.cost.subtotalAmount.amount = subtotal.toFixed(2);
-  cart.cost.totalAmount.amount = subtotal.toFixed(2); // No taxes for now
-  cart.totalQuantity = totalQuantity;
 }
 
 // Helper function to find variant by ID
@@ -223,6 +29,149 @@ function findProductByVariantId(variantId: string) {
     if (variant) return product;
   }
   return null;
+}
+
+// Helper function to update cart totals
+function updateCartTotals(cart: Cart) {
+  let subtotal = 0;
+  let totalQuantity = 0;
+
+  for (const line of cart.lines) {
+    subtotal += parseFloat(line.cost.totalAmount.amount);
+    totalQuantity += line.quantity;
+  }
+
+  cart.cost.subtotalAmount.amount = subtotal.toFixed(2);
+  cart.cost.totalAmount.amount = subtotal.toFixed(2); // No taxes for now
+  cart.totalQuantity = totalQuantity;
+}
+
+// Create a new empty cart
+export async function createLocalCart(): Promise<Cart> {
+  const cart: Cart = {
+    id: generateId(),
+    checkoutUrl: '/checkout',
+    cost: {
+      subtotalAmount: { amount: '0.00', currencyCode: 'USD' },
+      totalAmount: { amount: '0.00', currencyCode: 'USD' },
+      totalTaxAmount: { amount: '0.00', currencyCode: 'USD' }
+    },
+    lines: [],
+    totalQuantity: 0
+  };
+  
+  return cart;
+}
+
+// Build full Cart object from cookie data
+export async function getLocalCart(): Promise<Cart | undefined> {
+  const cookieCart = await getCartFromCookie();
+  
+  if (cookieCart.items.length === 0) {
+    return undefined;
+  }
+
+  const cart: Cart = {
+    id: generateId(),
+    checkoutUrl: '/checkout',
+    cost: {
+      subtotalAmount: { amount: '0.00', currencyCode: 'USD' },
+      totalAmount: { amount: '0.00', currencyCode: 'USD' },
+      totalTaxAmount: { amount: '0.00', currencyCode: 'USD' }
+    },
+    lines: [],
+    totalQuantity: 0
+  };
+
+  // Reconstruct cart lines from cookie items
+  for (const cookieItem of cookieCart.items) {
+    const variant = findVariantById(cookieItem.merchandiseId);
+    if (!variant) continue;
+
+    const product = findProductByVariantId(cookieItem.merchandiseId);
+    if (!product) continue;
+
+    const cartLine = {
+      id: cookieItem.id,
+      quantity: cookieItem.quantity,
+      cost: {
+        totalAmount: {
+          amount: (parseFloat(variant.price.amount) * cookieItem.quantity).toFixed(2),
+          currencyCode: variant.price.currencyCode
+        }
+      },
+      merchandise: {
+        id: cookieItem.merchandiseId,
+        title: variant.title,
+        selectedOptions: variant.selectedOptions,
+        product: {
+          id: product.id,
+          handle: product.handle,
+          title: product.title,
+          featuredImage: product.featuredImage
+        }
+      },
+      // Note: customImage will be retrieved from localStorage on the client
+      customImageRef: cookieItem.customImageRef,
+      customTitle: cookieItem.customTitle
+    };
+
+    cart.lines.push(cartLine);
+  }
+
+  updateCartTotals(cart);
+  return cart;
+}
+
+// Add item to cart
+export async function addToLocalCart(
+  lines: { merchandiseId: string; quantity: number; customImageRef?: string; customTitle?: string }[]
+): Promise<Cart> {
+  for (const line of lines) {
+    const variant = findVariantById(line.merchandiseId);
+    if (!variant) continue;
+
+    const product = findProductByVariantId(line.merchandiseId);
+    if (!product) continue;
+
+    await addItemToCookie(
+      line.merchandiseId,
+      line.quantity,
+      line.customImageRef,
+      line.customTitle
+    );
+
+    // Note: The actual customImage is already stored in localStorage by the client
+    // using the customImageRef as the key
+  }
+
+  return (await getLocalCart()) || (await createLocalCart());
+}
+
+// Remove item from cart
+export async function removeFromLocalCart(lineIds: string[]): Promise<Cart> {
+  for (const lineId of lineIds) {
+    await removeItemFromCookie(lineId);
+  }
+
+  return (await getLocalCart()) || (await createLocalCart());
+}
+
+// Clear cart after order
+export async function clearLocalCart(): Promise<Cart> {
+  await clearCartCookie();
+  return createLocalCart();
+}
+
+// Update cart item quantity
+export async function updateLocalCart(
+  lines: { id: string; merchandiseId: string; quantity: number }[]
+): Promise<Cart> {
+  for (const line of lines) {
+    await updateItemQuantityInCookie(line.id, line.quantity);
+  }
+
+  return (await getLocalCart()) || (await createLocalCart());
 }
 
 // Get all products

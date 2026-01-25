@@ -34,8 +34,9 @@ export type CartItem = {
     }[];
     product: CartProduct;
   };
-  customImage?: string; // 👈 Added
-  customTitle?: string; // 👈 Added
+  customImage?: string; // 👈 Actual base64 image (client-side only)
+  customImageRef?: string; // 👈 Reference to localStorage key (from server)
+  customTitle?: string; // 👈 Custom product title
 };
 
 export type Collection = ShopifyCollection & {
