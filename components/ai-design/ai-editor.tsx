@@ -1,6 +1,7 @@
 "use client";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Menu, ShoppingBag, X } from "lucide-react";
 import React from "react";
 import { useKeyboardShortcuts } from "../../hooks/useKeyboardShortcuts";
 import { useAppStore } from "../../storeIA/useAppStore";
@@ -25,11 +26,14 @@ function AIEditorContent() {
   const { showPromptPanel, setShowPromptPanel, showHistory, setShowHistory } =
     useAppStore();
 
+  const [isMobile, setIsMobile] = React.useState(false);
+
   // Set mobile defaults on mount
   React.useEffect(() => {
     const checkMobile = () => {
-      const isMobile = window.innerWidth < 768;
-      if (isMobile) {
+      const mobile = window.innerWidth < 768;
+      setIsMobile(mobile);
+      if (mobile) {
         setShowPromptPanel(false);
         setShowHistory(false);
       }
@@ -41,25 +45,96 @@ function AIEditorContent() {
   }, [setShowPromptPanel, setShowHistory]);
 
   return (
-    <div className="h-full bg-gray-900 text-gray-100 flex flex-col font-sans">
+    <div className="h-full bg-gray-900 text-gray-100 flex flex-col font-sans relative">
       <Header />
 
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex-1 flex overflow-hidden relative">
+        {/* Panel izquierdo - Prompt Composer */}
+        {/* En móvil: overlay absoluto. En desktop: lateral normal */}
         <div
           className={cn(
-            "flex-shrink-0 transition-all duration-300",
-            !showPromptPanel && "w-8",
+            "flex-shrink-0 transition-all duration-300 z-20",
+            isMobile &&
+              showPromptPanel &&
+              "absolute inset-y-0 left-0 shadow-2xl",
+            isMobile && !showPromptPanel && "hidden",
+            !isMobile && !showPromptPanel && "w-8",
           )}
         >
           <PromptComposer />
         </div>
+
+        {/* Overlay oscuro en móvil cuando hay panel abierto */}
+        {isMobile && (showPromptPanel || showHistory) && (
+          <div
+            className="absolute inset-0 bg-black/50 z-10"
+            onClick={() => {
+              setShowPromptPanel(false);
+              setShowHistory(false);
+            }}
+          />
+        )}
+
+        {/* Canvas central */}
         <div className="flex-1 min-w-0">
           <ImageCanvas />
         </div>
-        <div className="flex-shrink-0">
+
+        {/* Panel derecho - History */}
+        {/* En móvil: overlay absoluto. En desktop: lateral normal */}
+        <div
+          className={cn(
+            "flex-shrink-0 transition-all duration-300 z-20",
+            isMobile && showHistory && "absolute inset-y-0 right-0 shadow-2xl",
+            isMobile && !showHistory && "hidden",
+          )}
+        >
           <HistoryPanel />
         </div>
       </div>
+
+      {/* Botones flotantes para móvil */}
+      {isMobile && (
+        <div className="absolute bottom-4 left-0 right-0 flex justify-between px-4 z-30 pointer-events-none">
+          {/* Botón para abrir Prompt */}
+          <button
+            onClick={() => {
+              setShowHistory(false);
+              setShowPromptPanel(!showPromptPanel);
+            }}
+            className={cn(
+              "pointer-events-auto w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-all",
+              showPromptPanel
+                ? "bg-yellow-500 text-gray-900"
+                : "bg-gray-800 text-white border border-gray-700",
+            )}
+          >
+            {showPromptPanel ? (
+              <X className="h-5 w-5" />
+            ) : (
+              <Menu className="h-5 w-5" />
+            )}
+          </button>
+
+          {/* Botón para abrir Historial/Comprar */}
+          <button
+            onClick={() => {
+              setShowPromptPanel(false);
+              setShowHistory(!showHistory);
+            }}
+            className={cn(
+              "pointer-events-auto w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-all",
+              showHistory ? "bg-blue-500 text-white" : "bg-blue-600 text-white",
+            )}
+          >
+            {showHistory ? (
+              <X className="h-5 w-5" />
+            ) : (
+              <ShoppingBag className="h-5 w-5" />
+            )}
+          </button>
+        </div>
+      )}
     </div>
   );
 }

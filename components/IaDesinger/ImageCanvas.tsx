@@ -1,9 +1,17 @@
-import { Download, Eraser, Eye, EyeOff, RotateCcw, ZoomIn, ZoomOut } from 'lucide-react';
-import React, { useEffect, useRef, useState } from 'react';
-import { Image as KonvaImage, Layer, Line, Stage } from 'react-konva';
-import { useAppStore } from 'storeIA/useAppStore';
-import { cn } from '../../utils/cn';
-import { Button } from './ui/Button';
+import {
+  Download,
+  Eraser,
+  Eye,
+  EyeOff,
+  RotateCcw,
+  ZoomIn,
+  ZoomOut,
+} from "lucide-react";
+import React, { useEffect, useRef, useState } from "react";
+import { Image as KonvaImage, Layer, Line, Stage } from "react-konva";
+import { useAppStore } from "storeIA/useAppStore";
+import { cn } from "../../utils/cn";
+import { Button } from "./ui/Button";
 
 export const ImageCanvas: React.FC = () => {
   const {
@@ -20,7 +28,7 @@ export const ImageCanvas: React.FC = () => {
     selectedTool,
     isGenerating,
     brushSize,
-    setBrushSize
+    setBrushSize,
   } = useAppStore();
 
   const stageRef = useRef<any>(null);
@@ -35,21 +43,21 @@ export const ImageCanvas: React.FC = () => {
       const img = new window.Image();
       img.onload = () => {
         setImage(img);
-        
+
         // Only auto-fit if this is a new image (no existing zoom/pan state)
         if (canvasZoom === 1 && canvasPan.x === 0 && canvasPan.y === 0) {
           // Auto-fit image to canvas
           const isMobile = window.innerWidth < 768;
           const padding = isMobile ? 0.9 : 0.8; // Use more of the screen on mobile
-          
+
           const scaleX = (stageSize.width * padding) / img.width;
           const scaleY = (stageSize.height * padding) / img.height;
-          
+
           const maxZoom = isMobile ? 0.3 : 0.8;
           const optimalZoom = Math.min(scaleX, scaleY, maxZoom);
-          
+
           setCanvasZoom(optimalZoom);
-          
+
           // Center the image
           setCanvasPan({ x: 0, y: 0 });
         }
@@ -58,68 +66,85 @@ export const ImageCanvas: React.FC = () => {
     } else {
       setImage(null);
     }
-  }, [canvasImage, stageSize, setCanvasZoom, setCanvasPan, canvasZoom, canvasPan]);
+  }, [
+    canvasImage,
+    stageSize,
+    setCanvasZoom,
+    setCanvasPan,
+    canvasZoom,
+    canvasPan,
+  ]);
 
   // Handle stage resize
   useEffect(() => {
     const updateSize = () => {
-      const container = document.getElementById('canvas-container');
+      const container = document.getElementById("canvas-container");
       if (container) {
         setStageSize({
           width: container.offsetWidth,
-          height: container.offsetHeight
+          height: container.offsetHeight,
         });
       }
     };
 
     updateSize();
-    window.addEventListener('resize', updateSize);
-    return () => window.removeEventListener('resize', updateSize);
+    window.addEventListener("resize", updateSize);
+    return () => window.removeEventListener("resize", updateSize);
   }, []);
 
   const handleMouseDown = (e: any) => {
-    if (selectedTool !== 'mask' || !image) return;
-    
+    if (selectedTool !== "mask" || !image) return;
+
     setIsDrawing(true);
     const stage = e.target.getStage();
     const pos = stage.getPointerPosition();
-    
+
     // Use Konva's getRelativePointerPosition for accurate coordinates
     const relativePos = stage.getRelativePointerPosition();
-    
+
     // Calculate image bounds on the stage
     const imageX = (stageSize.width / canvasZoom - image.width) / 2;
     const imageY = (stageSize.height / canvasZoom - image.height) / 2;
-    
+
     // Convert to image-relative coordinates
     const relativeX = relativePos.x - imageX;
     const relativeY = relativePos.y - imageY;
-    
+
     // Check if click is within image bounds
-    if (relativeX >= 0 && relativeX <= image.width && relativeY >= 0 && relativeY <= image.height) {
+    if (
+      relativeX >= 0 &&
+      relativeX <= image.width &&
+      relativeY >= 0 &&
+      relativeY <= image.height
+    ) {
       setCurrentStroke([relativeX, relativeY]);
     }
   };
 
   const handleMouseMove = (e: any) => {
-    if (!isDrawing || selectedTool !== 'mask' || !image) return;
-    
+    if (!isDrawing || selectedTool !== "mask" || !image) return;
+
     const stage = e.target.getStage();
     const pos = stage.getPointerPosition();
-    
+
     // Use Konva's getRelativePointerPosition for accurate coordinates
     const relativePos = stage.getRelativePointerPosition();
-    
+
     // Calculate image bounds on the stage
     const imageX = (stageSize.width / canvasZoom - image.width) / 2;
     const imageY = (stageSize.height / canvasZoom - image.height) / 2;
-    
+
     // Convert to image-relative coordinates
     const relativeX = relativePos.x - imageX;
     const relativeY = relativePos.y - imageY;
-    
+
     // Check if within image bounds
-    if (relativeX >= 0 && relativeX <= image.width && relativeY >= 0 && relativeY <= image.height) {
+    if (
+      relativeX >= 0 &&
+      relativeX <= image.width &&
+      relativeY >= 0 &&
+      relativeY <= image.height
+    ) {
       setCurrentStroke([...currentStroke, relativeX, relativeY]);
     }
   };
@@ -130,13 +155,13 @@ export const ImageCanvas: React.FC = () => {
       setCurrentStroke([]);
       return;
     }
-    
+
     setIsDrawing(false);
     addBrushStroke({
       id: `stroke-${Date.now()}`,
       points: currentStroke,
       brushSize,
-      color: '#FFFFFF', // Default white color for mask
+      color: "#FFFFFF", // Default white color for mask
     });
     setCurrentStroke([]);
   };
@@ -154,7 +179,7 @@ export const ImageCanvas: React.FC = () => {
       const scaleY = (stageSize.height * padding) / image.height;
       const maxZoom = isMobile ? 0.3 : 0.8;
       const optimalZoom = Math.min(scaleX, scaleY, maxZoom);
-      
+
       setCanvasZoom(optimalZoom);
       setCanvasPan({ x: 0, y: 0 });
     }
@@ -162,8 +187,8 @@ export const ImageCanvas: React.FC = () => {
 
   const handleDownload = () => {
     if (canvasImage) {
-      if (canvasImage.startsWith('data:')) {
-        const link = document.createElement('a');
+      if (canvasImage.startsWith("data:")) {
+        const link = document.createElement("a");
         link.href = canvasImage;
         link.download = `nano-banana-${Date.now()}.png`;
         document.body.appendChild(link);
@@ -176,29 +201,44 @@ export const ImageCanvas: React.FC = () => {
   return (
     <div className="flex flex-col h-full">
       {/* Toolbar */}
-      <div className="p-3 border-b border-gray-800 bg-gray-950">
-        <div className="flex items-center justify-between">
+      <div className="p-2 md:p-3 border-b border-gray-800 bg-gray-950">
+        <div className="flex items-center justify-between gap-2">
           {/* Left side - Zoom controls */}
-          <div className="flex items-center space-x-2">
-            <Button variant="outline" size="sm" onClick={() => handleZoom(-0.1)}>
-              <ZoomOut className="h-4 w-4" />
+          <div className="flex items-center space-x-1 md:space-x-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handleZoom(-0.1)}
+              className="h-8 w-8 p-0"
+            >
+              <ZoomOut className="h-3 w-3 md:h-4 md:w-4" />
             </Button>
-            <span className="text-sm text-gray-400 min-w-[60px] text-center">
+            <span className="text-xs md:text-sm text-gray-400 min-w-[40px] md:min-w-[60px] text-center">
               {Math.round(canvasZoom * 100)}%
             </span>
-            <Button variant="outline" size="sm" onClick={() => handleZoom(0.1)}>
-              <ZoomIn className="h-4 w-4" />
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handleZoom(0.1)}
+              className="h-8 w-8 p-0"
+            >
+              <ZoomIn className="h-3 w-3 md:h-4 md:w-4" />
             </Button>
-            <Button variant="outline" size="sm" onClick={handleReset}>
-              <RotateCcw className="h-4 w-4" />
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleReset}
+              className="h-8 w-8 p-0 hidden sm:flex"
+            >
+              <RotateCcw className="h-3 w-3 md:h-4 md:w-4" />
             </Button>
           </div>
 
           {/* Right side - Tools and actions */}
-          <div className="flex items-center space-x-2">
-            {selectedTool === 'mask' && (
+          <div className="flex items-center space-x-1 md:space-x-2">
+            {selectedTool === "mask" && (
               <>
-                <div className="flex items-center space-x-2 mr-2">
+                <div className="hidden sm:flex items-center space-x-2 mr-2">
                   <span className="text-xs text-gray-400">Pincel:</span>
                   <input
                     type="range"
@@ -206,7 +246,7 @@ export const ImageCanvas: React.FC = () => {
                     max="50"
                     value={brushSize}
                     onChange={(e) => setBrushSize(parseInt(e.target.value))}
-                    className="w-16 h-2 bg-gray-800 rounded-lg appearance-none cursor-pointer slider"
+                    className="w-12 md:w-16 h-2 bg-gray-800 rounded-lg appearance-none cursor-pointer slider"
                   />
                   <span className="text-xs text-gray-400 w-6">{brushSize}</span>
                 </div>
@@ -215,26 +255,39 @@ export const ImageCanvas: React.FC = () => {
                   size="sm"
                   onClick={clearBrushStrokes}
                   disabled={brushStrokes.length === 0}
+                  className="h-8 w-8 p-0"
                 >
-                  <Eraser className="h-4 w-4" />
+                  <Eraser className="h-3 w-3 md:h-4 md:w-4" />
                 </Button>
               </>
             )}
-            
+
             <Button
               variant="outline"
               size="sm"
               onClick={() => setShowMasks(!showMasks)}
-              className={cn(showMasks && 'bg-yellow-400/10 border-yellow-400/50')}
+              className={cn(
+                "h-8 p-2",
+                showMasks && "bg-yellow-400/10 border-yellow-400/50",
+              )}
             >
-              {showMasks ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
-              <span className="hidden sm:inline ml-2">Máscaras</span>
+              {showMasks ? (
+                <Eye className="h-3 w-3 md:h-4 md:w-4" />
+              ) : (
+                <EyeOff className="h-3 w-3 md:h-4 md:w-4" />
+              )}
+              <span className="hidden md:inline ml-2">Máscaras</span>
             </Button>
-            
+
             {canvasImage && (
-              <Button variant="secondary" size="sm" onClick={handleDownload}>
-                <Download className="h-4 w-4 mr-2" />
-                <span className="hidden sm:inline">Descargar</span>
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={handleDownload}
+                className="h-8 p-2"
+              >
+                <Download className="h-3 w-3 md:h-4 md:w-4" />
+                <span className="hidden sm:inline ml-2">Descargar</span>
               </Button>
             )}
           </div>
@@ -242,8 +295,8 @@ export const ImageCanvas: React.FC = () => {
       </div>
 
       {/* Canvas Area */}
-      <div 
-        id="canvas-container" 
+      <div
+        id="canvas-container"
         className="flex-1 relative overflow-hidden bg-gray-800"
       >
         {!image && !isGenerating && (
@@ -254,10 +307,9 @@ export const ImageCanvas: React.FC = () => {
                 Bienvenido al Editor de IA Monkya
               </h2>
               <p className="text-gray-500 max-w-md">
-                {selectedTool === 'generate' 
-                  ? 'Comienza describiendo lo que quieres crear en el cuadro de prompt'
-                  : 'Sube una imagen para comenzar a editar'
-                }
+                {selectedTool === "generate"
+                  ? "Comienza describiendo lo que quieres crear en el cuadro de prompt"
+                  : "Sube una imagen para comenzar a editar"}
               </p>
             </div>
           </div>
@@ -280,18 +332,18 @@ export const ImageCanvas: React.FC = () => {
           scaleY={canvasZoom}
           x={canvasPan.x * canvasZoom}
           y={canvasPan.y * canvasZoom}
-          draggable={selectedTool !== 'mask'}
+          draggable={selectedTool !== "mask"}
           onDragEnd={(e) => {
-            setCanvasPan({ 
-              x: e.target.x() / canvasZoom, 
-              y: e.target.y() / canvasZoom 
+            setCanvasPan({
+              x: e.target.x() / canvasZoom,
+              y: e.target.y() / canvasZoom,
             });
           }}
           onMouseDown={handleMouseDown}
           onMousemove={handleMouseMove}
           onMouseup={handleMouseUp}
-          style={{ 
-            cursor: selectedTool === 'mask' ? 'crosshair' : 'default' 
+          style={{
+            cursor: selectedTool === "mask" ? "crosshair" : "default",
           }}
         >
           <Layer>
@@ -302,24 +354,25 @@ export const ImageCanvas: React.FC = () => {
                 y={(stageSize.height / canvasZoom - image.height) / 2}
               />
             )}
-            
+
             {/* Brush Strokes */}
-            {showMasks && brushStrokes.map((stroke) => (
-              <Line
-                key={stroke.id}
-                points={stroke.points}
-                stroke="#A855F7"
-                strokeWidth={stroke.brushSize}
-                tension={0.5}
-                lineCap="round"
-                lineJoin="round"
-                globalCompositeOperation="source-over"
-                opacity={0.6}
-                x={(stageSize.width / canvasZoom - (image?.width || 0)) / 2}
-                y={(stageSize.height / canvasZoom - (image?.height || 0)) / 2}
-              />
-            ))}
-            
+            {showMasks &&
+              brushStrokes.map((stroke) => (
+                <Line
+                  key={stroke.id}
+                  points={stroke.points}
+                  stroke="#A855F7"
+                  strokeWidth={stroke.brushSize}
+                  tension={0.5}
+                  lineCap="round"
+                  lineJoin="round"
+                  globalCompositeOperation="source-over"
+                  opacity={0.6}
+                  x={(stageSize.width / canvasZoom - (image?.width || 0)) / 2}
+                  y={(stageSize.height / canvasZoom - (image?.height || 0)) / 2}
+                />
+              ))}
+
             {/* Current stroke being drawn */}
             {isDrawing && currentStroke.length > 2 && (
               <Line
@@ -344,13 +397,16 @@ export const ImageCanvas: React.FC = () => {
         <div className="flex items-center justify-between text-xs text-gray-500">
           <div className="flex items-center space-x-4">
             {brushStrokes.length > 0 && (
-              <span className="text-yellow-400">{brushStrokes.length} brush stroke{brushStrokes.length !== 1 ? 's' : ''}</span>
+              <span className="text-yellow-400">
+                {brushStrokes.length} trazo
+                {brushStrokes.length !== 1 ? "s" : ""} de pincel
+              </span>
             )}
           </div>
-          
+
           <div className="flex items-center space-x-2">
             <span className="text-xs text-gray-500">
-              © 2025 Mark Fulton - 
+              © 2025 Mark Fulton -
               <a
                 href="https://www.reinventing.ai/"
                 target="_blank"
@@ -362,7 +418,9 @@ export const ImageCanvas: React.FC = () => {
             </span>
             <span className="text-gray-600 hidden md:inline">•</span>
             <span className="text-yellow-400 hidden md:inline">⚡</span>
-            <span className="hidden md:inline">Powered by Gemini 2.5 Flash Image</span>
+            <span className="hidden md:inline">
+              Impulsado por Gemini 2.5 Flash Image
+            </span>
           </div>
         </div>
       </div>
