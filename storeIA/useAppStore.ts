@@ -2,6 +2,26 @@ import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 import { BrushStroke, Edit, Generation, Project } from '../types';
 
+// Tipos para configuración de producto
+export type ProductType = 'polo' | 'polera';
+export type ProductColor = 'verde-petroleo' | 'negro' | 'rojo' | 'blanco';
+export type NeckType = 'v' | 'circular';
+export type MaterialType = 'algodon-100' | 'pima';
+export type DesignPosition = 'espalda-superior' | 'espalda-centro' | 'espalda-inferior' | 'espalda-completo' | 'frente-superior' | 'frente-centro' | 'frente-inferior' | 'frente-completo' | 'hombro-izquierdo' | 'hombro-derecho';
+
+export interface ProductConfig {
+  type: ProductType;
+  color: ProductColor;
+  neckType: NeckType;
+  material: MaterialType;
+}
+
+export interface DesignConfig {
+  style: string;
+  positions: DesignPosition[];
+  sameDesignForAll: boolean; // Si tiene múltiples posiciones, ¿usar el mismo diseño?
+}
+
 interface AppState {
   // Current project
   currentProject: Project | null;
@@ -36,6 +56,16 @@ interface AppState {
   
   // UI state
   selectedTool: 'generate' | 'edit' | 'mask';
+  
+  // Product configuration
+  productConfig: ProductConfig;
+  designConfig: DesignConfig;
+  
+  // Actions for product config
+  setProductConfig: (config: Partial<ProductConfig>) => void;
+  setDesignConfig: (config: Partial<DesignConfig>) => void;
+  toggleDesignPosition: (position: DesignPosition) => void;
+  resetProductConfig: () => void;
   
   // Actions
   setCurrentProject: (project: Project | null) => void;
@@ -109,6 +139,19 @@ export const useAppStore = create<AppState>()(
 
         finalProductImage: null,
         finalProductTitle: null,
+
+        // Product configuration defaults
+        productConfig: {
+          type: 'polo',
+          color: 'blanco',
+          neckType: 'circular',
+          material: 'algodon-100',
+        },
+        designConfig: {
+          style: 'minimalista',
+          positions: ['frente-centro'],
+          sameDesignForAll: true,
+        },
         
         // Actions
         setCurrentProject: (project) => set({ currentProject: project }),
@@ -170,6 +213,37 @@ export const useAppStore = create<AppState>()(
 
         setFinalProductImage: (url) => set({ finalProductImage: url }),
         setFinalProductTitle: (title) => set({ finalProductTitle: title }),
+
+        // Product config actions
+        setProductConfig: (config) => set((state) => ({
+          productConfig: { ...state.productConfig, ...config }
+        })),
+        setDesignConfig: (config) => set((state) => ({
+          designConfig: { ...state.designConfig, ...config }
+        })),
+        toggleDesignPosition: (position) => set((state) => {
+          const positions = state.designConfig.positions;
+          const exists = positions.includes(position);
+          const newPositions = exists
+            ? positions.filter(p => p !== position)
+            : positions.length < 3 ? [...positions, position] : positions;
+          return {
+            designConfig: { ...state.designConfig, positions: newPositions }
+          };
+        }),
+        resetProductConfig: () => set({
+          productConfig: {
+            type: 'polo',
+            color: 'blanco',
+            neckType: 'circular',
+            material: 'algodon-100',
+          },
+          designConfig: {
+            style: 'minimalista',
+            positions: ['frente-centro'],
+            sameDesignForAll: true,
+          },
+        }),
       }),
       {
         name: 'nano-banana-storage',
