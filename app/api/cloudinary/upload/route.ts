@@ -1,0 +1,129 @@
+
+import { v2 as cloudinary } from "cloudinary";
+import { NextResponse } from "next/server";
+
+// Configurar Cloudinary con las credenciales del servidor
+// Estas variables NUNCA se exponen al cliente (no tienen NEXT_PUBLIC_)
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+/**
+ * Interface para la respuesta de subida exitosa
+ */
+interface UploadSuccessResponse {
+  success: true;
+  url: string;
+  publicId: string;
+  width: number;
+  height: number;
+  format: string;
+  bytes: number;
+}
+
+/**
+ * Interface para la respuesta de error
+ */
+interface UploadErrorResponse {
+  success: false;
+  error: string;
+}
+
+type UploadResponse = UploadSuccessResponse | UploadErrorResponse;
+
+export async function POST(
+  request: Request,
+): Promise<NextResponse<UploadResponse>> {
+  try {
+    // 1. Parsear el body de la request
+    const body = await request.json();
+    const { image, folder = "monkya-orders", customName } = body;
+
+    // 2. Validar que se recibió una imagen
+    if (!image) {
+      return NextResponse.json(
+        { success: false, error: "No se proporcionó imagen" },
+        { status: 400 },
+      );
+    }
+
+    // 3. Validar que es un base64 válido
+    if (!image.startsWith("data:image/")) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Formato de imagen inválido. Debe ser base64 con data URL.",
+        },
+        { status: 400 },
+      );
+    }
+
+    // 4. Generar un nombre único para la imagen
+    // Usamos timestamp + random para evitar colisiones
+    const timestamp = Date.now();
+    const randomId = Math.random().toString(36).substring(2, 8);
+    const publicId = customName
+      ? `${customName}-${timestamp}`
+      : `design-${timestamp}-${randomId}`;
+
+    console.log("📤 Subiendo imagen a Cloudinary...", { folder, publicId });
+
+    // 5. Subir a Cloudinary
+    // upload() acepta base64 data URLs directamente
+    const result = await cloudinary.uploader.upload(image, {
+      folder: folder, // Carpeta en Cloudinary para organizar
+      public_id: publicId, // ID único de la imagen
+      resource_type: "image", // Tipo de recurso
+      overwrite: false, // No sobrescribir si existe
+
+      // Optimizaciones automáticas de Cloudinary
+      // Esto ayuda a reducir aún más el tamaño de la imagen
+      transformation: [
+        {
+          quality: "auto:good", // Calidad automática óptima
+          fetch_format: "auto", // Formato óptimo (webp si el browser soporta)
+        },
+      ],
+
+      // Metadata útil para rastrear
+      tags: ["customer-design", "order"],
+      context: {
+        uploaded_at: new Date().toISOString(),
+        source: "checkout",
+      },
+    });
+
+    console.log("✅ Imagen subida exitosamente:", {
+      url: result.secure_url,
+      bytes: result.bytes,
+      format: result.format,
+    });
+
+    // 6. Retornar la respuesta exitosa
+    return NextResponse.json({
+      success: true,
+      url: result.secure_url, // URL HTTPS de la imagen
+      publicId: result.public_id, // ID para referencia futura
+      width: result.width,
+      height: result.height,
+      format: result.format,
+      bytes: result.bytes, // Tamaño final en bytes
+    });
+  } catch (error) {
+    // 7. Manejo de errores
+    console.error("❌ Error subiendo a Cloudinary:", error);
+
+    // Determinar el mensaje de error apropiado
+    const errorMessage =
+      error instanceof Error
+        ? error.message
+        : "Error desconocido al subir imagen";
+
+    return NextResponse.json(
+      { success: false, error: errorMessage },
+      { status: 500 },
+    );
+  }
+}
