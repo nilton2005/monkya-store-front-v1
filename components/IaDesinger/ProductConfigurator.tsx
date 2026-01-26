@@ -1,29 +1,62 @@
-import React from 'react';
-import { useAppStore, ProductColor, ProductType, NeckType, MaterialType } from 'storeIA/useAppStore';
-import { cn } from '../../utils/cn';
-import { Shirt } from 'lucide-react';
+import React from "react";
+import {
+    MaterialType,
+    NeckType,
+    ProductColor,
+    ProductType,
+    useAppStore,
+} from "storeIA/useAppStore";
+import { cn } from "../../utils/cn";
 
 const PRODUCT_TYPES: { value: ProductType; label: string; icon: string }[] = [
-  { value: 'polo', label: 'Polo', icon: '👕' },
-  { value: 'polera', label: 'Polera', icon: '🧥' },
+  { value: "polo", label: "Polo", icon: "👕" },
+  { value: "polera", label: "Polera", icon: "🧥" },
 ];
 
-const COLORS: { value: ProductColor; label: string; hex: string; textColor: string }[] = [
-  { value: 'blanco', label: 'Blanco', hex: '#FFFFFF', textColor: 'text-gray-800' },
-  { value: 'negro', label: 'Negro', hex: '#1a1a1a', textColor: 'text-white' },
-  { value: 'verde-petroleo', label: 'Verde Petróleo', hex: '#006D6F', textColor: 'text-white' },
-  { value: 'rojo', label: 'Rojo', hex: '#DC2626', textColor: 'text-white' },
+const COLORS: {
+  value: ProductColor;
+  label: string;
+  hex: string;
+  textColor: string;
+}[] = [
+  {
+    value: "blanco",
+    label: "Blanco",
+    hex: "#FFFFFF",
+    textColor: "text-gray-800",
+  },
+  { value: "negro", label: "Negro", hex: "#1a1a1a", textColor: "text-white" },
+  {
+    value: "verde-petroleo",
+    label: "Verde Petróleo",
+    hex: "#006D6F",
+    textColor: "text-white",
+  },
+  { value: "rojo", label: "Rojo", hex: "#DC2626", textColor: "text-white" },
 ];
 
 const NECK_TYPES: { value: NeckType; label: string; description: string }[] = [
-  { value: 'circular', label: 'Circular', description: 'Cuello redondo clásico' },
-  { value: 'v', label: 'Cuello V', description: 'Cuello en forma de V' },
+  {
+    value: "circular",
+    label: "Circular",
+    description: "Cuello redondo clásico",
+  },
+  { value: "v", label: "Cuello V", description: "Cuello en forma de V" },
 ];
 
-const MATERIALS: { value: MaterialType; label: string; description: string }[] = [
-  { value: 'algodon-100', label: 'Algodón 100%', description: 'Suave y transpirable' },
-  { value: 'pima', label: 'Algodón Pima', description: 'Premium, extra suave' },
-];
+const MATERIALS: { value: MaterialType; label: string; description: string }[] =
+  [
+    {
+      value: "algodon-100",
+      label: "Algodón 100%",
+      description: "Suave y transpirable",
+    },
+    {
+      value: "pima",
+      label: "Algodón Pima",
+      description: "Premium, extra suave",
+    },
+  ];
 
 export const ProductConfigurator: React.FC = () => {
   const { productConfig, setProductConfig } = useAppStore();
@@ -41,10 +74,10 @@ export const ProductConfigurator: React.FC = () => {
               key={type.value}
               onClick={() => setProductConfig({ type: type.value })}
               className={cn(
-                'flex items-center justify-center gap-2 p-3 rounded-lg border transition-all duration-200',
+                "flex items-center justify-center gap-2 p-3 rounded-lg border transition-all duration-200",
                 productConfig.type === type.value
-                  ? 'bg-yellow-400/10 border-yellow-400/50 text-yellow-400'
-                  : 'bg-gray-900 border-gray-700 text-gray-400 hover:bg-gray-800 hover:text-gray-300'
+                  ? "bg-yellow-400/10 border-yellow-400/50 text-yellow-400"
+                  : "bg-gray-900 border-gray-700 text-gray-400 hover:bg-gray-800 hover:text-gray-300",
               )}
             >
               <span className="text-xl">{type.icon}</span>
@@ -65,10 +98,10 @@ export const ProductConfigurator: React.FC = () => {
               key={color.value}
               onClick={() => setProductConfig({ color: color.value })}
               className={cn(
-                'relative flex flex-col items-center p-2 rounded-lg border transition-all duration-200',
+                "relative flex flex-col items-center p-2 rounded-lg border transition-all duration-200",
                 productConfig.color === color.value
-                  ? 'border-yellow-400 ring-2 ring-yellow-400/30'
-                  : 'border-gray-700 hover:border-gray-500'
+                  ? "border-yellow-400 ring-2 ring-yellow-400/30"
+                  : "border-gray-700 hover:border-gray-500",
               )}
             >
               <div
@@ -92,16 +125,20 @@ export const ProductConfigurator: React.FC = () => {
               key={neck.value}
               onClick={() => setProductConfig({ neckType: neck.value })}
               className={cn(
-                'flex flex-col items-start p-3 rounded-lg border transition-all duration-200 text-left',
+                "flex flex-col items-start p-3 rounded-lg border transition-all duration-200 text-left",
                 productConfig.neckType === neck.value
-                  ? 'bg-yellow-400/10 border-yellow-400/50'
-                  : 'bg-gray-900 border-gray-700 hover:bg-gray-800'
+                  ? "bg-yellow-400/10 border-yellow-400/50"
+                  : "bg-gray-900 border-gray-700 hover:bg-gray-800",
               )}
             >
-              <span className={cn(
-                'text-sm font-medium',
-                productConfig.neckType === neck.value ? 'text-yellow-400' : 'text-gray-300'
-              )}>
+              <span
+                className={cn(
+                  "text-sm font-medium",
+                  productConfig.neckType === neck.value
+                    ? "text-yellow-400"
+                    : "text-gray-300",
+                )}
+              >
                 {neck.label}
               </span>
               <span className="text-xs text-gray-500">{neck.description}</span>
@@ -121,19 +158,25 @@ export const ProductConfigurator: React.FC = () => {
               key={material.value}
               onClick={() => setProductConfig({ material: material.value })}
               className={cn(
-                'flex flex-col items-start p-3 rounded-lg border transition-all duration-200 text-left',
+                "flex flex-col items-start p-3 rounded-lg border transition-all duration-200 text-left",
                 productConfig.material === material.value
-                  ? 'bg-yellow-400/10 border-yellow-400/50'
-                  : 'bg-gray-900 border-gray-700 hover:bg-gray-800'
+                  ? "bg-yellow-400/10 border-yellow-400/50"
+                  : "bg-gray-900 border-gray-700 hover:bg-gray-800",
               )}
             >
-              <span className={cn(
-                'text-sm font-medium',
-                productConfig.material === material.value ? 'text-yellow-400' : 'text-gray-300'
-              )}>
+              <span
+                className={cn(
+                  "text-sm font-medium",
+                  productConfig.material === material.value
+                    ? "text-yellow-400"
+                    : "text-gray-300",
+                )}
+              >
                 {material.label}
               </span>
-              <span className="text-xs text-gray-500">{material.description}</span>
+              <span className="text-xs text-gray-500">
+                {material.description}
+              </span>
             </button>
           ))}
         </div>

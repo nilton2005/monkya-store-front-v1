@@ -1,27 +1,30 @@
 import {
-  ChevronDown,
-  ChevronLeft,
-  ChevronRight,
-  Edit3,
-  HelpCircle,
-  MousePointer,
-  RotateCcw,
-  Store,
-  Upload,
-  Wand2,
+    ChevronDown,
+    ChevronLeft,
+    ChevronRight,
+    Edit3,
+    HelpCircle,
+    MousePointer,
+    RotateCcw,
+    Store,
+    Upload,
+    Wand2,
 } from "lucide-react";
 import React, { useRef, useState } from "react";
 import { useAppStore } from "storeIA/useAppStore";
 import {
-  useImageEditing,
-  useImageGeneration,
+    useImageEditing,
+    useImageGeneration,
 } from "../../hooks/useImageGeneration";
 import { cn } from "../../utils/cn";
 import { blobToBase64 } from "../../utils/imageUtils";
 import { DesignPositionSelector } from "./DesignPositionSelector";
 import { ProductConfigurator } from "./ProductConfigurator";
+import {
+    buildDesignPrompt,
+    validateDesignPrompt
+} from "./promptBuilder";
 import { PromptHints } from "./PromptHints";
-import { buildDesignPrompt, generateProductTitle, validateDesignPrompt } from "./promptBuilder";
 import { StoreProductModal } from "./StoreProductModal";
 import { StyleSelector } from "./StyleSelector";
 import { Button } from "./ui/Button";
@@ -76,7 +79,7 @@ export const PromptComposer: React.FC = () => {
     // Validar el prompt
     const validation = validateDesignPrompt(currentPrompt);
     if (!validation.valid) {
-      setValidationError(validation.reason || 'Prompt no válido');
+      setValidationError(validation.reason || "Prompt no válido");
       return;
     }
     setValidationError(null);
@@ -90,7 +93,7 @@ export const PromptComposer: React.FC = () => {
         hasReferenceImage: uploadedImages.length > 0,
       });
 
-      console.log('🎨 Prompt final construido:', finalPrompt);
+      console.log("🎨 Prompt final construido:", finalPrompt);
 
       const referenceImages = uploadedImages
         .filter((img) => img.includes("base64,"))
@@ -250,7 +253,7 @@ export const PromptComposer: React.FC = () => {
                   key={tool.id}
                   onClick={() => {
                     setSelectedTool(tool.id);
-                    if (tool.id === 'generate') setCurrentStep(1);
+                    if (tool.id === "generate") setCurrentStep(1);
                   }}
                   className={cn(
                     "flex flex-col items-center p-3 rounded-lg border transition-all duration-200",
@@ -269,17 +272,35 @@ export const PromptComposer: React.FC = () => {
           {/* File Upload para Edit/Mask */}
           <div>
             <label className="text-sm font-medium text-gray-300 mb-1 block">
-              {selectedTool === "edit" ? "Referencias de estilo" : "Subir imagen"}
+              {selectedTool === "edit"
+                ? "Referencias de estilo"
+                : "Subir imagen"}
             </label>
             <p className="text-xs text-gray-500 mb-3">
-              {selectedTool === "mask" ? "Edita una imagen con máscaras" : "Sube una imagen para editar"}
+              {selectedTool === "mask"
+                ? "Edita una imagen con máscaras"
+                : "Sube una imagen para editar"}
             </p>
-            <input ref={fileInputRef} type="file" accept="image/*" onChange={handleFileUpload} className="hidden" />
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleFileUpload}
+              className="hidden"
+            />
             <div className="grid grid-cols-2 gap-2">
-              <Button variant="outline" onClick={() => fileInputRef.current?.click()} className="w-full">
+              <Button
+                variant="outline"
+                onClick={() => fileInputRef.current?.click()}
+                className="w-full"
+              >
                 <Upload className="h-4 w-4 mr-2" /> Subir
               </Button>
-              <Button variant="outline" onClick={() => setShowStoreModal(true)} className="w-full">
+              <Button
+                variant="outline"
+                onClick={() => setShowStoreModal(true)}
+                className="w-full"
+              >
                 <Store className="h-4 w-4 mr-2" /> Tienda
               </Button>
             </div>
@@ -287,7 +308,9 @@ export const PromptComposer: React.FC = () => {
 
           {/* Prompt para edición */}
           <div>
-            <label className="text-sm font-medium text-gray-300 mb-2 block">Describe tus cambios</label>
+            <label className="text-sm font-medium text-gray-300 mb-2 block">
+              Describe tus cambios
+            </label>
             <Textarea
               value={currentPrompt}
               onChange={(e) => setCurrentPrompt(e.target.value)}
@@ -296,16 +319,29 @@ export const PromptComposer: React.FC = () => {
             />
           </div>
 
-          <Button onClick={handleGenerate} disabled={isGenerating || !currentPrompt.trim()} className="w-full h-12">
+          <Button
+            onClick={handleGenerate}
+            disabled={isGenerating || !currentPrompt.trim()}
+            className="w-full h-12"
+          >
             {isGenerating ? (
-              <><div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-900 mr-2" /> Procesando...</>
+              <>
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-900 mr-2" />{" "}
+                Procesando...
+              </>
             ) : (
-              <><Wand2 className="h-4 w-4 mr-2" /> Aplicar Edición</>
+              <>
+                <Wand2 className="h-4 w-4 mr-2" /> Aplicar Edición
+              </>
             )}
           </Button>
         </div>
         <PromptHints open={showHintsModal} onOpenChange={setShowHintsModal} />
-        <StoreProductModal open={showStoreModal} onOpenChange={setShowStoreModal} onSelectImage={handleStoreImageSelect} />
+        <StoreProductModal
+          open={showStoreModal}
+          onOpenChange={setShowStoreModal}
+          onSelectImage={handleStoreImageSelect}
+        />
       </>
     );
   }
@@ -318,11 +354,16 @@ export const PromptComposer: React.FC = () => {
         <div className="p-3 border-b border-gray-800">
           <div className="flex items-center justify-between mb-2">
             <h3 className="text-sm font-medium text-gray-300">Crear Diseño</h3>
-            <Button variant="ghost" size="icon" onClick={() => setShowPromptPanel(false)} className="h-6 w-6">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setShowPromptPanel(false)}
+              className="h-6 w-6"
+            >
               ×
             </Button>
           </div>
-          
+
           {/* Step Indicator */}
           <div className="flex items-center justify-between">
             {[1, 2, 3].map((step) => (
@@ -334,17 +375,19 @@ export const PromptComposer: React.FC = () => {
                     currentStep === step
                       ? "bg-yellow-400 text-gray-900"
                       : currentStep > step
-                      ? "bg-green-500 text-white"
-                      : "bg-gray-800 text-gray-500"
+                        ? "bg-green-500 text-white"
+                        : "bg-gray-800 text-gray-500",
                   )}
                 >
                   {currentStep > step ? "✓" : step}
                 </button>
                 {step < 3 && (
-                  <div className={cn(
-                    "flex-1 h-0.5 mx-2",
-                    currentStep > step ? "bg-green-500" : "bg-gray-800"
-                  )} />
+                  <div
+                    className={cn(
+                      "flex-1 h-0.5 mx-2",
+                      currentStep > step ? "bg-green-500" : "bg-gray-800",
+                    )}
+                  />
                 )}
               </React.Fragment>
             ))}
@@ -380,16 +423,22 @@ export const PromptComposer: React.FC = () => {
             <div className="space-y-4">
               {/* Resumen de configuración */}
               <div className="p-3 bg-gray-900 rounded-lg border border-gray-800">
-                <h4 className="text-xs font-medium text-gray-400 mb-2">Tu configuración:</h4>
+                <h4 className="text-xs font-medium text-gray-400 mb-2">
+                  Tu configuración:
+                </h4>
                 <div className="space-y-1 text-xs">
                   <p className="text-gray-300">
-                    <span className="text-gray-500">Prenda:</span> {productConfig.type === 'polo' ? 'Polo' : 'Polera'} {productConfig.color}
+                    <span className="text-gray-500">Prenda:</span>{" "}
+                    {productConfig.type === "polo" ? "Polo" : "Polera"}{" "}
+                    {productConfig.color}
                   </p>
                   <p className="text-gray-300">
-                    <span className="text-gray-500">Cuello:</span> {productConfig.neckType === 'v' ? 'V' : 'Circular'}
+                    <span className="text-gray-500">Cuello:</span>{" "}
+                    {productConfig.neckType === "v" ? "V" : "Circular"}
                   </p>
                   <p className="text-gray-300">
-                    <span className="text-gray-500">Ubicaciones:</span> {designConfig.positions.length}
+                    <span className="text-gray-500">Ubicaciones:</span>{" "}
+                    {designConfig.positions.length}
                   </p>
                 </div>
               </div>
@@ -402,12 +451,28 @@ export const PromptComposer: React.FC = () => {
                 <p className="text-xs text-gray-500 mb-2">
                   Solo se extraerá el diseño, no los colores
                 </p>
-                <input ref={fileInputRef} type="file" accept="image/*" onChange={handleFileUpload} className="hidden" />
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileUpload}
+                  className="hidden"
+                />
                 <div className="grid grid-cols-2 gap-2">
-                  <Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()} disabled={uploadedImages.length >= 2}>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={uploadedImages.length >= 2}
+                  >
                     <Upload className="h-3 w-3 mr-1" /> Subir
                   </Button>
-                  <Button variant="outline" size="sm" onClick={() => setShowStoreModal(true)} disabled={uploadedImages.length >= 2}>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowStoreModal(true)}
+                    disabled={uploadedImages.length >= 2}
+                  >
                     <Store className="h-3 w-3 mr-1" /> Tienda
                   </Button>
                 </div>
@@ -415,8 +480,17 @@ export const PromptComposer: React.FC = () => {
                   <div className="mt-2 space-y-2">
                     {uploadedImages.map((img, i) => (
                       <div key={i} className="relative">
-                        <img src={img} alt={`Ref ${i+1}`} className="w-full h-16 object-cover rounded border border-gray-700" />
-                        <button onClick={() => removeUploadedImage(i)} className="absolute top-1 right-1 bg-gray-900/80 text-gray-400 hover:text-white rounded-full p-1">×</button>
+                        <img
+                          src={img}
+                          alt={`Ref ${i + 1}`}
+                          className="w-full h-16 object-cover rounded border border-gray-700"
+                        />
+                        <button
+                          onClick={() => removeUploadedImage(i)}
+                          className="absolute top-1 right-1 bg-gray-900/80 text-gray-400 hover:text-white rounded-full p-1"
+                        >
+                          ×
+                        </button>
                       </div>
                     ))}
                   </div>
@@ -429,7 +503,12 @@ export const PromptComposer: React.FC = () => {
                   <label className="text-sm font-medium text-gray-300">
                     Describe tu diseño
                   </label>
-                  <Button variant="ghost" size="icon" onClick={() => setShowHintsModal(true)} className="h-5 w-5">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setShowHintsModal(true)}
+                    className="h-5 w-5"
+                  >
                     <HelpCircle className="h-3 w-3" />
                   </Button>
                 </div>
@@ -446,11 +525,21 @@ export const PromptComposer: React.FC = () => {
                   <p className="text-xs text-red-400 mt-1">{validationError}</p>
                 )}
                 <div className="mt-1 flex items-center text-xs text-gray-500">
-                  <div className={cn(
-                    "h-2 w-2 rounded-full mr-2",
-                    currentPrompt.length < 10 ? "bg-red-500" : currentPrompt.length < 30 ? "bg-yellow-500" : "bg-green-500"
-                  )} />
-                  {currentPrompt.length < 10 ? "Describe tu idea" : currentPrompt.length < 30 ? "Añade más detalles" : "¡Buen detalle!"}
+                  <div
+                    className={cn(
+                      "h-2 w-2 rounded-full mr-2",
+                      currentPrompt.length < 10
+                        ? "bg-red-500"
+                        : currentPrompt.length < 30
+                          ? "bg-yellow-500"
+                          : "bg-green-500",
+                    )}
+                  />
+                  {currentPrompt.length < 10
+                    ? "Describe tu idea"
+                    : currentPrompt.length < 30
+                      ? "Añade más detalles"
+                      : "¡Buen detalle!"}
                 </div>
               </div>
 
@@ -459,18 +548,46 @@ export const PromptComposer: React.FC = () => {
                 onClick={() => setShowAdvanced(!showAdvanced)}
                 className="flex items-center text-xs text-gray-500 hover:text-gray-400"
               >
-                {showAdvanced ? <ChevronDown className="h-3 w-3 mr-1" /> : <ChevronRight className="h-3 w-3 mr-1" />}
+                {showAdvanced ? (
+                  <ChevronDown className="h-3 w-3 mr-1" />
+                ) : (
+                  <ChevronRight className="h-3 w-3 mr-1" />
+                )}
                 Opciones avanzadas
               </button>
               {showAdvanced && (
                 <div className="space-y-3 p-3 bg-gray-900 rounded-lg">
                   <div>
-                    <label className="text-xs text-gray-400 block mb-1">Creatividad: {temperature}</label>
-                    <input type="range" min="0" max="1" step="0.1" value={temperature} onChange={(e) => setTemperature(parseFloat(e.target.value))} className="w-full h-2 bg-gray-800 rounded-lg appearance-none cursor-pointer" />
+                    <label className="text-xs text-gray-400 block mb-1">
+                      Creatividad: {temperature}
+                    </label>
+                    <input
+                      type="range"
+                      min="0"
+                      max="1"
+                      step="0.1"
+                      value={temperature}
+                      onChange={(e) =>
+                        setTemperature(parseFloat(e.target.value))
+                      }
+                      className="w-full h-2 bg-gray-800 rounded-lg appearance-none cursor-pointer"
+                    />
                   </div>
                   <div>
-                    <label className="text-xs text-gray-400 block mb-1">Semilla (opcional)</label>
-                    <input type="number" value={seed || ""} onChange={(e) => setSeed(e.target.value ? parseInt(e.target.value) : null)} placeholder="Aleatorio" className="w-full h-7 px-2 bg-gray-800 border border-gray-700 rounded text-xs text-gray-100" />
+                    <label className="text-xs text-gray-400 block mb-1">
+                      Semilla (opcional)
+                    </label>
+                    <input
+                      type="number"
+                      value={seed || ""}
+                      onChange={(e) =>
+                        setSeed(
+                          e.target.value ? parseInt(e.target.value) : null,
+                        )
+                      }
+                      placeholder="Aleatorio"
+                      className="w-full h-7 px-2 bg-gray-800 border border-gray-700 rounded text-xs text-gray-100"
+                    />
                   </div>
                 </div>
               )}
@@ -483,46 +600,83 @@ export const PromptComposer: React.FC = () => {
           {/* Botones de navegación */}
           <div className="flex gap-2">
             {currentStep > 1 && (
-              <Button variant="outline" onClick={() => setCurrentStep(currentStep - 1)} className="flex-1">
+              <Button
+                variant="outline"
+                onClick={() => setCurrentStep(currentStep - 1)}
+                className="flex-1"
+              >
                 <ChevronLeft className="h-4 w-4 mr-1" /> Atrás
               </Button>
             )}
             {currentStep < TOTAL_STEPS ? (
-              <Button onClick={() => setCurrentStep(currentStep + 1)} className="flex-1">
+              <Button
+                onClick={() => setCurrentStep(currentStep + 1)}
+                className="flex-1"
+              >
                 Siguiente <ChevronRight className="h-4 w-4 ml-1" />
               </Button>
             ) : (
               <Button
                 onClick={handleGenerate}
-                disabled={isGenerating || !currentPrompt.trim() || designConfig.positions.length === 0}
+                disabled={
+                  isGenerating ||
+                  !currentPrompt.trim() ||
+                  designConfig.positions.length === 0
+                }
                 className="flex-1 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-400 hover:to-orange-400"
               >
                 {isGenerating ? (
-                  <><div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-900 mr-2" /> Generando...</>
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-900 mr-2" />{" "}
+                    Generando...
+                  </>
                 ) : (
-                  <><Wand2 className="h-4 w-4 mr-2" /> Generar Diseño</>
+                  <>
+                    <Wand2 className="h-4 w-4 mr-2" /> Generar Diseño
+                  </>
                 )}
               </Button>
             )}
           </div>
 
           {/* Limpiar sesión */}
-          <button onClick={() => setShowClearConfirm(!showClearConfirm)} className="w-full text-xs text-gray-500 hover:text-red-400 flex items-center justify-center py-1">
+          <button
+            onClick={() => setShowClearConfirm(!showClearConfirm)}
+            className="w-full text-xs text-gray-500 hover:text-red-400 flex items-center justify-center py-1"
+          >
             <RotateCcw className="h-3 w-3 mr-1" /> Reiniciar configuración
           </button>
           {showClearConfirm && (
             <div className="p-2 bg-red-900/20 border border-red-800 rounded-lg">
               <p className="text-xs text-gray-300 mb-2">¿Reiniciar todo?</p>
               <div className="flex gap-2">
-                <Button variant="destructive" size="sm" onClick={handleClearSession} className="flex-1 text-xs">Sí</Button>
-                <Button variant="outline" size="sm" onClick={() => setShowClearConfirm(false)} className="flex-1 text-xs">No</Button>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={handleClearSession}
+                  className="flex-1 text-xs"
+                >
+                  Sí
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowClearConfirm(false)}
+                  className="flex-1 text-xs"
+                >
+                  No
+                </Button>
               </div>
             </div>
           )}
         </div>
       </div>
       <PromptHints open={showHintsModal} onOpenChange={setShowHintsModal} />
-      <StoreProductModal open={showStoreModal} onOpenChange={setShowStoreModal} onSelectImage={handleStoreImageSelect} />
+      <StoreProductModal
+        open={showStoreModal}
+        onOpenChange={setShowStoreModal}
+        onSelectImage={handleStoreImageSelect}
+      />
     </>
   );
 };
