@@ -1,63 +1,69 @@
+"use client";
+
 import { AIDesignButton } from "components/ai-design/ai-button";
 import CartModal from "components/cart/modal";
-import LogoSquare from "components/logo-square";
-import { getMenu } from "lib/local-shopify";
-import { Menu } from "lib/shopify/types";
-import Link from "next/link";
-import { Suspense } from "react";
-import MobileMenu from "./mobile-menu";
+import Image from "next/image";
+import { useRef, useEffect } from "react";
+import { animate } from "animejs";
+import bannerMonkya from "../../../assets/bannerMonkya2.webp";
+import { cn } from "utils/cn";
+import { LoginButton } from "./login-button";
 import NavbarClient from "./navbar-client";
-import Search, { SearchSkeleton } from "./search";
+import { NavigationLinks } from "./navigation-links";
+import { MobileMenu } from "./mobile-menu";
 
-const { SITE_NAME } = process.env;
-
-export async function Navbar() {
-  const menu = await getMenu("next-js-frontend-header-menu");
+/**
+ * Navbar Principal - Diseño actualizado
+ *
+ * Características:
+ * - Logo con imagen
+ * - Links de navegación centrados con hover animado
+ * - Imagen animada dentro de cada link al hacer hover
+ * - Navbar se expande automáticamente por flex al aparecer la imagen
+ */
+export function Navbar() {
 
   return (
     <NavbarClient>
-      <nav className="relative flex items-center justify-between p-4 lg:px-6">
-        <div className="block flex-none md:hidden">
-          <Suspense fallback={null}>
-            <MobileMenu menu={menu} />
-          </Suspense>
-        </div>
-        <div className="flex w-full items-center">
-          <div className="flex w-full md:w-1/3">
-            <Link
+      <nav
+        className="relative flex flex-col justify-center px-6 lg:px-8 py-4 transition-all duration-400 ease-out"
+      >
+        <div className="flex items-center justify-between">
+          {/* Logo - Izquierda */}
+          <div className="flex items-center">
+            <a
               href="/"
-              prefetch={true}
-              className="mr-2 flex w-full items-center justify-center md:w-auto lg:mr-6"
+              className="flex items-center gap-2"
+              aria-label="Monkya - Ir a inicio"
             >
-              <LogoSquare />
-              <div className="ml-2 flex-none text-sm font-medium uppercase md:hidden lg:block">
-                {SITE_NAME}
+              <div className="relative h-10 w-auto">
+                <Image
+                  src={bannerMonkya}
+                  alt="Monkya Logo"
+                  width={120}
+                  height={40}
+                  className="h-10 w-auto object-contain"
+                  priority
+                />
               </div>
-            </Link>
-            {menu.length ? (
-              <ul className="hidden gap-6 text-sm md:flex md:items-center">
-                {menu.map((item: Menu) => (
-                  <li key={item.title}>
-                    <Link
-                      href={item.path}
-                      prefetch={true}
-                      className="text-neutral-500 underline-offset-4 hover:text-black hover:underline dark:text-neutral-400 dark:hover:text-neutral-300"
-                    >
-                      {item.title}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            ) : null}
+            </a>
           </div>
-          <div className="hidden justify-center md:flex md:w-1/3">
-            <Suspense fallback={<SearchSkeleton />}>
-              <Search />
-            </Suspense>
+
+          {/* Links de Navegación - Centro */}
+          <div className="hidden md:flex">
+            <NavigationLinks />
           </div>
-          <div className="flex items-center justify-end gap-3 md:w-1/3">
+
+          {/* Acciones - Derecha */}
+          <div className="flex items-center gap-3">
             <AIDesignButton />
+            <LoginButton />
             <CartModal />
+          </div>
+
+          {/* Menú Móvil */}
+          <div className="md:hidden">
+            <MobileMenu />
           </div>
         </div>
       </nav>

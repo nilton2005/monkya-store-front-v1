@@ -65,3 +65,52 @@ export interface PromptHint {
   text: string;
   example: string;
 }
+
+// Hero Component Types
+export interface VideoClip {
+  imgsrc: string;
+  clip: string;
+}
+
+export interface SocialLinkItem {
+  icon: string;
+  href?: string;
+}
+
+export interface HeroData {
+  title: string;
+  subtitle: string;
+  btntext: string;
+  btnHref?: string;
+  img: string;
+  videos?: VideoClip[];
+  sociallinks?: SocialLinkItem[];
+}
+
+// Stories Component Types
+export interface StoryItem {
+  img: string;
+  title: string;
+  text: string;
+  like: string | number;
+  time: string;
+  by: string;
+  btn: string;
+  url: string;
+}
+
+export interface StoriesData {
+  title: string;
+  subtitle?: string;
+  news: StoryItem[];
+}
+
+// FAQ Component Types
+export interface FAQData {
+  title: string;
+  subtitle: string;
+  items: {
+    question: string;
+    answer: string;
+  }[];
+}

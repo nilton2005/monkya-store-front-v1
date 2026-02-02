@@ -56,7 +56,7 @@ export default function CheckoutPage() {
             </p>
             <a
               href="/"
-              className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-3 text-white font-medium hover:bg-blue-700 transition-colors"
+              className="inline-flex items-center gap-2 rounded-lg bg-[#f2cd4e] px-6 py-3 text-[#272512] font-medium hover:bg-[#e5b844] transition-colors"
             >
               <svg
                 className="h-5 w-5"
@@ -271,9 +271,9 @@ export default function CheckoutPage() {
           <div className="lg:col-span-3 order-2 lg:order-1">
             <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl shadow-gray-200/50 dark:shadow-gray-900/50 p-6 md:p-8">
               <div className="flex items-center gap-3 mb-6">
-                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30">
+                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-[#f2cd4e]/20 dark:bg-[#f2cd4e]/10">
                   <svg
-                    className="h-5 w-5 text-blue-600 dark:text-blue-400"
+                    className="h-5 w-5 text-[#f2cd4e] dark:text-[#f2cd4e]"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -307,7 +307,7 @@ export default function CheckoutPage() {
                       setCustomerInfo({ ...customerInfo, name: e.target.value })
                     }
                     placeholder="Ej: Juan Pérez"
-                    className="block w-full rounded-xl border-0 bg-gray-50 dark:bg-gray-700/50 px-4 py-3.5 text-gray-900 dark:text-white ring-1 ring-inset ring-gray-200 dark:ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 transition-all"
+                    className="block w-full rounded-xl border-0 bg-gray-50 dark:bg-gray-700/50 px-4 py-3.5 text-gray-900 dark:text-white ring-1 ring-inset ring-gray-200 dark:ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[#f2cd4e] transition-all"
                     required
                   />
                 </div>
@@ -330,7 +330,7 @@ export default function CheckoutPage() {
                       })
                     }
                     placeholder="Ej: 999 888 777"
-                    className="block w-full rounded-xl border-0 bg-gray-50 dark:bg-gray-700/50 px-4 py-3.5 text-gray-900 dark:text-white ring-1 ring-inset ring-gray-200 dark:ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 transition-all"
+                    className="block w-full rounded-xl border-0 bg-gray-50 dark:bg-gray-700/50 px-4 py-3.5 text-gray-900 dark:text-white ring-1 ring-inset ring-gray-200 dark:ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[#f2cd4e] transition-all"
                     required
                   />
                 </div>

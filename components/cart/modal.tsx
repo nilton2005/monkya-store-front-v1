@@ -249,11 +249,11 @@ function CheckoutButton() {
 
   return (
     <button
-      className="block w-full rounded-full bg-blue-600 p-3 text-center text-sm font-medium text-white opacity-90 hover:opacity-100"
+      className="block w-full rounded-full bg-[#f2cd4e] p-3 text-center text-sm font-medium text-[#272512] opacity-90 hover:opacity-100"
       type="submit"
       disabled={pending}
     >
-      {pending ? <LoadingDots className="bg-white" /> : "Proceder al Pago"}
+      {pending ? <LoadingDots className="bg-[#272512]" /> : "Proceder al Pago"}
     </button>
   );
 }

@@ -30,8 +30,8 @@ export function ProductDescription({ product, isAIProduct }: { product: Product;
         >
           {displayTitle}
         </motion.h1>
-        <motion.div 
-          className="mr-auto w-auto rounded-full bg-blue-600 p-2 text-sm text-white"
+        <motion.div
+          className="mr-auto w-auto rounded-full bg-[#f2cd4e] p-2 text-sm text-[#272512]"
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.4, delay: 0.2, type: 'spring', stiffness: 200 }}

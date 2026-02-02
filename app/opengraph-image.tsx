@@ -1,35 +1,35 @@
-import { ImageResponse } from 'next/og';
+import { ImageResponse } from "next/og";
 
-export const runtime = 'edge';
-export const alt = 'Acme Store';
+export const runtime = "edge";
+export const alt = "Monkya E-commerce Store";
 export const size = {
   width: 1200,
   height: 630,
 };
-export const contentType = 'image/png';
+export const contentType = "image/png";
 
 export default async function Image() {
-  const siteName = process.env.SITE_NAME || 'Acme Store';
-  
+  const siteName = process.env.SITE_NAME || "Monkya E-commerce Store";
+
   return new ImageResponse(
     (
       <div
         style={{
-          background: 'black',
-          width: '100%',
-          height: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
+          background: "black",
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
         }}
       >
         <div
           style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            border: '1px solid #404040',
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            border: "1px solid #404040",
             width: 160,
             height: 160,
             borderRadius: 24,
@@ -45,7 +45,7 @@ export default async function Image() {
             marginTop: 48,
             fontSize: 60,
             fontWeight: 700,
-            color: 'white',
+            color: "white",
           }}
         >
           {siteName}
@@ -54,6 +54,6 @@ export default async function Image() {
     ),
     {
       ...size,
-    }
+    },
   );
 }

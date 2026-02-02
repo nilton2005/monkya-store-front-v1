@@ -1,0 +1,58 @@
+import { StoriesData } from "types";
+
+export const storiesData: StoriesData = {
+  title: "Noticias Monkya",
+  subtitle: "Novedades, tutoriales y actualizaciones de la comunidad",
+  news: [
+    {
+      img: "/images/stories/story-1.webp",
+      title: "Nueva colección con IA",
+      text: "Descubre nuestra nueva línea de diseños generados con inteligencia artificial. Estilos únicos que puedes personalizar a tu gusto.",
+      like: "2.5K",
+      time: "2h",
+      by: "@monkya",
+      btn: "Leer más",
+      url: "/blog/nueva-coleccion",
+    },
+    {
+      img: "/images/stories/story-2.webp",
+      title: "Tutorial: Crea tu primer diseño",
+      text: "Aprende paso a paso cómo usar nuestro editor de IA para crear diseños impresionantes en minutos.",
+      like: "1.8K",
+      time: "5h",
+      by: "@monkya_team",
+      btn: "Ver tutorial",
+      url: "/tutorial/primer-diseno",
+    },
+    {
+      img: "/images/stories/story-3.webp",
+      title: "Nuevos efectos disponibles",
+      text: "Explora los nuevos efectos y filtros que acabamos de agregar a nuestra plataforma.",
+      like: "3.2K",
+      time: "1d",
+      by: "@monkya",
+      btn: "Descubrir",
+      url: "/blog/nuevos-efectos",
+    },
+    {
+      img: "/images/stories/story-4.webp",
+      title: "Concurso de diseños",
+      text: "Participa en nuestro concurso mensual y gana premios exclusivos. ¡Las mejores creaciones serán destacadas!",
+      like: "5.1K",
+      time: "2d",
+      by: "@monkya_community",
+      btn: "Participar",
+      url: "/concurso/mensual",
+    },
+    {
+      img: "/images/stories/story-5.webp",
+      title: "Integración con redes sociales",
+      text: "Ahora puedes compartir tus diseños directamente a tus redes sociales favoritas con un solo clic.",
+      like: "2.9K",
+      time: "3d",
+      by: "@monkya",
+      btn: "Probar ahora",
+      url: "/blog/integracion-social",
+    },
+  ],
+};

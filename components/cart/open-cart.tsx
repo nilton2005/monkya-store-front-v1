@@ -28,7 +28,7 @@ export default function OpenCart({
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0, opacity: 0 }}
             transition={{ type: 'spring', stiffness: 500, damping: 25 }}
-            className="absolute right-0 top-0 -mr-2 -mt-2 h-4 w-4 rounded-sm bg-blue-600 text-[11px] font-medium text-white flex items-center justify-center"
+            className="absolute right-0 top-0 -mr-2 -mt-2 h-4 w-4 rounded-sm bg-[#f2cd4e] text-[11px] font-medium text-[#272512] flex items-center justify-center"
           >
             {quantity}
           </motion.div>

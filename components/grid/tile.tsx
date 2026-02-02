@@ -17,16 +17,18 @@ export function GridTileImage({
     position?: 'bottom' | 'center';
   };
 } & React.ComponentProps<typeof ProductImageFallback>) {
+  const activeStyle = active ? { borderColor: '#f2cd4e', borderWidth: '2px' } : {};
+
   return (
     <div
       className={clsx(
-        'group flex h-full w-full items-center justify-center overflow-hidden rounded-lg border bg-white hover:border-blue-600 dark:bg-black',
+        'group flex h-full w-full items-center justify-center overflow-hidden rounded-lg border bg-white dark:bg-black [&:hover]:border-[#f2cd4e]',
         {
           relative: label,
-          'border-2 border-blue-600': active,
           'border-neutral-200 dark:border-neutral-800': !active
         }
       )}
+      style={activeStyle}
     >
       {props.src ? (
         <ProductImageFallback

@@ -3,6 +3,11 @@
 @plugin "@tailwindcss/container-queries";
 @plugin "@tailwindcss/typography";
 
+:root {
+  --color-monkya-yellow: #f2cd4e;
+  --color-monkya-dark: #272512;
+}
+
 @layer base {
   *,
   ::after,
