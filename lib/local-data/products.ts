@@ -32,7 +32,7 @@ export const localProducts: Product[] = [
     ],
     priceRange: {
       maxVariantPrice: {
-        amount: '25.00',
+        amount: '2500000000000.00',
         currencyCode: 'USD'
       },
       minVariantPrice: {

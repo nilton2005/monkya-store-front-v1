@@ -86,7 +86,7 @@ export const PRODUCTOS: SimpleProduct[] = [
     category: 'hoodie',
     colors: [
       { 
-        name: 'Negro', 
+        name: 'Verde petroleo', 
         code: '#000000',
         images: {
           front: '/images-products/Hoodie/hoodies-void/hoodies-void-man.png',
@@ -97,7 +97,7 @@ export const PRODUCTOS: SimpleProduct[] = [
     sizes: ['S', 'M', 'L', 'XL', 'XXL'],
     tags: ['void', 'urbano', 'minimalista', 'premium'],
     generalImages: {
-      hero: '/images-products/Hoodie/hoodies-void/hoodies-void-man.png'
+      //hero: '/images-products/Hoodie/hoodies-void/hoodies-void-man.png'
     }
   },
   
@@ -159,40 +159,23 @@ export const CATEGORY_CONFIG = {
     defaultTags: ['hoodie', 'sudadera', 'capucha'],
     icon: ''
   },
-  pantalon: {
-    displayName: 'Pantalones',
-    description: 'Pantalones cómodos para cualquier estilo',
-    defaultTags: ['pantalón', 'moda'],
-    icon: '👖'
-  },
-  zapatos: {
-    displayName: 'Zapatos',
-    description: 'Calzado cómodo y con estilo',
-    defaultTags: ['zapatos', 'calzado'],
-    icon: '👟'
-  },
-  accesorios: {
-    displayName: 'Accesorios',
-    description: 'Complementos perfectos para tu outfit',
-    defaultTags: ['accesorios', 'complementos'],
-    icon: '🎒'
-  }
+ 
 };
 
 // 📐 CONFIGURACIÓN GLOBAL
 // =======================
 export const STORE_CONFIG = {
   defaultSizes: ['S', 'M', 'L'],
-  defaultSizeUpcharge: 2,           // $2 extra por tallas L+
-  currency: 'USD',
+  defaultSizeUpcharge: 0,           // $2 extra por tallas L+
+  currency: 'PEN',
   
   // Precios por tallas (se suma al precio base)
   sizePricing: {
     'XS': 0,
     'S': 0,
-    'M': 2,
-    'L': 5,
-    'XL': 8,
-    'XXL': 12
+    'M': 0,
+    'L': 0,
+    'XL': 0,
+    'XXL': 0
   }
 };
