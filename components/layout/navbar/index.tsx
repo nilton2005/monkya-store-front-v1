@@ -7,7 +7,6 @@ import { useRef, useEffect } from "react";
 import { animate } from "animejs";
 import bannerMonkya from "../../../assets/bannerMonkya2.webp";
 import { cn } from "utils/cn";
-import { LoginButton } from "./login-button";
 import NavbarClient from "./navbar-client";
 import { NavigationLinks } from "./navigation-links";
 import { MobileMenu } from "./mobile-menu";
@@ -57,7 +56,6 @@ export function Navbar() {
           {/* Acciones - Derecha */}
           <div className="flex items-center gap-3">
             <AIDesignButton />
-            <LoginButton />
             <CartModal />
           </div>
 

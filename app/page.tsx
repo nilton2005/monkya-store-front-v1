@@ -1,9 +1,5 @@
-import { Hero } from "components/hero";
-import { heroData } from "lib/hero-data";
 import { Carousel } from "components/carousel";
 import { ThreeItemGrid } from "components/grid/three-items";
-import { Stories } from "components/stories";
-import { storiesData } from "lib/stories-data";
 import { FAQ } from "components/faq";
 import { faqData } from "lib/faq-data";
 import Footer from "components/layout/footer";
@@ -20,7 +16,6 @@ export const metadata = {
 export default function HomePage() {
   return (
     <>
-      <Hero data={heroData} />
       <ThreeItemGrid />
       <Carousel />
       <div className="flex justify-center py-12">
@@ -31,7 +26,6 @@ export default function HomePage() {
           Ver toda la tienda >>
         </Link>
       </div>
-      <Stories data={storiesData} />
       <FAQ data={faqData} />
       <Footer />
     </>

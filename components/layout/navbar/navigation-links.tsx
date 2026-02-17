@@ -17,11 +17,8 @@ export interface NavLink {
  * Links de navegación principales del sitio
  */
 export const navLinks: NavLink[] = [
-  { title: "Home", path: "/", ariaLabel: "Ir a inicio" },
-  { title: "Shop", path: "/store", ariaLabel: "Ir a tienda" },
-  { title: "About Us", path: "/about", ariaLabel: "Sobre nosotros" },
-  { title: "Blog", path: "/blog", ariaLabel: "Blog" },
-  { title: "Contact Us", path: "/contact", ariaLabel: "Contacto" },
+  { title: "Inicio", path: "/", ariaLabel: "Ir a inicio" },
+  { title: "Tienda", path: "/store", ariaLabel: "Ir a tienda" },
 ];
 
 interface NavigationLinksProps {

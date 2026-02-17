@@ -24,7 +24,7 @@ export function AIDesignButton(){
     )}
     aria-label='Diseñar con IA'
     >
-      <span className="text-xl tracking-wide">Diseña con IA</span>
+      <span className="text-xl tracking-wide">Diseña tu ropa con IA</span>
       
       <span
       className='absolute -top-1 -right-1 flex h-3 w-3'

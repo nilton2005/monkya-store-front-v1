@@ -39,7 +39,7 @@ export function Hero({ data }: HeroProps) {
   const { title, subtitle, btntext, btnHref, img, videos, sociallinks } = data;
 
   return (
-    <section className="relative w-full overflow-hidden h-[32rem] xl:h-screen">
+    <section className="relative w-full overflow-hidden h-[16rem] sm:h-[20rem] md:h-[24rem] lg:h-[28rem] xl:h-[33vh]">
       {/* Background with clip-path */}
       <motion.div
         initial={{ opacity: 0 }}
