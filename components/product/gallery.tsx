@@ -1,14 +1,20 @@
-'use client';
+"use client";
 
-import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
-import { GridTileImage } from 'components/grid/tile';
-import ProductImageFallback from 'components/product-image-fallback';
-import { useProduct, useUpdateURL } from 'components/product/product-context';
-import { AnimatePresence, motion } from 'framer-motion';
-import { useEffect, useMemo } from 'react';
-import { useAppStore } from 'storeIA/useAppStore';
+import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/24/outline";
+import { GridTileImage } from "components/grid/tile";
+import ProductImageFallback from "components/product-image-fallback";
+import { useProduct, useUpdateURL } from "components/product/product-context";
+import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useMemo } from "react";
+import { useAppStore } from "storeIA/useAppStore";
 
-export function Gallery({ images, isAIProduct }: { images: { src: string; altText: string }[]; isAIProduct?: boolean }) {
+export function Gallery({
+  images,
+  isAIProduct,
+}: {
+  images: { src: string; altText: string }[];
+  isAIProduct?: boolean;
+}) {
   const { state, updateImage } = useProduct();
   const updateURL = useUpdateURL();
   const imageIndex = state.image ? parseInt(state.image) : 0;
@@ -24,8 +30,8 @@ export function Gallery({ images, isAIProduct }: { images: { src: string; altTex
       return [
         {
           src: finalProductImage,
-          altText: "Tu Diseño personalizado"
-        }
+          altText: "Tu Diseño personalizado",
+        },
       ];
     }
     return images;
@@ -34,18 +40,20 @@ export function Gallery({ images, isAIProduct }: { images: { src: string; altTex
   // Solo actualizamos el índice si tenemos una imagen personalizada Y no estamos ya en el índice 0
   // Esto evita el bucle infinito
   useEffect(() => {
-    if (isAIProduct && finalProductImage && state.image !== '0') {
+    if (isAIProduct && finalProductImage && state.image !== "0") {
       // No necesitamos setTimeout ni updateImage aquí
       // El displayImages ya maneja mostrar solo la imagen personalizada
       // Simplemente dejamos que React renderice naturalmente
     }
   }, [finalProductImage, state.image, isAIProduct]);
 
-  const nextImageIndex = imageIndex + 1 < displayImages.length ? imageIndex + 1 : 0;
-  const previousImageIndex = imageIndex === 0 ? displayImages.length - 1 : imageIndex - 1;
+  const nextImageIndex =
+    imageIndex + 1 < displayImages.length ? imageIndex + 1 : 0;
+  const previousImageIndex =
+    imageIndex === 0 ? displayImages.length - 1 : imageIndex - 1;
 
   const buttonClassName =
-    'h-full px-6 transition-all ease-in-out hover:scale-110 hover:text-black dark:hover:text-white flex items-center justify-center';
+    "h-full px-6 transition-all ease-in-out hover:scale-110 hover:text-black dark:hover:text-white flex items-center justify-center";
 
   return (
     <form>
@@ -57,7 +65,7 @@ export function Gallery({ images, isAIProduct }: { images: { src: string; altTex
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.3, ease: 'easeInOut' }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
               className="h-full w-full"
             >
               <ProductImageFallback
@@ -72,7 +80,7 @@ export function Gallery({ images, isAIProduct }: { images: { src: string; altTex
         </AnimatePresence>
 
         {displayImages.length > 1 ? (
-          <motion.div 
+          <motion.div
             className="absolute bottom-[15%] flex w-full justify-center"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -110,7 +118,7 @@ export function Gallery({ images, isAIProduct }: { images: { src: string; altTex
       </div>
 
       {displayImages.length > 1 ? (
-        <motion.ul 
+        <motion.ul
           className="my-12 flex items-center flex-wrap justify-center gap-2 overflow-auto py-1 lg:mb-0"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -120,8 +128,8 @@ export function Gallery({ images, isAIProduct }: { images: { src: string; altTex
             const isActive = index === imageIndex;
 
             return (
-              <motion.li 
-                key={image.src + index} 
+              <motion.li
+                key={image.src + index}
                 className="h-20 w-20"
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}

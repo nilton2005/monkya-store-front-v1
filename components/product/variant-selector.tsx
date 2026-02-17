@@ -12,15 +12,23 @@ type Combination = {
 
 export function VariantSelector({
   options,
-  variants
+  variants,
+  isAIProduct
 }: {
   options: ProductOption[];
   variants: ProductVariant[];
+  isAIProduct?: boolean;
 }) {
   const { state, updateOption } = useProduct();
   const updateURL = useUpdateURL();
+  
+  // Para productos IA, filtrar la opción de color ya que viene predefinida
+  const filteredOptions = isAIProduct 
+    ? options.filter(option => option.name.toLowerCase() !== 'color')
+    : options;
+  
   const hasNoOptionsOrJustOneOption =
-    !options.length || (options.length === 1 && options[0]?.values.length === 1);
+    !filteredOptions.length || (filteredOptions.length === 1 && filteredOptions[0]?.values.length === 1);
 
   if (hasNoOptionsOrJustOneOption) {
     return null;
@@ -35,7 +43,7 @@ export function VariantSelector({
     )
   }));
 
-  return options.map((option) => (
+  return filteredOptions.map((option) => (
     <form key={option.id}>
       <dl className="mb-8">
         <dt className="mb-4 text-sm uppercase tracking-wide">{option.name}</dt>

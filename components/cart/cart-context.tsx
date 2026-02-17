@@ -32,6 +32,16 @@ type CartContextType = {
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
+// Helper function to safely get item from localStorage
+function safeGetLocalStorageItem(key: string): string | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    return window.localStorage?.getItem?.(key) ?? null;
+  } catch {
+    return null;
+  }
+}
+
 // Helper function to enrich cart items with images from localStorage
 function enrichCartWithLocalImages(cart: Cart | undefined): Cart | undefined {
   if (!cart || typeof window === 'undefined') return cart;
@@ -39,7 +49,7 @@ function enrichCartWithLocalImages(cart: Cart | undefined): Cart | undefined {
   const enrichedLines = cart.lines.map((line) => {
     if (line.customImageRef) {
       try {
-        const storedImage = localStorage.getItem(line.customImageRef);
+        const storedImage = safeGetLocalStorageItem(line.customImageRef);
         if (storedImage) {
           return { ...line, customImage: storedImage };
         }

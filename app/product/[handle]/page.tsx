@@ -76,7 +76,7 @@ export default async function ProductPage(props: { params: Promise<{ handle: str
   const isAIProduct = params.handle === 'ia-generated-camiseta';
 
   return (
-    <ProductProvider>
+    <ProductProvider product={product} isAIProduct={isAIProduct}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

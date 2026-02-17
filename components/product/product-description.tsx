@@ -47,7 +47,7 @@ export function ProductDescription({ product, isAIProduct }: { product: Product;
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.3 }}
       >
-        <VariantSelector options={product.options} variants={product.variants} />
+        <VariantSelector options={product.options} variants={product.variants} isAIProduct={isAIProduct} />
       </motion.div>
       {product.descriptionHtml ? (
         <motion.div
