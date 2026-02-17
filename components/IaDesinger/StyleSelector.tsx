@@ -22,6 +22,15 @@ export interface DesignStyle {
 }
 
 export const DESIGN_STYLES: DesignStyle[] = [
+  // Opción para diseño personalizado/subido
+  {
+    id: "custom",
+    name: "Sin estilo / Personalizado",
+    description: "Usa tu diseño subido tal cual",
+    category: "basico",
+    emoji: "📤",
+    promptKeywords: "",
+  },
   // Básicos
   {
     id: "minimalista",

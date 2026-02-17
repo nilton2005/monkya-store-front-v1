@@ -60,13 +60,13 @@ export function buildDesignPrompt(options: BuildPromptOptions): string {
 
   // Obtener información del estilo seleccionado
   const selectedStyle = DESIGN_STYLES.find((s) => s.id === designConfig.style);
+  const isCustomStyle = designConfig.style === "custom" || !selectedStyle?.promptKeywords;
   const styleKeywords = selectedStyle?.promptKeywords || "";
 
   // Determinar el fondo basado en el color de la prenda
-  const background =
-    COLOR_TO_BACKGROUND[productConfig.color] || "white background";
   const productColor = COLOR_LABELS[productConfig.color] || "white";
   const productType = PRODUCT_TYPE_LABELS[productConfig.type] || "t-shirt";
+  const neckStyle = NECK_LABELS[productConfig.neckType] || "crew neck";
 
   // Construir descripción de ubicaciones
   const positionDescriptions = designConfig.positions
@@ -79,7 +79,7 @@ export function buildDesignPrompt(options: BuildPromptOptions): string {
   // Determinar si mostrar múltiples vistas
   let layoutInstruction = "";
   if (positionCount === 1) {
-    layoutInstruction = `Single design view showing the ${positionDescriptions} placement.`;
+    layoutInstruction = `Single view showing the ${positionDescriptions} placement on the garment.`;
   } else if (positionCount === 2) {
     layoutInstruction = `Show 2 views side by side: designs for ${positionDescriptions}. Each design clearly labeled.`;
   } else if (positionCount === 3) {
@@ -91,19 +91,63 @@ export function buildDesignPrompt(options: BuildPromptOptions): string {
     ? "Use the SAME design concept for all positions, adapted to each placement size."
     : "Create UNIQUE but thematically related designs for each position.";
 
-  // Instrucción para imágenes de referencia
-  const referenceInstruction = hasReferenceImage
-    ? "IMPORTANT: Extract ONLY the design/pattern from the reference image. Ignore the original colors and textures - use only the shape/silhouette/concept. Apply the style specified below."
-    : "";
+  // Instrucción para imágenes de referencia - diferente según el estilo
+  let referenceInstruction = "";
+  if (hasReferenceImage) {
+    if (isCustomStyle) {
+      // Para estilo personalizado, usar la imagen tal cual en la prenda
+      referenceInstruction = `IMPORTANT: Take the design from the reference image and place it EXACTLY as provided (maintaining its original appearance, colors, and style) on the ${positionDescriptions} of the ${productType}. The reference image IS the design to be printed.`;
+    } else {
+      // Para otros estilos, extraer el concepto y aplicar el estilo
+      referenceInstruction = "IMPORTANT: Extract ONLY the design/pattern from the reference image. Ignore the original colors and textures - use only the shape/silhouette/concept. Apply the style specified below.";
+    }
+  }
 
-  // Construir el prompt final
-  const finalPrompt = `
-Create a professional print-ready design for a ${productColor} ${productType}.
+  // Construir el prompt final - diferente para custom vs styled
+  let finalPrompt: string;
+
+  if (isCustomStyle && hasReferenceImage) {
+    // Prompt especial para diseño personalizado con imagen de referencia
+    finalPrompt = `
+Create a realistic product mockup of a ${productColor} ${productType} with ${neckStyle}.
+
+PRODUCT MOCKUP REQUIREMENTS:
+1. Show a realistic ${productColor} ${productType} garment (${neckStyle})
+2. The garment should be displayed flat or on an invisible mannequin
+3. Clean studio photography style with neutral/white background
+4. Professional e-commerce product photo aesthetic
+
+DESIGN PLACEMENT:
+- Take the design from the reference image
+- Place it on the ${positionDescriptions} of the ${productType}
+- Maintain the original design appearance, colors, and proportions
+- Make the design look naturally printed/embedded on the fabric
+- The design should follow the fabric contours realistically
+
+${layoutInstruction}
+
+USER REQUEST:
+"${userPrompt}"
+
+${referenceInstruction}
+
+OUTPUT: A realistic product mockup photo showing the ${productColor} ${productType} WITH the design properly placed on it.
+`.trim();
+  } else {
+    // Prompt para diseño con estilo artístico
+    const background = COLOR_TO_BACKGROUND[productConfig.color] || "white background";
+    
+    finalPrompt = `
+Create a realistic product mockup of a ${productColor} ${productType} with ${neckStyle} featuring a custom design.
+
+PRODUCT:
+- ${productColor} ${productType} with ${neckStyle}
+- Clean studio photography style mockup
+- Professional e-commerce aesthetic
 
 DESIGN SPECIFICATIONS:
-- Style: ${selectedStyle?.name || "Custom"} (${styleKeywords})
+- Style: ${selectedStyle?.name || "Custom"} ${styleKeywords ? `(${styleKeywords})` : ""}
 - Placement: ${positionDescriptions}
-- Background: Solid ${background} (contrasting with ${productColor} fabric)
 
 ${layoutInstruction}
 ${positionCount > 1 ? designVariation : ""}
@@ -114,16 +158,15 @@ USER DESIGN REQUEST:
 ${referenceInstruction}
 
 CRITICAL REQUIREMENTS:
-1. This is a PRINT DESIGN for fabric/textile printing - must be print-ready
-2. Clean edges, suitable for screen printing or DTG
-3. ${background} - NO gradients to the edges
-4. High contrast colors that will be visible on ${productColor} fabric
+1. Show the ACTUAL ${productType} garment with the design ON it
+2. The design should look printed/embedded on the fabric naturally
+3. High contrast design visible on ${productColor} fabric
+4. Professional product mockup photo style output
 5. Design should fit the specified placement area proportionally
-6. NO realistic photographs - only stylized/artistic designs
-7. Vector-style or illustration-style output preferred
 
-OUTPUT: Single image showing the design(s) on ${background}, ready for direct print transfer.
+OUTPUT: Realistic product mockup showing the ${productColor} ${productType} with the design properly placed on the garment.
 `.trim();
+  }
 
   return finalPrompt;
 }

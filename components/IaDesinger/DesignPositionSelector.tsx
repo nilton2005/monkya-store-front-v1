@@ -28,7 +28,7 @@ const POSITIONS: PositionOption[] = [
 const ZONE_LABELS: Record<string, string> = {
   frente: "👕 Frente",
   espalda: "🔙 Espalda",
-  hombros: "💪 Hombros",
+  //hombros: "💪 Hombros",
 };
 
 export const DesignPositionSelector: React.FC = () => {

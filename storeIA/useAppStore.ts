@@ -1,6 +1,34 @@
 import { create } from "zustand";
-import { devtools, persist } from "zustand/middleware";
+import { devtools, persist, createJSONStorage } from "zustand/middleware";
 import { BrushStroke, Edit, Generation, Project } from "../types";
+
+// Safe storage for SSR - only uses localStorage on the client
+const safeStorage = {
+  getItem: (name: string) => {
+    if (typeof window === "undefined") return null;
+    try {
+      return localStorage.getItem(name);
+    } catch {
+      return null;
+    }
+  },
+  setItem: (name: string, value: string) => {
+    if (typeof window === "undefined") return;
+    try {
+      localStorage.setItem(name, value);
+    } catch {
+      // Ignore quota errors
+    }
+  },
+  removeItem: (name: string) => {
+    if (typeof window === "undefined") return;
+    try {
+      localStorage.removeItem(name);
+    } catch {
+      // Ignore errors
+    }
+  },
+};
 
 // Tipos para configuración de producto
 export type ProductType = "polo" | "polera";
@@ -158,7 +186,7 @@ export const useAppStore = create<AppState>()(
           material: "algodon-100",
         },
         designConfig: {
-          style: "minimalista",
+          style: "custom",
           positions: ["frente-centro"],
           sameDesignForAll: true,
         },
@@ -271,7 +299,7 @@ export const useAppStore = create<AppState>()(
               material: "algodon-100",
             },
             designConfig: {
-              style: "minimalista",
+              style: "custom",
               positions: ["frente-centro"],
               sameDesignForAll: true,
             },
@@ -279,6 +307,7 @@ export const useAppStore = create<AppState>()(
       }),
       {
         name: "nano-banana-storage",
+        storage: createJSONStorage(() => safeStorage),
         partialize: (state) => ({
           // Only persist the final product data needed for the cart/checkout flow
           // We avoid persisting the entire project history (currentProject) or the canvas state
