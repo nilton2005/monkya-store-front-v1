@@ -45,7 +45,7 @@ export function FAQ({ data }: FAQProps) {
           ¿Tienes otra pregunta que no aparece aquí?
         </p>
         <a
-          href="https://wa.me/1234567890"
+          href="https://wa.me/930913160"
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-[#f2cd4e] text-[#272512] font-semibold shadow-lg transition-all duration-200 hover:scale-105 hover:shadow-xl active:scale-95"

@@ -102,11 +102,11 @@ export default function Footer() {
             <ul className="space-y-3">
               <li>
                 <a
-                  href="mailto:info@monkya.com"
+                  href="mailto:nilton2005marzo@gmail.com"
                   className="flex items-center gap-2 text-sm text-slate-400 transition-all duration-200 hover:text-[--color-monkya-yellow]"
                 >
                   <Mail size={16} />
-                  info@monkya.com
+                  nilton2005marzo@gmail.com
                 </a>
               </li>
               <li>
@@ -115,7 +115,7 @@ export default function Footer() {
                   className="flex items-center gap-2 text-sm text-slate-400 transition-all duration-200 hover:text-[--color-monkya-yellow]"
                 >
                   <Phone size={16} />
-                  +1 (234) 567-890
+                  +51 930 913 160
                 </a>
               </li>
             </ul>
@@ -128,7 +128,7 @@ export default function Footer() {
             </h3>
             <div className="flex gap-3">
               <a
-                href="https://facebook.com/monkya"
+                href="https://www.facebook.com/MonkyaStore/"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Facebook"

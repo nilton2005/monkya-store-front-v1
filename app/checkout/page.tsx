@@ -104,7 +104,7 @@ export default function CheckoutPage() {
       // Si este producto tiene una imagen personalizada, incluir la URL
       const imageUrl = imageUrls.get(item.id || item.merchandise.id);
       if (imageUrl) {
-        message += `   🎨 *Diseño personalizado:*\n`;
+        message += `   *Diseño personalizado:*\n`;
         message += `   ${imageUrl}\n`;
       }
       message += `\n`;
