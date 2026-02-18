@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { devtools, persist, createJSONStorage } from "zustand/middleware";
+import { createJSONStorage, devtools, persist } from "zustand/middleware";
 import { BrushStroke, Edit, Generation, Project } from "../types";
 
 // Safe storage for SSR - only uses localStorage on the client
@@ -279,7 +279,10 @@ export const useAppStore = create<AppState>()(
           set((state) => {
             const newConfig = { ...state.productConfig, ...config };
             // Auto-set material to algodon-100 when switching to polera (pima is polo-only)
-            if (config.type === "polera" && state.productConfig.material === "pima") {
+            if (
+              config.type === "polera" &&
+              state.productConfig.material === "pima"
+            ) {
               newConfig.material = "algodon-100";
             }
             return { productConfig: newConfig };

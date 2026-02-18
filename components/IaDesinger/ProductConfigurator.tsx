@@ -1,12 +1,12 @@
 import React from "react";
 import {
-    HoodType,
-    MaterialType,
-    NeckType,
-    ProductColor,
-    ProductType,
-    SleeveType,
-    useAppStore,
+  HoodType,
+  MaterialType,
+  NeckType,
+  ProductColor,
+  ProductType,
+  SleeveType,
+  useAppStore,
 } from "storeIA/useAppStore";
 import { cn } from "../../utils/cn";
 
@@ -46,9 +46,21 @@ const NECK_TYPES: { value: NeckType; label: string; description: string }[] = [
   { value: "v", label: "Cuello V", description: "Cuello en forma de V" },
 ];
 
-const SLEEVE_TYPES: { value: SleeveType; label: string; description: string }[] = [
-  { value: "manga-corta", label: "Manga Corta", description: "Clásica y fresca" },
-  { value: "manga-larga", label: "Manga Larga", description: "Mayor cobertura" },
+const SLEEVE_TYPES: {
+  value: SleeveType;
+  label: string;
+  description: string;
+}[] = [
+  {
+    value: "manga-corta",
+    label: "Manga Corta",
+    description: "Clásica y fresca",
+  },
+  {
+    value: "manga-larga",
+    label: "Manga Larga",
+    description: "Mayor cobertura",
+  },
 ];
 
 const HOOD_TYPES: { value: HoodType; label: string; description: string }[] = [
@@ -130,7 +142,9 @@ export const ProductConfigurator: React.FC = () => {
                 >
                   {sleeve.label}
                 </span>
-                <span className="text-xs text-gray-500">{sleeve.description}</span>
+                <span className="text-xs text-gray-500">
+                  {sleeve.description}
+                </span>
               </button>
             ))}
           </div>
@@ -165,7 +179,9 @@ export const ProductConfigurator: React.FC = () => {
                 >
                   {hood.label}
                 </span>
-                <span className="text-xs text-gray-500">{hood.description}</span>
+                <span className="text-xs text-gray-500">
+                  {hood.description}
+                </span>
               </button>
             ))}
           </div>
@@ -240,8 +256,12 @@ export const ProductConfigurator: React.FC = () => {
         {isPolera ? (
           <>
             <div className="p-3 rounded-lg border bg-gray-900 border-gray-700">
-              <span className="text-sm font-medium text-yellow-400">Algodón 100%</span>
-              <span className="text-xs text-gray-500 block">Suave y transpirable</span>
+              <span className="text-sm font-medium text-yellow-400">
+                Algodón 100%
+              </span>
+              <span className="text-xs text-gray-500 block">
+                Suave y transpirable
+              </span>
             </div>
             <p className="text-xs text-amber-400/80 mt-1.5 flex items-start gap-1.5">
               <span>ℹ️</span>
@@ -285,7 +305,9 @@ export const ProductConfigurator: React.FC = () => {
         <div className="flex items-start gap-2">
           <span className="text-lg">🐵</span>
           <div>
-            <p className="text-xs font-medium text-yellow-400">Logo Monkya incluido</p>
+            <p className="text-xs font-medium text-yellow-400">
+              Logo Monkya incluido
+            </p>
             <p className="text-xs text-gray-400 mt-0.5">
               Todas las prendas incluyen el logo de Monkya en el diseño final.
             </p>

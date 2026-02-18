@@ -1,7 +1,7 @@
 import {
-    DesignConfig,
-    DesignPosition,
-    ProductConfig,
+  DesignConfig,
+  DesignPosition,
+  ProductConfig,
 } from "storeIA/useAppStore";
 import { DESIGN_STYLES } from "./StyleSelector";
 
@@ -70,7 +70,8 @@ export function buildDesignPrompt(options: BuildPromptOptions): string {
 
   // Obtener información del estilo seleccionado
   const selectedStyle = DESIGN_STYLES.find((s) => s.id === designConfig.style);
-  const isCustomStyle = designConfig.style === "custom" || !selectedStyle?.promptKeywords;
+  const isCustomStyle =
+    designConfig.style === "custom" || !selectedStyle?.promptKeywords;
   const styleKeywords = selectedStyle?.promptKeywords || "";
 
   // Determinar el fondo basado en el color de la prenda
@@ -79,12 +80,14 @@ export function buildDesignPrompt(options: BuildPromptOptions): string {
   const neckStyle = NECK_LABELS[productConfig.neckType] || "crew neck";
 
   // Build garment details string with sleeve/hood info
-  const sleeveInfo = productConfig.type === "polo"
-    ? SLEEVE_LABELS[productConfig.sleeveType] || "short sleeve"
-    : "";
-  const hoodInfo = productConfig.type === "polera"
-    ? HOOD_LABELS[productConfig.hoodType] || "without hood"
-    : "";
+  const sleeveInfo =
+    productConfig.type === "polo"
+      ? SLEEVE_LABELS[productConfig.sleeveType] || "short sleeve"
+      : "";
+  const hoodInfo =
+    productConfig.type === "polera"
+      ? HOOD_LABELS[productConfig.hoodType] || "without hood"
+      : "";
   const garmentExtra = sleeveInfo || hoodInfo;
 
   // Construir descripción de ubicaciones
@@ -118,7 +121,8 @@ export function buildDesignPrompt(options: BuildPromptOptions): string {
       referenceInstruction = `IMPORTANT: Take the design from the reference image and place it EXACTLY as provided (maintaining its original appearance, colors, and style) on the ${positionDescriptions} of the ${productType}. The reference image IS the design to be printed.`;
     } else {
       // Para otros estilos, extraer el concepto y aplicar el estilo
-      referenceInstruction = "IMPORTANT: Extract ONLY the design/pattern from the reference image. Ignore the original colors and textures - use only the shape/silhouette/concept. Apply the style specified below.";
+      referenceInstruction =
+        "IMPORTANT: Extract ONLY the design/pattern from the reference image. Ignore the original colors and textures - use only the shape/silhouette/concept. Apply the style specified below.";
     }
   }
 
@@ -155,8 +159,9 @@ OUTPUT: A realistic product mockup photo showing the ${productColor} ${garmentEx
 `.trim();
   } else {
     // Prompt para diseño con estilo artístico
-    const background = COLOR_TO_BACKGROUND[productConfig.color] || "white background";
-    
+    const background =
+      COLOR_TO_BACKGROUND[productConfig.color] || "white background";
+
     finalPrompt = `
 Create a realistic product mockup of a ${productColor} ${garmentExtra} ${productType} with ${neckStyle} featuring a custom design.
 
