@@ -5,6 +5,7 @@ import Price from "components/price";
 import ProductImageFallback from "components/product-image-fallback";
 import { DEFAULT_OPTION } from "lib/constants";
 import { clearAllAIImages } from "lib/localStorage-utils";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 // Importamos el servicio para subir imágenes a Cloudinary
@@ -30,12 +31,13 @@ export default function CheckoutPage() {
 
   if (!cart || cart.lines.length === 0) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+      <div className="min-h-screen bg-gradient-to-br from-[#1a1810] via-[#0d0c08] to-[#1a1810]">
+        <div className="h-1 w-full bg-gradient-to-r from-transparent via-[#f2cd4e] to-transparent" />
         <div className="mx-auto max-w-screen-2xl px-4">
           <div className="flex flex-col items-center justify-center py-32">
-            <div className="rounded-full bg-gray-200 dark:bg-gray-700 p-6 mb-6">
+            <div className="rounded-full bg-[#f2cd4e]/10 p-6 mb-6 border border-[#f2cd4e]/20">
               <svg
-                className="h-12 w-12 text-gray-400"
+                className="h-12 w-12 text-[#f2cd4e]"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -48,10 +50,10 @@ export default function CheckoutPage() {
                 />
               </svg>
             </div>
-            <h1 className="mb-3 text-2xl font-bold text-gray-900 dark:text-white">
+            <h1 className="mb-3 text-2xl font-bold text-white">
               Tu carrito está vacío
             </h1>
-            <p className="text-gray-500 dark:text-gray-400 mb-6">
+            <p className="text-gray-400 mb-6">
               Agrega algunos productos antes de proceder al checkout.
             </p>
             <a
@@ -235,13 +237,16 @@ export default function CheckoutPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen bg-gradient-to-br from-[#1a1810] via-[#0d0c08] to-[#1a1810] text-white">
+      {/* Monkya branded header bar */}
+      <div className="h-1 w-full bg-gradient-to-r from-transparent via-[#f2cd4e] to-transparent" />
+
       <div className="mx-auto max-w-screen-xl px-4 py-8 md:py-12">
         {/* Header */}
         <div className="mb-8 md:mb-12">
           <a
             href="/"
-            className="inline-flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mb-4"
+            className="inline-flex items-center gap-2 text-gray-400 hover:text-[#f2cd4e] transition-colors mb-4"
           >
             <svg
               className="h-5 w-5"
@@ -258,22 +263,33 @@ export default function CheckoutPage() {
             </svg>
             Volver a la tienda
           </a>
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">
-            Finalizar Compra
-          </h1>
-          <p className="mt-2 text-gray-600 dark:text-gray-400">
-            Completa tus datos para enviar el pedido por WhatsApp
-          </p>
+          <div className="flex items-center gap-4">
+            <Image
+              src="/bannerMonkya.webp"
+              alt="Monkya"
+              width={100}
+              height={40}
+              className="h-8 w-auto object-contain"
+            />
+            <div>
+              <h1 className="text-3xl md:text-4xl font-bold text-white">
+                Finalizar Compra
+              </h1>
+              <p className="mt-1 text-gray-400">
+                Completa tus datos para enviar el pedido por WhatsApp
+              </p>
+            </div>
+          </div>
         </div>
 
         <div className="grid gap-8 lg:grid-cols-5">
           {/* Formulario de contacto - 3 columnas */}
           <div className="lg:col-span-3 order-2 lg:order-1">
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl shadow-gray-200/50 dark:shadow-gray-900/50 p-6 md:p-8">
+            <div className="bg-[#1a1810] rounded-2xl shadow-xl shadow-black/30 border border-gray-800 p-6 md:p-8">
               <div className="flex items-center gap-3 mb-6">
-                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-[#f2cd4e]/20 dark:bg-[#f2cd4e]/10">
+                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-[#f2cd4e]/10">
                   <svg
-                    className="h-5 w-5 text-[#f2cd4e] dark:text-[#f2cd4e]"
+                    className="h-5 w-5 text-[#f2cd4e]"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -286,7 +302,7 @@ export default function CheckoutPage() {
                     />
                   </svg>
                 </div>
-                <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+                <h2 className="text-xl font-semibold text-white">
                   Información de Contacto
                 </h2>
               </div>
@@ -295,9 +311,9 @@ export default function CheckoutPage() {
                 <div>
                   <label
                     htmlFor="name"
-                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                    className="block text-sm font-medium text-gray-300 mb-2"
                   >
-                    Nombre completo <span className="text-red-500">*</span>
+                    Nombre completo <span className="text-[#f2cd4e]">*</span>
                   </label>
                   <input
                     type="text"
@@ -307,7 +323,7 @@ export default function CheckoutPage() {
                       setCustomerInfo({ ...customerInfo, name: e.target.value })
                     }
                     placeholder="Ej: Juan Pérez"
-                    className="block w-full rounded-xl border-0 bg-gray-50 dark:bg-gray-700/50 px-4 py-3.5 text-gray-900 dark:text-white ring-1 ring-inset ring-gray-200 dark:ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[#f2cd4e] transition-all"
+                    className="block w-full rounded-xl border-0 bg-gray-900/50 px-4 py-3.5 text-white ring-1 ring-inset ring-gray-700 placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-[#f2cd4e] transition-all"
                     required
                   />
                 </div>
@@ -315,9 +331,10 @@ export default function CheckoutPage() {
                 <div>
                   <label
                     htmlFor="phone"
-                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                    className="block text-sm font-medium text-gray-300 mb-2"
                   >
-                    Teléfono / WhatsApp <span className="text-red-500">*</span>
+                    Teléfono / WhatsApp{" "}
+                    <span className="text-[#f2cd4e]">*</span>
                   </label>
                   <input
                     type="tel"
@@ -330,33 +347,21 @@ export default function CheckoutPage() {
                       })
                     }
                     placeholder="Ej: 999 888 777"
-                    className="block w-full rounded-xl border-0 bg-gray-50 dark:bg-gray-700/50 px-4 py-3.5 text-gray-900 dark:text-white ring-1 ring-inset ring-gray-200 dark:ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[#f2cd4e] transition-all"
+                    className="block w-full rounded-xl border-0 bg-gray-900/50 px-4 py-3.5 text-white ring-1 ring-inset ring-gray-700 placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-[#f2cd4e] transition-all"
                     required
                   />
                 </div>
               </div>
 
               {/* Información adicional */}
-              <div className="mt-8 p-4 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800">
+              <div className="mt-8 p-4 rounded-xl bg-[#f2cd4e]/5 border border-[#f2cd4e]/20">
                 <div className="flex gap-3">
-                  <svg
-                    className="h-5 w-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
+                  <span className="text-lg flex-shrink-0">🐵</span>
                   <div>
-                    <p className="text-sm font-medium text-amber-800 dark:text-amber-300">
+                    <p className="text-sm font-medium text-[#f2cd4e]">
                       ¿Cómo funciona?
                     </p>
-                    <p className="text-sm text-amber-700 dark:text-amber-400 mt-1">
+                    <p className="text-sm text-gray-400 mt-1">
                       Al enviar tu pedido, se abrirá WhatsApp con todos los
                       detalles. Coordinaremos el pago y envío directamente
                       contigo.
@@ -369,11 +374,11 @@ export default function CheckoutPage() {
 
           {/* Resumen del pedido - 2 columnas */}
           <div className="lg:col-span-2 order-1 lg:order-2">
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl shadow-gray-200/50 dark:shadow-gray-900/50 p-6 md:p-8 sticky top-4">
+            <div className="bg-[#1a1810] rounded-2xl shadow-xl shadow-black/30 border border-gray-800 p-6 md:p-8 sticky top-4">
               <div className="flex items-center gap-3 mb-6">
-                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-green-100 dark:bg-green-900/30">
+                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-[#f2cd4e]/10">
                   <svg
-                    className="h-5 w-5 text-green-600 dark:text-green-400"
+                    className="h-5 w-5 text-[#f2cd4e]"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -386,10 +391,8 @@ export default function CheckoutPage() {
                     />
                   </svg>
                 </div>
-                <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-                  Tu Pedido
-                </h2>
-                <span className="ml-auto bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-sm font-medium px-3 py-1 rounded-full">
+                <h2 className="text-xl font-semibold text-white">Tu Pedido</h2>
+                <span className="ml-auto bg-[#f2cd4e]/10 text-[#f2cd4e] text-sm font-medium px-3 py-1 rounded-full border border-[#f2cd4e]/20">
                   {cart.totalQuantity}{" "}
                   {cart.totalQuantity === 1 ? "item" : "items"}
                 </span>
@@ -400,9 +403,9 @@ export default function CheckoutPage() {
                 {cart.lines.map((item) => (
                   <div
                     key={item.id || item.merchandise.id}
-                    className="flex gap-4 p-3 rounded-xl bg-gray-50 dark:bg-gray-700/30 hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors"
+                    className="flex gap-4 p-3 rounded-xl bg-gray-900/30 border border-gray-800/50 hover:border-gray-700 transition-colors"
                   >
-                    <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg bg-gray-200 dark:bg-gray-600">
+                    <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg bg-gray-800">
                       <ProductImageFallback
                         className="h-full w-full object-cover"
                         width={80}
@@ -418,25 +421,25 @@ export default function CheckoutPage() {
                         }
                       />
                       {item.customImage && (
-                        <div className="absolute top-1 right-1 bg-purple-500 text-white text-xs px-1.5 py-0.5 rounded-md font-medium">
+                        <div className="absolute top-1 right-1 bg-[#f2cd4e] text-[#272512] text-xs px-1.5 py-0.5 rounded-md font-bold">
                           IA
                         </div>
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-medium text-gray-900 dark:text-white truncate">
+                      <h3 className="font-medium text-white truncate">
                         {item.customTitle || item.merchandise.product.title}
                       </h3>
                       {item.merchandise.title !== DEFAULT_OPTION && (
-                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                        <p className="text-sm text-gray-400">
                           {item.merchandise.title}
                         </p>
                       )}
                       <div className="flex items-center justify-between mt-2">
-                        <span className="text-sm text-gray-500 dark:text-gray-400">
+                        <span className="text-sm text-gray-500">
                           Cant: {item.quantity}
                         </span>
-                        <span className="font-semibold text-gray-900 dark:text-white">
+                        <span className="font-semibold text-[#f2cd4e]">
                           <Price
                             amount={item.cost.totalAmount.amount}
                             currencyCode={item.cost.totalAmount.currencyCode}
@@ -449,12 +452,10 @@ export default function CheckoutPage() {
               </div>
 
               {/* Totals */}
-              <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700 space-y-3">
+              <div className="mt-6 pt-6 border-t border-gray-800 space-y-3">
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600 dark:text-gray-400">
-                    Subtotal
-                  </span>
-                  <span className="text-gray-900 dark:text-white">
+                  <span className="text-gray-400">Subtotal</span>
+                  <span className="text-white">
                     <Price
                       amount={cart.cost.subtotalAmount.amount}
                       currencyCode={cart.cost.subtotalAmount.currencyCode}
@@ -462,18 +463,14 @@ export default function CheckoutPage() {
                   </span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600 dark:text-gray-400">
-                    Envío
-                  </span>
-                  <span className="text-gray-500 dark:text-gray-400 italic">
-                    A coordinar
-                  </span>
+                  <span className="text-gray-400">Envío</span>
+                  <span className="text-gray-500 italic">A coordinar</span>
                 </div>
-                <div className="flex justify-between pt-3 border-t border-gray-200 dark:border-gray-700">
-                  <span className="text-lg font-semibold text-gray-900 dark:text-white">
+                <div className="flex justify-between pt-3 border-t border-gray-800">
+                  <span className="text-lg font-semibold text-white">
                     Total
                   </span>
-                  <span className="text-lg font-bold text-gray-900 dark:text-white">
+                  <span className="text-lg font-bold text-[#f2cd4e]">
                     <Price
                       amount={cart.cost.totalAmount.amount}
                       currencyCode={cart.cost.totalAmount.currencyCode}
@@ -486,10 +483,10 @@ export default function CheckoutPage() {
               <button
                 onClick={handleWhatsAppOrder}
                 disabled={isUploading}
-                className={`mt-6 w-full flex items-center justify-center gap-3 rounded-xl px-6 py-4 text-white font-semibold text-lg shadow-lg transition-all transform hover:scale-[1.02] active:scale-[0.98] ${
+                className={`mt-6 w-full flex items-center justify-center gap-3 rounded-xl px-6 py-4 font-semibold text-lg shadow-lg transition-all transform hover:scale-[1.02] active:scale-[0.98] ${
                   isUploading
-                    ? "bg-gray-400 cursor-not-allowed shadow-none"
-                    : "bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 shadow-green-500/25"
+                    ? "bg-gray-700 text-gray-400 cursor-not-allowed shadow-none"
+                    : "bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white shadow-green-500/25"
                 }`}
               >
                 {isUploading ? (
@@ -530,12 +527,22 @@ export default function CheckoutPage() {
                 )}
               </button>
 
-              {/* Mensaje informativo */}
-              <p className="mt-4 text-center text-xs text-gray-500 dark:text-gray-400">
+              <p className="mt-4 text-center text-xs text-gray-500">
                 {isUploading
-                  ? "⏳ Guardando tus diseños en la nube..."
-                  : "🔒 Tus datos están seguros. Solo se usarán para contactarte."}
+                  ? "Guardando tus diseños en la nube..."
+                  : "Tus datos están seguros. Solo se usarán para contactarte."}
               </p>
+
+              {/* Monkya footer branding */}
+              <div className="mt-6 pt-4 border-t border-gray-800 flex items-center justify-center gap-2">
+                <Image
+                  src="/bannerMonkya.webp"
+                  alt="Monkya"
+                  width={80}
+                  height={32}
+                  className="h-5 w-auto object-contain opacity-40"
+                />
+              </div>
             </div>
           </div>
         </div>
