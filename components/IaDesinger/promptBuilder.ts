@@ -22,12 +22,22 @@ const COLOR_LABELS: Record<string, string> = {
 
 const PRODUCT_TYPE_LABELS: Record<string, string> = {
   polo: "t-shirt",
-  polera: "sweatshirt/hoodie",
+  polera: "sweatshirt",
 };
 
 const NECK_LABELS: Record<string, string> = {
   v: "V-neck",
   circular: "crew neck/round neck",
+};
+
+const SLEEVE_LABELS: Record<string, string> = {
+  "manga-corta": "short sleeve",
+  "manga-larga": "long sleeve",
+};
+
+const HOOD_LABELS: Record<string, string> = {
+  "con-gorro": "with hood (hoodie style)",
+  "sin-gorro": "without hood (crewneck sweatshirt)",
 };
 
 const POSITION_LABELS: Record<DesignPosition, string> = {
@@ -67,6 +77,15 @@ export function buildDesignPrompt(options: BuildPromptOptions): string {
   const productColor = COLOR_LABELS[productConfig.color] || "white";
   const productType = PRODUCT_TYPE_LABELS[productConfig.type] || "t-shirt";
   const neckStyle = NECK_LABELS[productConfig.neckType] || "crew neck";
+
+  // Build garment details string with sleeve/hood info
+  const sleeveInfo = productConfig.type === "polo"
+    ? SLEEVE_LABELS[productConfig.sleeveType] || "short sleeve"
+    : "";
+  const hoodInfo = productConfig.type === "polera"
+    ? HOOD_LABELS[productConfig.hoodType] || "without hood"
+    : "";
+  const garmentExtra = sleeveInfo || hoodInfo;
 
   // Construir descripción de ubicaciones
   const positionDescriptions = designConfig.positions
@@ -109,13 +128,14 @@ export function buildDesignPrompt(options: BuildPromptOptions): string {
   if (isCustomStyle && hasReferenceImage) {
     // Prompt especial para diseño personalizado con imagen de referencia
     finalPrompt = `
-Create a realistic product mockup of a ${productColor} ${productType} with ${neckStyle}.
+Create a realistic product mockup of a ${productColor} ${garmentExtra} ${productType} with ${neckStyle}.
 
 PRODUCT MOCKUP REQUIREMENTS:
-1. Show a realistic ${productColor} ${productType} garment (${neckStyle})
+1. Show a realistic ${productColor} ${productType} garment (${neckStyle}, ${garmentExtra})
 2. The garment should be displayed flat or on an invisible mannequin
 3. Clean studio photography style with neutral/white background
 4. Professional e-commerce product photo aesthetic
+5. Include a small, subtle "Monkya" brand logo on the garment (small monkey icon near the chest or tag area)
 
 DESIGN PLACEMENT:
 - Take the design from the reference image
@@ -131,19 +151,20 @@ USER REQUEST:
 
 ${referenceInstruction}
 
-OUTPUT: A realistic product mockup photo showing the ${productColor} ${productType} WITH the design properly placed on it.
+OUTPUT: A realistic product mockup photo showing the ${productColor} ${garmentExtra} ${productType} WITH the design properly placed on it.
 `.trim();
   } else {
     // Prompt para diseño con estilo artístico
     const background = COLOR_TO_BACKGROUND[productConfig.color] || "white background";
     
     finalPrompt = `
-Create a realistic product mockup of a ${productColor} ${productType} with ${neckStyle} featuring a custom design.
+Create a realistic product mockup of a ${productColor} ${garmentExtra} ${productType} with ${neckStyle} featuring a custom design.
 
 PRODUCT:
-- ${productColor} ${productType} with ${neckStyle}
+- ${productColor} ${garmentExtra} ${productType} with ${neckStyle}
 - Clean studio photography style mockup
 - Professional e-commerce aesthetic
+- Include a small, subtle "Monkya" brand logo on the garment (small monkey icon near the chest or tag area)
 
 DESIGN SPECIFICATIONS:
 - Style: ${selectedStyle?.name || "Custom"} ${styleKeywords ? `(${styleKeywords})` : ""}
@@ -164,7 +185,7 @@ CRITICAL REQUIREMENTS:
 4. Professional product mockup photo style output
 5. Design should fit the specified placement area proportionally
 
-OUTPUT: Realistic product mockup showing the ${productColor} ${productType} with the design properly placed on the garment.
+OUTPUT: Realistic product mockup showing the ${productColor} ${garmentExtra} ${productType} with the design properly placed on the garment.
 `.trim();
   }
 

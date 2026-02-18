@@ -1,9 +1,11 @@
 import React from "react";
 import {
+    HoodType,
     MaterialType,
     NeckType,
     ProductColor,
     ProductType,
+    SleeveType,
     useAppStore,
 } from "storeIA/useAppStore";
 import { cn } from "../../utils/cn";
@@ -44,6 +46,16 @@ const NECK_TYPES: { value: NeckType; label: string; description: string }[] = [
   { value: "v", label: "Cuello V", description: "Cuello en forma de V" },
 ];
 
+const SLEEVE_TYPES: { value: SleeveType; label: string; description: string }[] = [
+  { value: "manga-corta", label: "Manga Corta", description: "Clásica y fresca" },
+  { value: "manga-larga", label: "Manga Larga", description: "Mayor cobertura" },
+];
+
+const HOOD_TYPES: { value: HoodType; label: string; description: string }[] = [
+  { value: "sin-gorro", label: "Sin Gorro", description: "Polera simple" },
+  { value: "con-gorro", label: "Con Gorro", description: "Estilo hoodie" },
+];
+
 const MATERIALS: { value: MaterialType; label: string; description: string }[] =
   [
     {
@@ -60,6 +72,9 @@ const MATERIALS: { value: MaterialType; label: string; description: string }[] =
 
 export const ProductConfigurator: React.FC = () => {
   const { productConfig, setProductConfig } = useAppStore();
+
+  const isPolo = productConfig.type === "polo";
+  const isPolera = productConfig.type === "polera";
 
   return (
     <div className="space-y-4">
@@ -86,6 +101,76 @@ export const ProductConfigurator: React.FC = () => {
           ))}
         </div>
       </div>
+
+      {/* Tipo de Manga - solo para Polo */}
+      {isPolo && (
+        <div>
+          <label className="text-sm font-medium text-gray-300 mb-2 block">
+            Tipo de Manga
+          </label>
+          <div className="grid grid-cols-2 gap-2">
+            {SLEEVE_TYPES.map((sleeve) => (
+              <button
+                key={sleeve.value}
+                onClick={() => setProductConfig({ sleeveType: sleeve.value })}
+                className={cn(
+                  "flex flex-col items-start p-3 rounded-lg border transition-all duration-200 text-left",
+                  productConfig.sleeveType === sleeve.value
+                    ? "bg-yellow-400/10 border-yellow-400/50"
+                    : "bg-gray-900 border-gray-700 hover:bg-gray-800",
+                )}
+              >
+                <span
+                  className={cn(
+                    "text-sm font-medium",
+                    productConfig.sleeveType === sleeve.value
+                      ? "text-yellow-400"
+                      : "text-gray-300",
+                  )}
+                >
+                  {sleeve.label}
+                </span>
+                <span className="text-xs text-gray-500">{sleeve.description}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Con/Sin Gorro - solo para Polera */}
+      {isPolera && (
+        <div>
+          <label className="text-sm font-medium text-gray-300 mb-2 block">
+            Capucha
+          </label>
+          <div className="grid grid-cols-2 gap-2">
+            {HOOD_TYPES.map((hood) => (
+              <button
+                key={hood.value}
+                onClick={() => setProductConfig({ hoodType: hood.value })}
+                className={cn(
+                  "flex flex-col items-start p-3 rounded-lg border transition-all duration-200 text-left",
+                  productConfig.hoodType === hood.value
+                    ? "bg-yellow-400/10 border-yellow-400/50"
+                    : "bg-gray-900 border-gray-700 hover:bg-gray-800",
+                )}
+              >
+                <span
+                  className={cn(
+                    "text-sm font-medium",
+                    productConfig.hoodType === hood.value
+                      ? "text-yellow-400"
+                      : "text-gray-300",
+                  )}
+                >
+                  {hood.label}
+                </span>
+                <span className="text-xs text-gray-500">{hood.description}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Color */}
       <div>
@@ -147,38 +232,64 @@ export const ProductConfigurator: React.FC = () => {
         </div>
       </div>
 
-      {/* Material */}
+      {/* Material - solo para Polo (pima solo disponible en polos) */}
       <div>
         <label className="text-sm font-medium text-gray-300 mb-2 block">
           Material
         </label>
-        <div className="grid grid-cols-2 gap-2">
-          {MATERIALS.map((material) => (
-            <button
-              key={material.value}
-              onClick={() => setProductConfig({ material: material.value })}
-              className={cn(
-                "flex flex-col items-start p-3 rounded-lg border transition-all duration-200 text-left",
-                productConfig.material === material.value
-                  ? "bg-yellow-400/10 border-yellow-400/50"
-                  : "bg-gray-900 border-gray-700 hover:bg-gray-800",
-              )}
-            >
-              <span
+        {isPolera ? (
+          <>
+            <div className="p-3 rounded-lg border bg-gray-900 border-gray-700">
+              <span className="text-sm font-medium text-yellow-400">Algodón 100%</span>
+              <span className="text-xs text-gray-500 block">Suave y transpirable</span>
+            </div>
+            <p className="text-xs text-amber-400/80 mt-1.5 flex items-start gap-1.5">
+              <span>ℹ️</span>
+              <span>El algodón Pima solo está disponible para polos.</span>
+            </p>
+          </>
+        ) : (
+          <div className="grid grid-cols-2 gap-2">
+            {MATERIALS.map((material) => (
+              <button
+                key={material.value}
+                onClick={() => setProductConfig({ material: material.value })}
                 className={cn(
-                  "text-sm font-medium",
+                  "flex flex-col items-start p-3 rounded-lg border transition-all duration-200 text-left",
                   productConfig.material === material.value
-                    ? "text-yellow-400"
-                    : "text-gray-300",
+                    ? "bg-yellow-400/10 border-yellow-400/50"
+                    : "bg-gray-900 border-gray-700 hover:bg-gray-800",
                 )}
               >
-                {material.label}
-              </span>
-              <span className="text-xs text-gray-500">
-                {material.description}
-              </span>
-            </button>
-          ))}
+                <span
+                  className={cn(
+                    "text-sm font-medium",
+                    productConfig.material === material.value
+                      ? "text-yellow-400"
+                      : "text-gray-300",
+                  )}
+                >
+                  {material.label}
+                </span>
+                <span className="text-xs text-gray-500">
+                  {material.description}
+                </span>
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Logo Monkya notice */}
+      <div className="p-3 rounded-lg border border-yellow-400/30 bg-yellow-400/5">
+        <div className="flex items-start gap-2">
+          <span className="text-lg">🐵</span>
+          <div>
+            <p className="text-xs font-medium text-yellow-400">Logo Monkya incluido</p>
+            <p className="text-xs text-gray-400 mt-0.5">
+              Todas las prendas incluyen el logo de Monkya en el diseño final.
+            </p>
+          </div>
         </div>
       </div>
     </div>

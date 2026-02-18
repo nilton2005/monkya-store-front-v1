@@ -232,7 +232,7 @@ export const PromptComposer: React.FC = () => {
   if (selectedTool !== "generate") {
     return (
       <>
-        <div className="w-64 md:w-72 lg:w-80 h-full bg-gray-950 border-r border-gray-800 p-3 md:p-4 lg:p-6 flex flex-col space-y-3 md:space-y-4 overflow-y-auto">
+        <div className="w-[85vw] max-w-80 md:w-72 lg:w-80 h-full bg-gray-950 border-r border-gray-800 p-3 md:p-4 lg:p-6 flex flex-col space-y-3 md:space-y-4 overflow-y-auto">
           {/* Mode Selector */}
           <div>
             <div className="flex items-center justify-between mb-3">
@@ -349,7 +349,7 @@ export const PromptComposer: React.FC = () => {
   // Render principal para modo GENERATE con pasos
   return (
     <>
-      <div className="w-72 md:w-80 lg:w-96 h-full bg-gray-950 border-r border-gray-800 flex flex-col overflow-hidden">
+      <div className="w-[85vw] max-w-96 md:w-80 lg:w-96 h-full bg-gray-950 border-r border-gray-800 flex flex-col overflow-hidden">
         {/* Header con pasos */}
         <div className="p-3 border-b border-gray-800">
           <div className="flex items-center justify-between mb-2">
@@ -432,13 +432,32 @@ export const PromptComposer: React.FC = () => {
                     {productConfig.type === "polo" ? "Polo" : "Polera"}{" "}
                     {productConfig.color}
                   </p>
+                  {productConfig.type === "polo" && (
+                    <p className="text-gray-300">
+                      <span className="text-gray-500">Manga:</span>{" "}
+                      {productConfig.sleeveType === "manga-corta" ? "Corta" : "Larga"}
+                    </p>
+                  )}
+                  {productConfig.type === "polera" && (
+                    <p className="text-gray-300">
+                      <span className="text-gray-500">Capucha:</span>{" "}
+                      {productConfig.hoodType === "con-gorro" ? "Con gorro" : "Sin gorro"}
+                    </p>
+                  )}
                   <p className="text-gray-300">
                     <span className="text-gray-500">Cuello:</span>{" "}
                     {productConfig.neckType === "v" ? "V" : "Circular"}
                   </p>
                   <p className="text-gray-300">
+                    <span className="text-gray-500">Material:</span>{" "}
+                    {productConfig.material === "pima" ? "Algodón Pima" : "Algodón 100%"}
+                  </p>
+                  <p className="text-gray-300">
                     <span className="text-gray-500">Ubicaciones:</span>{" "}
                     {designConfig.positions.length}
+                  </p>
+                  <p className="text-yellow-400/80 text-[10px] mt-1">
+                    🐵 Logo Monkya incluido
                   </p>
                 </div>
               </div>

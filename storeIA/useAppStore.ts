@@ -35,6 +35,8 @@ export type ProductType = "polo" | "polera";
 export type ProductColor = "verde-petroleo" | "negro" | "rojo" | "blanco";
 export type NeckType = "v" | "circular";
 export type MaterialType = "algodon-100" | "pima";
+export type SleeveType = "manga-corta" | "manga-larga";
+export type HoodType = "con-gorro" | "sin-gorro";
 export type DesignPosition =
   | "espalda-superior"
   | "espalda-centro"
@@ -52,6 +54,8 @@ export interface ProductConfig {
   color: ProductColor;
   neckType: NeckType;
   material: MaterialType;
+  sleeveType: SleeveType;
+  hoodType: HoodType;
 }
 
 export interface DesignConfig {
@@ -184,6 +188,8 @@ export const useAppStore = create<AppState>()(
           color: "blanco",
           neckType: "circular",
           material: "algodon-100",
+          sleeveType: "manga-corta",
+          hoodType: "sin-gorro",
         },
         designConfig: {
           style: "custom",
@@ -270,9 +276,14 @@ export const useAppStore = create<AppState>()(
 
         // Product config actions
         setProductConfig: (config) =>
-          set((state) => ({
-            productConfig: { ...state.productConfig, ...config },
-          })),
+          set((state) => {
+            const newConfig = { ...state.productConfig, ...config };
+            // Auto-set material to algodon-100 when switching to polera (pima is polo-only)
+            if (config.type === "polera" && state.productConfig.material === "pima") {
+              newConfig.material = "algodon-100";
+            }
+            return { productConfig: newConfig };
+          }),
         setDesignConfig: (config) =>
           set((state) => ({
             designConfig: { ...state.designConfig, ...config },
@@ -297,6 +308,8 @@ export const useAppStore = create<AppState>()(
               color: "blanco",
               neckType: "circular",
               material: "algodon-100",
+              sleeveType: "manga-corta",
+              hoodType: "sin-gorro",
             },
             designConfig: {
               style: "custom",
