@@ -20,10 +20,7 @@ import { cn } from "../../utils/cn";
 import { blobToBase64 } from "../../utils/imageUtils";
 import { DesignPositionSelector } from "./DesignPositionSelector";
 import { ProductConfigurator } from "./ProductConfigurator";
-import {
-    buildDesignPrompt,
-    validateDesignPrompt
-} from "./promptBuilder";
+import { buildDesignPrompt, validateDesignPrompt } from "./promptBuilder";
 import { PromptHints } from "./PromptHints";
 import { StoreProductModal } from "./StoreProductModal";
 import { StyleSelector } from "./StyleSelector";
@@ -435,13 +432,17 @@ export const PromptComposer: React.FC = () => {
                   {productConfig.type === "polo" && (
                     <p className="text-gray-300">
                       <span className="text-gray-500">Manga:</span>{" "}
-                      {productConfig.sleeveType === "manga-corta" ? "Corta" : "Larga"}
+                      {productConfig.sleeveType === "manga-corta"
+                        ? "Corta"
+                        : "Larga"}
                     </p>
                   )}
                   {productConfig.type === "polera" && (
                     <p className="text-gray-300">
                       <span className="text-gray-500">Capucha:</span>{" "}
-                      {productConfig.hoodType === "con-gorro" ? "Con gorro" : "Sin gorro"}
+                      {productConfig.hoodType === "con-gorro"
+                        ? "Con gorro"
+                        : "Sin gorro"}
                     </p>
                   )}
                   <p className="text-gray-300">
@@ -450,7 +451,9 @@ export const PromptComposer: React.FC = () => {
                   </p>
                   <p className="text-gray-300">
                     <span className="text-gray-500">Material:</span>{" "}
-                    {productConfig.material === "pima" ? "Algodón Pima" : "Algodón 100%"}
+                    {productConfig.material === "pima"
+                      ? "Algodón Pima"
+                      : "Algodón 100%"}
                   </p>
                   <p className="text-gray-300">
                     <span className="text-gray-500">Ubicaciones:</span>{" "}

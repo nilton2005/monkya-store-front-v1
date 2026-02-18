@@ -103,7 +103,7 @@ export const HistoryPanel: React.FC = () => {
   }
 
   return (
-    <div className="w-64 md:w-72 lg:w-80 bg-gray-950 border-l border-gray-800 p-3 md:p-4 lg:p-6 flex flex-col h-full">
+    <div className="w-[85vw] max-w-80 md:w-72 lg:w-80 bg-gray-950 border-l border-gray-800 p-3 md:p-4 lg:p-6 flex flex-col h-full">
       {/* Header */}
       <div className="flex items-center justify-between mb-3 md:mb-6">
         <div className="flex items-center space-x-2">

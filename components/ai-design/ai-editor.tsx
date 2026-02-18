@@ -96,23 +96,26 @@ function AIEditorContent() {
       {/* Botones flotantes para móvil */}
       {isMobile && (
         <div className="absolute bottom-4 left-0 right-0 flex justify-between px-4 z-30 pointer-events-none">
-          {/* Botón para abrir Prompt */}
+          {/* Botón para abrir Prompt - Monkya branded */}
           <button
             onClick={() => {
               setShowHistory(false);
               setShowPromptPanel(!showPromptPanel);
             }}
             className={cn(
-              "pointer-events-auto w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-all",
+              "pointer-events-auto flex items-center gap-2 rounded-full shadow-lg transition-all",
               showPromptPanel
-                ? "bg-yellow-500 text-gray-900"
-                : "bg-gray-800 text-white border border-gray-700",
+                ? "bg-[#f2cd4e] text-[#272512] px-4 py-3"
+                : "bg-[#f2cd4e] text-[#272512] px-4 py-3 animate-pulse",
             )}
           >
             {showPromptPanel ? (
               <X className="h-5 w-5" />
             ) : (
-              <Menu className="h-5 w-5" />
+              <>
+                <Menu className="h-5 w-5" />
+                <span className="text-xs font-bold">Configurar</span>
+              </>
             )}
           </button>
 
@@ -123,14 +126,19 @@ function AIEditorContent() {
               setShowHistory(!showHistory);
             }}
             className={cn(
-              "pointer-events-auto w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-all",
-              showHistory ? "bg-blue-500 text-white" : "bg-blue-600 text-white",
+              "pointer-events-auto flex items-center gap-2 rounded-full shadow-lg transition-all px-4 py-3",
+              showHistory
+                ? "bg-[#f2cd4e] text-[#272512]"
+                : "bg-green-600 text-white",
             )}
           >
             {showHistory ? (
               <X className="h-5 w-5" />
             ) : (
-              <ShoppingBag className="h-5 w-5" />
+              <>
+                <ShoppingBag className="h-5 w-5" />
+                <span className="text-xs font-bold">Comprar</span>
+              </>
             )}
           </button>
         </div>
