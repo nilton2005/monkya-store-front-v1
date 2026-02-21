@@ -1,13 +1,13 @@
-import { GoogleGenAI } from '@google/genai';
+import { GoogleGenAI } from "@google/genai";
 
 // Note: In production, this should be handled via a backend proxy
 const API_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
 
 if (!API_KEY) {
-  console.error('NEXT_PUBLIC_GEMINI_API_KEY no está configurada en .env');
+  console.error("NEXT_PUBLIC_GEMINI_API_KEY no está configurada en .env");
 }
 
-const genAI = new GoogleGenAI({ apiKey: API_KEY || '' });
+const genAI = new GoogleGenAI({ apiKey: API_KEY || "" });
 
 export interface GenerationRequest {
   prompt: string;
@@ -34,10 +34,10 @@ export class GeminiService {
   async generateImage(request: GenerationRequest): Promise<string[]> {
     try {
       const contents: any[] = [{ text: request.prompt }];
-      
+
       // Add reference images if provided
       if (request.referenceImages && request.referenceImages.length > 0) {
-        request.referenceImages.forEach(image => {
+        request.referenceImages.forEach((image) => {
           contents.push({
             inlineData: {
               mimeType: "image/png",
@@ -64,8 +64,8 @@ export class GeminiService {
 
       return images;
     } catch (error) {
-      console.error('Error generating image:', error);
-      throw new Error('Failed to generate image. Please try again.');
+      console.error("Error generating image:", error);
+      throw new Error("Failed to generate image. Please try again.");
     }
   }
 
@@ -83,7 +83,7 @@ export class GeminiService {
 
       // Add reference images if provided
       if (request.referenceImages && request.referenceImages.length > 0) {
-        request.referenceImages.forEach(image => {
+        request.referenceImages.forEach((image) => {
           contents.push({
             inlineData: {
               mimeType: "image/png",
@@ -119,15 +119,16 @@ export class GeminiService {
 
       return images;
     } catch (error) {
-      console.error('Error editing image:', error);
-      throw new Error('Failed to edit image. Please try again.');
+      console.error("Error editing image:", error);
+      throw new Error("Failed to edit image. Please try again.");
     }
   }
 
   async segmentImage(request: SegmentationRequest): Promise<any> {
     try {
       const prompt = [
-        { text: `Analyze this image and create a segmentation mask for: ${request.query}
+        {
+          text: `Analyze this image and create a segmentation mask for: ${request.query}
 
 Return a JSON object with this exact structure:
 {
@@ -140,7 +141,8 @@ Return a JSON object with this exact structure:
   ]
 }
 
-Only segment the specific object or region requested. The mask should be a binary PNG where white pixels (255) indicate the selected region and black pixels (0) indicate the background.` },
+Only segment the specific object or region requested. The mask should be a binary PNG where white pixels (255) indicate the selected region and black pixels (0) indicate the background.`,
+        },
         {
           inlineData: {
             mimeType: "image/png",
@@ -154,16 +156,17 @@ Only segment the specific object or region requested. The mask should be a binar
         contents: prompt,
       });
 
-      const responseText = response.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
+      const responseText =
+        response.candidates?.[0]?.content?.parts?.[0]?.text || "{}";
       return JSON.parse(responseText);
     } catch (error) {
-      console.error('Error segmenting image:', error);
-      throw new Error('Failed to segment image. Please try again.');
+      console.error("Error segmenting image:", error);
+      throw new Error("Failed to segment image. Please try again.");
     }
   }
 
   private buildEditPrompt(request: EditRequest): string {
-    const maskInstruction = request.maskImage 
+    const maskInstruction = request.maskImage
       ? "\n\nIMPORTANT: Apply changes ONLY where the mask image shows white pixels (value 255). Leave all other areas completely unchanged. Respect the mask boundaries precisely and maintain seamless blending at the edges."
       : "";
 
