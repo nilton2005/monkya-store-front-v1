@@ -54,9 +54,11 @@ export class GeminiService {
 
       const images: string[] = [];
 
-      for (const part of response.candidates[0].content.parts) {
-        if (part.inlineData) {
-          images.push(part.inlineData.data);
+      if (response.candidates && response.candidates[0]?.content?.parts) {
+        for (const part of response.candidates[0].content.parts) {
+          if (part.inlineData && part.inlineData.data) {
+            images.push(part.inlineData.data);
+          }
         }
       }
 
@@ -107,9 +109,11 @@ export class GeminiService {
 
       const images: string[] = [];
 
-      for (const part of response.candidates[0].content.parts) {
-        if (part.inlineData) {
-          images.push(part.inlineData.data);
+      if (response.candidates && response.candidates[0]?.content?.parts) {
+        for (const part of response.candidates[0].content.parts) {
+          if (part.inlineData && part.inlineData.data) {
+            images.push(part.inlineData.data);
+          }
         }
       }
 
@@ -150,7 +154,7 @@ Only segment the specific object or region requested. The mask should be a binar
         contents: prompt,
       });
 
-      const responseText = response.candidates[0].content.parts[0].text;
+      const responseText = response.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
       return JSON.parse(responseText);
     } catch (error) {
       console.error('Error segmenting image:', error);

@@ -71,11 +71,9 @@ export class ImageProcessor {
         
         // Average the alpha channel (mask channel)
         const sum = 
-          temp[idx - 4 + 3] + temp[idx + 3] + temp[idx + 4 + 3] +
-          temp[idx - width * 4 + 3] + temp[idx + 3] + temp[idx + width * 4 + 3] +
-          temp[idx - width * 4 - 4 + 3] + temp[idx - width * 4 + 4 + 3] + temp[idx + width * 4 - 4 + 3];
-        
-        data[idx + 3] = sum / 9;
+          (temp[idx - 4 + 3] || 0) + (temp[idx + 3] || 0) + (temp[idx + 4 + 3] || 0) +
+          (temp[idx - width * 4 + 3] || 0) + (temp[idx + 3] || 0) + (temp[idx + width * 4 + 3] || 0) +
+          (temp[idx - width * 4 - 4 + 3] || 0) + (temp[idx - width * 4 + 4 + 3] || 0) + (temp[idx + width * 4 - 4 + 3] || 0);
       }
     }
   }
@@ -90,6 +88,6 @@ export class ImageProcessor {
     ctx.putImageData(imageData, 0, 0);
     
     const dataUrl = canvas.toDataURL('image/png');
-    return dataUrl.split(',')[1]; // Remove data:image/png;base64, prefix
+    return dataUrl.split(',')[1] || ''; // Remove data:image/png;base64, prefix
   }
 }

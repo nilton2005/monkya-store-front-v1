@@ -15,7 +15,7 @@ export function blobToBase64(blob: Blob): Promise<string> {
     const reader = new FileReader();
     reader.onload = () => {
       const result = reader.result as string;
-      const base64 = result.split(',')[1]; // Remove data:image/png;base64, prefix
+      const base64 = result.split(',')[1] || ''; // Remove data:image/png;base64, prefix
       resolve(base64);
     };
     reader.onerror = reject;

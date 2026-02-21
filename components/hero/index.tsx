@@ -1,12 +1,12 @@
 "use client";
 
-import Image from "next/image";
 import { motion } from "framer-motion";
+import Image from "next/image";
 import Link from "next/link";
+import type { HeroData } from "types";
 import { cn } from "utils/cn";
 import { Clips } from "./clips";
 import { SocialLink } from "./social-link";
-import type { HeroData } from "types";
 
 interface HeroProps {
   data: HeroData;
@@ -30,7 +30,7 @@ const itemVariants = {
     y: 0,
     transition: {
       duration: 0.6,
-      ease: [0.25, 0.25, 0, 1],
+      ease: [0.25, 0.25, 0, 1] as const,
     },
   },
 };
@@ -47,8 +47,9 @@ export function Hero({ data }: HeroProps) {
         transition={{ duration: 0.8 }}
         className="absolute top-0 left-0 right-0 z-10 w-full"
         style={{
-          height: '100%',
-          background: "linear-gradient(135deg, rgba(39, 37, 18, 1) 0%, rgba(242, 205, 78, 0.3) 100%)",
+          height: "100%",
+          background:
+            "linear-gradient(135deg, rgba(39, 37, 18, 1) 0%, rgba(242, 205, 78, 0.3) 100%)",
           clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 85%)",
         }}
       />
@@ -60,7 +61,7 @@ export function Hero({ data }: HeroProps) {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
           className="absolute left-2 sm:left-3 md:left-4 lg:left-6 z-30 flex flex-col gap-2 items-center justify-center"
-          style={{ height: '100%', top: 0 }}
+          style={{ height: "100%", top: 0 }}
         >
           {videos.map((val, i) => (
             <Clips key={i} clip={val} />
@@ -75,7 +76,7 @@ export function Hero({ data }: HeroProps) {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
           className="absolute right-2 sm:right-3 md:right-4 lg:right-6 z-30 flex flex-col gap-3 items-center justify-center"
-          style={{ height: '100%', top: 0 }}
+          style={{ height: "100%", top: 0 }}
         >
           {sociallinks.map((val, i) => (
             <SocialLink key={i} item={val} />
@@ -89,7 +90,7 @@ export function Hero({ data }: HeroProps) {
         initial="hidden"
         animate="visible"
         className="relative z-20 flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8"
-        style={{ height: '100%' }}
+        style={{ height: "100%" }}
       >
         {/* Titles and button */}
         <div className="flex flex-col items-center mb-3">
@@ -117,7 +118,7 @@ export function Hero({ data }: HeroProps) {
                   "text-sm sm:text-base font-semibold shadow-lg",
                   "transition-all duration-100 ease-in-out",
                   "hover:scale-105 active:scale-95",
-                  "hover:shadow-xl"
+                  "hover:shadow-xl",
                 )}
               >
                 {btntext}
@@ -131,7 +132,7 @@ export function Hero({ data }: HeroProps) {
                   "text-sm sm:text-base font-semibold shadow-lg",
                   "transition-all duration-100 ease-in-out",
                   "hover:scale-105 active:scale-95",
-                  "hover:shadow-xl"
+                  "hover:shadow-xl",
                 )}
               >
                 {btntext}
