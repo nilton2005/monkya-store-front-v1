@@ -17,8 +17,10 @@ const COMMUNITY_PHOTOS: {
   product?: string;
 }[] = [
   // Add your community photos here:
-  // { src: '/images/comunidad/foto1.jpg', alt: 'Cliente con polo Monkya', name: 'Juan', product: 'Polo Minimalista' },
-  // { src: '/images/comunidad/foto2.jpg', alt: 'Cliente con polera Monkya', name: 'María', product: 'Polera Street' },
+   { src: '/images/comunidad/deyson-dev.jpeg', alt: 'Cliente con polo Monkya', name: 'Deyson', product: 'Polo  - CodeHub' },
+  { src: '/images/comunidad/nil-code-log.jpeg', alt: 'Cliente con polera Monkya', name: 'Nilton', product: 'Polo pima Code' },
+  { src: '/images/comunidad/ton-wakandev.jpeg', alt: 'Cliente con polera Monkya', name: 'Grupo de programadores que confío en Monkya', product: 'Polera Wakandev' },
+  { src: '/images/comunidad/jeefry.jpeg', alt: 'Cliente con polera Monkya', name: 'Jeefry', product: 'Polo - Kotlin' }
 ];
 
 export default function ComunidadPage() {

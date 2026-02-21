@@ -120,7 +120,7 @@ export const PRODUCTOS: SimpleProduct[] = [
     tags: ['wakanda', 'marvel', 'exclusivo', 'colección', 'premium'],
     sizeUpcharge: 3,
     generalImages: {
-      hero: '/images-products/Hoodie/hoodies-wakanda/hoodies-wakanda-man.png'
+      //hero: '/images-products/Hoodie/hoodies-wakanda/hoodies-wakanda-man.png'
     }
   },
 
