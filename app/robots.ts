@@ -1,13 +1,15 @@
-import { baseUrl } from 'lib/utils';
+import { baseUrl } from "lib/utils";
 
 export default function robots() {
   return {
     rules: [
       {
-        userAgent: '*'
-      }
+        userAgent: "*",
+        allow: "/",
+        disallow: ["/api/", "/checkout", "/cart"],
+      },
     ],
     sitemap: `${baseUrl}/sitemap.xml`,
-    host: baseUrl
+    host: baseUrl,
   };
 }

@@ -3,13 +3,29 @@ import { FAQ } from "components/faq";
 import { ThreeItemGrid } from "components/grid/three-items";
 import Footer from "components/layout/footer";
 import { faqData } from "lib/faq-data";
+import { baseUrl } from "lib/utils";
+import type { Metadata } from "next";
 import Link from "next/link";
 
-export const metadata = {
+export const metadata: Metadata = {
+  title: "Inicio",
   description:
     "Tienda de diseños personalizados con IA. Crea tu propio diseño o elige entre los favoritos de nuestra comunidad.",
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     type: "website",
+    url: baseUrl,
+    title: "Monkya | Camisetas personalizadas con IA",
+    description:
+      "Crea diseños con IA, explora estilos de la comunidad y compra camisetas personalizadas online.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Monkya | Camisetas personalizadas con IA",
+    description:
+      "Crea diseños con IA, explora estilos de la comunidad y compra camisetas personalizadas online.",
   },
 };
 
