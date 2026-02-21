@@ -95,7 +95,7 @@ function AIEditorContent() {
 
       {/* Botones flotantes para móvil */}
       {isMobile && (
-        <div className="absolute bottom-4 left-0 right-0 flex justify-between px-4 z-30 pointer-events-none">
+        <div className="absolute bottom-24 left-0 right-0 flex justify-between px-4 z-30 pointer-events-none">
           {/* Botón para abrir Prompt - Monkya branded */}
           <button
             onClick={() => {
@@ -114,7 +114,7 @@ function AIEditorContent() {
             ) : (
               <>
                 <Menu className="h-5 w-5" />
-                <span className="text-xs font-bold">Configurar</span>
+                <span className="text-xs font-bold">Crear</span>
               </>
             )}
           </button>
