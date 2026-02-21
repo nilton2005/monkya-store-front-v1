@@ -36,7 +36,7 @@ export async function addItem(
       customImageRef: customImageRef || undefined,
       customTitle: customTitle || undefined
     }]);
-    revalidateTag(TAGS.cart);
+    revalidateTag(TAGS.cart, 'default');
     console.log('✅ Item added to cart successfully');
   } catch (e) {
     console.error('❌ Error in addItem:', e);
@@ -58,7 +58,7 @@ export async function removeItem(prevState: any, lineId: string) {
 
     if (lineItem && lineItem.id) {
       await removeFromCart([lineItem.id]);
-      revalidateTag(TAGS.cart);
+      revalidateTag(TAGS.cart, 'default');
     } else {
       return 'Item not found in cart';
     }
@@ -107,7 +107,7 @@ export async function updateItemQuantity(
       await addToCart([{ merchandiseId, quantity }]);
     }
 
-    revalidateTag(TAGS.cart);
+    revalidateTag(TAGS.cart, 'default');
   } catch (e) {
     console.error(e);
     return 'Error updating item quantity';
