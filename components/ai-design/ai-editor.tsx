@@ -28,18 +28,29 @@ function AIEditorContent() {
 
   const [isMobile, setIsMobile] = React.useState(false);
 
-  // Set mobile defaults on mount
+  // Set mobile defaults on mount and handle resize
   React.useEffect(() => {
+    let wasMobile = window.innerWidth < 768;
+
     const checkMobile = () => {
-      const mobile = window.innerWidth < 768;
-      setIsMobile(mobile);
-      if (mobile) {
+      const isCurrentlyMobile = window.innerWidth < 768;
+      setIsMobile(isCurrentlyMobile);
+
+      // Only close panels if transitioning from desktop to mobile
+      if (isCurrentlyMobile && !wasMobile) {
         setShowPromptPanel(false);
         setShowHistory(false);
       }
+      wasMobile = isCurrentlyMobile;
     };
 
-    checkMobile();
+    // Initial setup
+    setIsMobile(wasMobile);
+    if (wasMobile) {
+      setShowPromptPanel(false);
+      setShowHistory(false);
+    }
+
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
   }, [setShowPromptPanel, setShowHistory]);

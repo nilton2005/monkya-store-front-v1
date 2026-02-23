@@ -6,6 +6,7 @@ import { baseUrl } from "lib/utils";
 import type { Metadata } from "next";
 import { ReactNode } from "react";
 import { Toaster } from "sonner";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 const { SITE_NAME } = process.env;
@@ -115,6 +116,7 @@ export default async function RootLayout({
             <Toaster closeButton />
           </main>
         </CartProvider>
+        <Analytics />
       </body>
     </html>
   );
