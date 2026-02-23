@@ -4,15 +4,15 @@
   "cost": {
     "subtotalAmount": {
       "amount": "162.00",
-      "currencyCode": "USD"
+      "currencyCode": "PEN"
     },
     "totalAmount": {
       "amount": "162.00",
-      "currencyCode": "USD"
+      "currencyCode": "PEN"
     },
     "totalTaxAmount": {
       "amount": "0.00",
-      "currencyCode": "USD"
+      "currencyCode": "PEN"
     }
   },
   "lines": [
@@ -22,7 +22,7 @@
       "cost": {
         "totalAmount": {
           "amount": "125.00",
-          "currencyCode": "USD"
+          "currencyCode": "PEN"
         }
       },
       "merchandise": {
@@ -57,7 +57,7 @@
       "cost": {
         "totalAmount": {
           "amount": "37.00",
-          "currencyCode": "USD"
+          "currencyCode": "PEN"
         }
       },
       "merchandise": {

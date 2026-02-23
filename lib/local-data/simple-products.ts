@@ -1,7 +1,7 @@
 export interface SimpleProduct {
   title: string; // "Camiseta Básica"
   description: string; // "Camiseta de algodón..."
-  basePrice: number; // 20 (precio base en USD)
+  basePrice: number; // 20 (precio base en PEN)
 
   category: "camiseta" | "hoodie" | "pantalon" | "zapatos" | "accesorios";
 

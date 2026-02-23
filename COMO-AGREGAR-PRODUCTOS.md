@@ -16,7 +16,7 @@ Solo tienes que editar **UN archivo** y todo se organizará automáticamente:
 {
   title: 'Mi Nuevo Producto',
   description: 'Descripción detallada del producto...',
-  basePrice: 25,                    // Precio base en USD
+  basePrice: 25,                    // Precio base en PEN
   category: 'camiseta',             // Categoría (ver opciones abajo)
   colors: [
     { name: 'Rojo', code: '#FF0000' },

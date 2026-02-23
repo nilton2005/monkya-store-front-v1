@@ -52,9 +52,9 @@ export async function createLocalCart(): Promise<Cart> {
     id: generateId(),
     checkoutUrl: '/checkout',
     cost: {
-      subtotalAmount: { amount: '0.00', currencyCode: 'USD' },
-      totalAmount: { amount: '0.00', currencyCode: 'USD' },
-      totalTaxAmount: { amount: '0.00', currencyCode: 'USD' }
+      subtotalAmount: { amount: '0.00', currencyCode: 'PEN' },
+      totalAmount: { amount: '0.00', currencyCode: 'PEN' },
+      totalTaxAmount: { amount: '0.00', currencyCode: 'PEN' }
     },
     lines: [],
     totalQuantity: 0
@@ -75,9 +75,9 @@ export async function getLocalCart(): Promise<Cart | undefined> {
     id: generateId(),
     checkoutUrl: '/checkout',
     cost: {
-      subtotalAmount: { amount: '0.00', currencyCode: 'USD' },
-      totalAmount: { amount: '0.00', currencyCode: 'USD' },
-      totalTaxAmount: { amount: '0.00', currencyCode: 'USD' }
+      subtotalAmount: { amount: '0.00', currencyCode: 'PEN' },
+      totalAmount: { amount: '0.00', currencyCode: 'PEN' },
+      totalTaxAmount: { amount: '0.00', currencyCode: 'PEN' }
     },
     lines: [],
     totalQuantity: 0

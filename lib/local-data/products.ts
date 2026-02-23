@@ -33,11 +33,11 @@ export const localProducts: Product[] = [
     priceRange: {
       maxVariantPrice: {
         amount: '25.00',
-        currencyCode: 'USD'
+        currencyCode: 'PEN'
       },
       minVariantPrice: {
-        amount: '20.00',
-        currencyCode: 'USD'
+        amount: '25.00',
+        currencyCode: 'PEN'
       }
     },
     variants: [
@@ -51,7 +51,7 @@ export const localProducts: Product[] = [
         ],
         price: {
           amount: '20.00',
-          currencyCode: 'USD'
+          currencyCode: 'PEN'
         }
       },
       {
@@ -64,7 +64,7 @@ export const localProducts: Product[] = [
         ],
         price: {
           amount: '22.00',
-          currencyCode: 'USD'
+          currencyCode: 'PEN'
         }
       },
       {
@@ -77,7 +77,7 @@ export const localProducts: Product[] = [
         ],
         price: {
           amount: '25.00',
-          currencyCode: 'USD'
+          currencyCode: 'PEN'
         }
       }
     ],
