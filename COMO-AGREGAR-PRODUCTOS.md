@@ -28,6 +28,7 @@ Solo tienes que editar **UN archivo** y todo se organizará automáticamente:
 ### 3. ¡Listo! 🎉
 
 **El sistema automáticamente:**
+
 - ✅ Crea todas las variantes (tallas + colores)
 - ✅ Calcula precios por talla
 - ✅ Genera URLs e IDs únicos
@@ -39,11 +40,11 @@ Solo tienes que editar **UN archivo** y todo se organizará automáticamente:
 ## 📋 Categorías disponibles
 
 ```typescript
-'camiseta'    // 👕 Se va a: /search/camiseta
-'hoodie'      // 🧥 Se va a: /search/hoodie  
-'pantalon'    // 👖 Se va a: /search/pantalon
-'zapatos'     // 👟 Se va a: /search/zapatos
-'accesorios'  // 🎒 Se va a: /search/accesorios
+"camiseta"; // 👕 Se va a: /search/camiseta
+"hoodie"; // 🧥 Se va a: /search/hoodie
+"pantalon"; // 👖 Se va a: /search/pantalon
+"zapatos"; // 👟 Se va a: /search/zapatos
+"accesorios"; // 🎒 Se va a: /search/accesorios
 ```
 
 ## 🎨 Ejemplo completo
@@ -69,6 +70,7 @@ Solo tienes que editar **UN archivo** y todo se organizará automáticamente:
 ## 🔧 Configuraciones avanzadas
 
 ### Precios por talla
+
 ```typescript
 // En STORE_CONFIG
 sizePricing: {
@@ -81,6 +83,7 @@ sizePricing: {
 ```
 
 ### Agregar nueva categoría
+
 ```typescript
 // En CATEGORY_CONFIG
 nuevacategoria: {
@@ -96,7 +99,7 @@ nuevacategoria: {
 Agrega esto en cualquier componente:
 
 ```typescript
-import { getStoreStats } from 'lib/local-data/products';
+import { getStoreStats } from "lib/local-data/products";
 
 const stats = getStoreStats();
 console.log(stats);
@@ -115,6 +118,7 @@ console.log(stats);
 ## 🎯 Ejemplos de productos que puedes agregar
 
 ### Pantalones
+
 ```typescript
 {
   title: 'Jeans Clásicos',
@@ -130,6 +134,7 @@ console.log(stats);
 ```
 
 ### Zapatos
+
 ```typescript
 {
   title: 'Sneakers Urbanos',
@@ -145,6 +150,7 @@ console.log(stats);
 ```
 
 ### Accesorios
+
 ```typescript
 {
   title: 'Gorra Snapback',
@@ -174,6 +180,7 @@ console.log(stats);
 ## 🎨 Personalizar imágenes
 
 ### Opción 1: Usar imágenes reales
+
 ```typescript
 {
   title: 'Mi Producto',
@@ -186,8 +193,9 @@ console.log(stats);
 ```
 
 ### Opción 2: Las placeholder se generan automáticamente
+
 - `/placeholder-camiseta-rojo.jpg`
-- `/placeholder-hoodie-negro.jpg` 
+- `/placeholder-hoodie-negro.jpg`
 - `/placeholder-pantalon-azul.jpg`
 
 ## 🚀 ¡Resultado final!
@@ -195,8 +203,9 @@ console.log(stats);
 **Antes:** Tenías que editar 5+ archivos para agregar un producto
 
 **Ahora:** Solo editas 1 archivo y todo se organiza automáticamente:
+
 - ✅ Producto aparece en la tienda
-- ✅ Se agrega a la categoría correcta  
+- ✅ Se agrega a la categoría correcta
 - ✅ Aparece en el menú de navegación
 - ✅ Todas las variantes funcionan
 - ✅ Precios calculados automáticamente

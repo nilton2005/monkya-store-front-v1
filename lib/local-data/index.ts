@@ -1,12 +1,12 @@
 import {
-    addItemToCookie,
-    clearCartCookie,
-    getCartFromCookie,
-    removeItemFromCookie,
-    updateItemQuantityInCookie
-} from '../cart-cookies';
-import { Cart, Collection, Menu, Product } from '../shopify/types';
-import { localCollections, localMenu, localProducts } from './auto-generator';
+  addItemToCookie,
+  clearCartCookie,
+  getCartFromCookie,
+  removeItemFromCookie,
+  updateItemQuantityInCookie,
+} from "../cart-cookies";
+import { Cart, Collection, Menu, Product } from "../shopify/types";
+import { localCollections, localMenu, localProducts } from "./auto-generator";
 
 // Helper function to generate a random ID
 function generateId(): string {
@@ -16,7 +16,7 @@ function generateId(): string {
 // Helper function to find variant by ID
 function findVariantById(variantId: string) {
   for (const product of localProducts) {
-    const variant = product.variants.find(v => v.id === variantId);
+    const variant = product.variants.find((v) => v.id === variantId);
     if (variant) return variant;
   }
   return null;
@@ -25,7 +25,7 @@ function findVariantById(variantId: string) {
 // Helper function to find product by variant ID
 function findProductByVariantId(variantId: string) {
   for (const product of localProducts) {
-    const variant = product.variants.find(v => v.id === variantId);
+    const variant = product.variants.find((v) => v.id === variantId);
     if (variant) return product;
   }
   return null;
@@ -50,37 +50,37 @@ function updateCartTotals(cart: Cart) {
 export async function createLocalCart(): Promise<Cart> {
   const cart: Cart = {
     id: generateId(),
-    checkoutUrl: '/checkout',
+    checkoutUrl: "/checkout",
     cost: {
-      subtotalAmount: { amount: '0.00', currencyCode: 'PEN' },
-      totalAmount: { amount: '0.00', currencyCode: 'PEN' },
-      totalTaxAmount: { amount: '0.00', currencyCode: 'PEN' }
+      subtotalAmount: { amount: "0.00", currencyCode: "PEN" },
+      totalAmount: { amount: "0.00", currencyCode: "PEN" },
+      totalTaxAmount: { amount: "0.00", currencyCode: "PEN" },
     },
     lines: [],
-    totalQuantity: 0
+    totalQuantity: 0,
   };
-  
+
   return cart;
 }
 
 // Build full Cart object from cookie data
 export async function getLocalCart(): Promise<Cart | undefined> {
   const cookieCart = await getCartFromCookie();
-  
+
   if (cookieCart.items.length === 0) {
     return undefined;
   }
 
   const cart: Cart = {
     id: generateId(),
-    checkoutUrl: '/checkout',
+    checkoutUrl: "/checkout",
     cost: {
-      subtotalAmount: { amount: '0.00', currencyCode: 'PEN' },
-      totalAmount: { amount: '0.00', currencyCode: 'PEN' },
-      totalTaxAmount: { amount: '0.00', currencyCode: 'PEN' }
+      subtotalAmount: { amount: "0.00", currencyCode: "PEN" },
+      totalAmount: { amount: "0.00", currencyCode: "PEN" },
+      totalTaxAmount: { amount: "0.00", currencyCode: "PEN" },
     },
     lines: [],
-    totalQuantity: 0
+    totalQuantity: 0,
   };
 
   // Reconstruct cart lines from cookie items
@@ -96,9 +96,11 @@ export async function getLocalCart(): Promise<Cart | undefined> {
       quantity: cookieItem.quantity,
       cost: {
         totalAmount: {
-          amount: (parseFloat(variant.price.amount) * cookieItem.quantity).toFixed(2),
-          currencyCode: variant.price.currencyCode
-        }
+          amount: (
+            parseFloat(variant.price.amount) * cookieItem.quantity
+          ).toFixed(2),
+          currencyCode: variant.price.currencyCode,
+        },
       },
       merchandise: {
         id: cookieItem.merchandiseId,
@@ -108,12 +110,12 @@ export async function getLocalCart(): Promise<Cart | undefined> {
           id: product.id,
           handle: product.handle,
           title: product.title,
-          featuredImage: product.featuredImage
-        }
+          featuredImage: product.featuredImage,
+        },
       },
       // Note: customImage will be retrieved from localStorage on the client
       customImageRef: cookieItem.customImageRef,
-      customTitle: cookieItem.customTitle
+      customTitle: cookieItem.customTitle,
     };
 
     cart.lines.push(cartLine);
@@ -125,7 +127,12 @@ export async function getLocalCart(): Promise<Cart | undefined> {
 
 // Add item to cart
 export async function addToLocalCart(
-  lines: { merchandiseId: string; quantity: number; customImageRef?: string; customTitle?: string }[]
+  lines: {
+    merchandiseId: string;
+    quantity: number;
+    customImageRef?: string;
+    customTitle?: string;
+  }[],
 ): Promise<Cart> {
   for (const line of lines) {
     const variant = findVariantById(line.merchandiseId);
@@ -138,7 +145,7 @@ export async function addToLocalCart(
       line.merchandiseId,
       line.quantity,
       line.customImageRef,
-      line.customTitle
+      line.customTitle,
     );
 
     // Note: The actual customImage is already stored in localStorage by the client
@@ -165,7 +172,7 @@ export async function clearLocalCart(): Promise<Cart> {
 
 // Update cart item quantity
 export async function updateLocalCart(
-  lines: { id: string; merchandiseId: string; quantity: number }[]
+  lines: { id: string; merchandiseId: string; quantity: number }[],
 ): Promise<Cart> {
   for (const line of lines) {
     await updateItemQuantityInCookie(line.id, line.quantity);
@@ -178,7 +185,7 @@ export async function updateLocalCart(
 export async function getLocalProducts({
   query,
   reverse,
-  sortKey
+  sortKey,
 }: {
   query?: string;
   reverse?: boolean;
@@ -188,31 +195,36 @@ export async function getLocalProducts({
 
   // Filter by query
   if (query) {
-    products = products.filter(product =>
-      product.title.toLowerCase().includes(query.toLowerCase()) ||
-      product.description.toLowerCase().includes(query.toLowerCase()) ||
-      product.tags.some(tag => tag.toLowerCase().includes(query.toLowerCase()))
+    products = products.filter(
+      (product) =>
+        product.title.toLowerCase().includes(query.toLowerCase()) ||
+        product.description.toLowerCase().includes(query.toLowerCase()) ||
+        product.tags.some((tag) =>
+          tag.toLowerCase().includes(query.toLowerCase()),
+        ),
     );
   }
 
   // Sort products
   if (sortKey) {
     switch (sortKey) {
-      case 'PRICE':
+      case "PRICE":
         products.sort((a, b) => {
           const priceA = parseFloat(a.priceRange.minVariantPrice.amount);
           const priceB = parseFloat(b.priceRange.minVariantPrice.amount);
           return reverse ? priceB - priceA : priceA - priceB;
         });
         break;
-      case 'CREATED_AT':
+      case "CREATED_AT":
         products.sort((a, b) => {
           const dateA = new Date(a.updatedAt);
           const dateB = new Date(b.updatedAt);
-          return reverse ? dateB.getTime() - dateA.getTime() : dateA.getTime() - dateB.getTime();
+          return reverse
+            ? dateB.getTime() - dateA.getTime()
+            : dateA.getTime() - dateB.getTime();
         });
         break;
-      case 'BEST_SELLING':
+      case "BEST_SELLING":
         // For now, just return in default order
         break;
       default:
@@ -224,19 +236,23 @@ export async function getLocalProducts({
 }
 
 // Get single product
-export async function getLocalProduct(handle: string): Promise<Product | undefined> {
-  return localProducts.find(product => product.handle === handle);
+export async function getLocalProduct(
+  handle: string,
+): Promise<Product | undefined> {
+  return localProducts.find((product) => product.handle === handle);
 }
 
 // Get product recommendations
-export async function getLocalProductRecommendations(productId: string): Promise<Product[]> {
-  const currentProduct = localProducts.find(p => p.id === productId);
+export async function getLocalProductRecommendations(
+  productId: string,
+): Promise<Product[]> {
+  const currentProduct = localProducts.find((p) => p.id === productId);
   if (!currentProduct) return [];
 
   // Return other products from same category (based on tags)
   return localProducts
-    .filter(p => p.id !== productId)
-    .filter(p => p.tags.some(tag => currentProduct.tags.includes(tag)))
+    .filter((p) => p.id !== productId)
+    .filter((p) => p.tags.some((tag) => currentProduct.tags.includes(tag)))
     .slice(0, 4);
 }
 
@@ -246,58 +262,62 @@ export async function getLocalCollections(): Promise<Collection[]> {
 }
 
 // Get single collection
-export async function getLocalCollection(handle: string): Promise<Collection | undefined> {
-  return localCollections.find(collection => collection.handle === handle);
+export async function getLocalCollection(
+  handle: string,
+): Promise<Collection | undefined> {
+  return localCollections.find((collection) => collection.handle === handle);
 }
 
 // Get collection products - MEJORADO CON SISTEMA AUTOMÁTICO
 export async function getLocalCollectionProducts({
   collection,
   reverse,
-  sortKey
+  sortKey,
 }: {
   collection: string;
   reverse?: boolean;
   sortKey?: string;
 }): Promise<Product[]> {
-  console.log('🔍 Buscando colección:', collection);
-  console.log('📦 Total productos disponibles:', localProducts.length);
-  
-  if (collection === '' || collection === 'all') {
-    console.log('✅ Retornando todos los productos');
+  console.log("🔍 Buscando colección:", collection);
+  console.log("📦 Total productos disponibles:", localProducts.length);
+
+  if (collection === "" || collection === "all") {
+    console.log("✅ Retornando todos los productos");
     return getLocalProducts({ reverse, sortKey });
   }
 
   // Filtrar productos por tags que incluyan el handle de la colección
-  let products = localProducts.filter(product => {
-    const hasTag = product.tags.some(tag => tag === collection);
+  let products = localProducts.filter((product) => {
+    const hasTag = product.tags.some((tag) => tag === collection);
     const inHandle = product.handle.includes(collection);
-    
+
     console.log(`📌 Producto: ${product.title}`);
-    console.log(`   Tags: ${product.tags.join(', ')}`);
+    console.log(`   Tags: ${product.tags.join(", ")}`);
     console.log(`   Handle: ${product.handle}`);
     console.log(`   Match por tag: ${hasTag}, Match por handle: ${inHandle}`);
-    
+
     return hasTag || inHandle;
   });
-  
+
   console.log(`✨ Productos filtrados para "${collection}":`, products.length);
 
   // Apply sorting
   if (sortKey) {
     switch (sortKey) {
-      case 'PRICE':
+      case "PRICE":
         products.sort((a, b) => {
           const priceA = parseFloat(a.priceRange.minVariantPrice.amount);
           const priceB = parseFloat(b.priceRange.minVariantPrice.amount);
           return reverse ? priceB - priceA : priceA - priceB;
         });
         break;
-      case 'CREATED_AT':
+      case "CREATED_AT":
         products.sort((a, b) => {
           const dateA = new Date(a.updatedAt);
           const dateB = new Date(b.updatedAt);
-          return reverse ? dateB.getTime() - dateA.getTime() : dateA.getTime() - dateB.getTime();
+          return reverse
+            ? dateB.getTime() - dateA.getTime()
+            : dateA.getTime() - dateB.getTime();
         });
         break;
     }

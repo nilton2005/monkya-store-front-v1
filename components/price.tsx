@@ -3,7 +3,7 @@ import clsx from 'clsx';
 const Price = ({
   amount,
   className,
-  currencyCode = 'USD',
+  currencyCode = 'PEN',
   currencyCodeClassName
 }: {
   amount: string;
