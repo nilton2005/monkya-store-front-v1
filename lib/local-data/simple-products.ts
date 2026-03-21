@@ -1,9 +1,12 @@
+import catalogData from "./catalog.json";
+
 export interface SimpleProduct {
   title: string; // "Camiseta Básica"
   description: string; // "Camiseta de algodón..."
   basePrice: number; // 20 (precio base en PEN)
 
   category: "camiseta" | "hoodie" | "pantalon" | "zapatos" | "accesorios";
+  subcategory?: "security / hacking" | "3D / realidad virtual";
 
   colors: {
     name: string; // "Blanco", "Negro", "Azul"
@@ -33,122 +36,8 @@ export interface SimpleProduct {
 
 // 🎯 CATÁLOGO DE PRODUCTOS
 // ========================
-// Solo agrega productos aquí ⬇️
-export const PRODUCTOS: SimpleProduct[] = [
-  // 🎨 CAMISETAS
-  {
-    title: "T-Shirt Anthropic",
-    description:
-      "Camiseta exclusiva con diseño Anthropic. Disponible en estilos para hombre y mujer. Algodón premium de alta calidad.",
-    basePrice: 28,
-    category: "camiseta",
-    colors: [
-      {
-        name: "Negro",
-        code: "#000000",
-        images: {
-          front: "/images-products/t-shirt/t-shirt_anthopic/man_style.png",
-          back: "/images-products/t-shirt/t-shirt_anthopic/Women_style.png",
-        },
-      },
-    ],
-    sizes: ["S", "M", "L", "XL"],
-    tags: ["tech", "anthropic", "exclusivo", "premium"],
-    //generalImages: {
-    //  hero: '/images-products/t-shirt/t-shirt_anthopic/man_style.png'
-    // }
-  },
-
-  {
-    title: "T-Shirt Free WiFi",
-    description:
-      'Camiseta divertida con mensaje "Free WiFi". Perfecta para desarrolladores y tech lovers. Diseño moderno y cómodo.',
-    basePrice: 25,
-    category: "camiseta",
-    colors: [
-      {
-        name: "Negro",
-        code: "#000000",
-        images: {
-          front:
-            "/images-products/t-shirt/t-shirt-free_wifi/tshirt-free-wifi-man.png",
-          back: "/images-products/t-shirt/t-shirt-free_wifi/thsir-free-wifi-woman.png",
-        },
-      },
-    ],
-    sizes: ["S", "M", "L", "XL"],
-    tags: ["tech", "wifi", "divertido", "geek", "desarrollador"],
-  },
-
-  // 🧥 HOODIES
-  {
-    title: "Hoodie Void",
-    description:
-      "Sudadera con capucha estilo Void. Diseño minimalista y elegante. Perfecta para el frío y estilo urbano.",
-    basePrice: 48,
-    category: "hoodie",
-    colors: [
-      {
-        name: "Verde petroleo",
-        code: "#000000",
-        images: {
-          front: "/images-products/Hoodie/hoodies-void/hoodies-void-man.png",
-          back: "/images-products/Hoodie/hoodies-void/hoodies-void-woman.png",
-        },
-      },
-    ],
-    sizes: ["S", "M", "L", "XL", "XXL"],
-    tags: ["void", "urbano", "minimalista", "premium"],
-    generalImages: {
-      //hero: '/images-products/Hoodie/hoodies-void/hoodies-void-man.png'
-    },
-  },
-
-  {
-    title: "Hoodie Wakanda",
-    description:
-      "Sudadera con capucha inspirada en Wakanda. Diseño único y llamativo. Calidad excepcional y estilo distintivo.",
-    basePrice: 52,
-    category: "hoodie",
-    colors: [
-      {
-        name: "Negro",
-        code: "#000000",
-        images: {
-          front:
-            "/images-products/Hoodie/hoodies-wakanda/hoodies-wakanda-man.png",
-          back: "/images-products/Hoodie/hoodies-wakanda/hoodies-wakanda-woman.png",
-        },
-      },
-    ],
-    sizes: ["S", "M", "L", "XL", "XXL"],
-    tags: ["wakanda", "marvel", "exclusivo", "colección", "premium"],
-    sizeUpcharge: 3,
-    generalImages: {
-      //hero: '/images-products/Hoodie/hoodies-wakanda/hoodies-wakanda-man.png'
-    },
-  },
-
-  // 🤖 IA GENERATED TEMPLATE
-  {
-    title: "IA Generated",
-    description:
-      "Tu diseño único generado con Inteligencia Artificial. Impreso en nuestra camiseta premium de algodón.",
-    basePrice: 35,
-    category: "camiseta",
-    colors: [
-      {
-        name: "Negro",
-        code: "#000000",
-        images: {
-          front: "/images-products/t-shirt/t-shirt_anthopic/man_style.png", // Placeholder base
-        },
-      },
-    ],
-    sizes: ["S", "M", "L", "XL"],
-    tags: ["ia", "custom", "generated", "unique"],
-  },
-];
+// El portal local administra este catálogo y guarda cambios en catalog.json.
+export const PRODUCTOS: SimpleProduct[] = catalogData.products as SimpleProduct[];
 
 // 🏷️ CONFIGURACIÓN DE CATEGORÍAS
 // ==============================

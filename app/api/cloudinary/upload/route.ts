@@ -1,6 +1,7 @@
 
 import { v2 as cloudinary } from "cloudinary";
 import { NextResponse } from "next/server";
+import { Buffer } from "node:buffer";
 
 // Configurar Cloudinary con las credenciales del servidor
 // Estas variables NUNCA se exponen al cliente (no tienen NEXT_PUBLIC_)
@@ -37,9 +38,42 @@ export async function POST(
   request: Request,
 ): Promise<NextResponse<UploadResponse>> {
   try {
-    // 1. Parsear el body de la request
-    const body = await request.json();
-    const { image, folder = "monkya-orders", customName } = body;
+    const contentType = request.headers.get("content-type") || "";
+    let image = "";
+    let folder = "monkya-orders";
+    let customName: string | undefined;
+
+    // Soportamos JSON (data URL) y multipart/form-data (archivo binario).
+    if (contentType.includes("multipart/form-data")) {
+      const formData = await request.formData();
+      const file = formData.get("file");
+      folder = String(formData.get("folder") || folder);
+      customName = String(formData.get("customName") || "").trim() || undefined;
+
+      if (!(file instanceof File)) {
+        return NextResponse.json(
+          { success: false, error: "No se proporcionó archivo" },
+          { status: 400 },
+        );
+      }
+
+      if (!file.type.startsWith("image/")) {
+        return NextResponse.json(
+          { success: false, error: "El archivo debe ser una imagen válida" },
+          { status: 400 },
+        );
+      }
+
+      const arrayBuffer = await file.arrayBuffer();
+      const base64 = Buffer.from(arrayBuffer).toString("base64");
+      image = `data:${file.type};base64,${base64}`;
+    } else {
+      // 1. Parsear el body JSON de la request
+      const body = await request.json();
+      image = body.image;
+      folder = body.folder || folder;
+      customName = body.customName;
+    }
 
     // 2. Validar que se recibió una imagen
     if (!image) {
@@ -116,10 +150,12 @@ export async function POST(
     console.error("❌ Error subiendo a Cloudinary:", error);
 
     // Determinar el mensaje de error apropiado
-    const errorMessage =
-      error instanceof Error
-        ? error.message
-        : "Error desconocido al subir imagen";
+    let errorMessage = "Error desconocido al subir imagen";
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    } else if (error && typeof error === "object" && "message" in error) {
+      errorMessage = String((error as { message: unknown }).message);
+    }
 
     return NextResponse.json(
       { success: false, error: errorMessage },
