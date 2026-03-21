@@ -1,7 +1,6 @@
 import Grid from "components/grid";
 import Search from "components/layout/navbar/search";
 import ProductGridItems from "components/layout/product-grid-items";
-import { StoreFilters } from "components/store-filters";
 import { defaultSort, sorting } from "lib/constants";
 import { getProducts } from "lib/local-shopify";
 import { Metadata } from "next";
@@ -27,26 +26,28 @@ export default async function StorePage({
   searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const params = await searchParams;
-  const { sort, q, category, design } = params as { [key: string]: string };
+  const { sort, q, category, world, sub } = params as { [key: string]: string };
   const { sortKey, reverse } =
     sorting.find((item) => item.slug === sort) || defaultSort;
 
   let products = await getProducts({ sortKey, reverse, query: q });
 
-  // Filter dynamically by category and design
+  // Filter dynamically by category, world and sub
   if (category && category !== "all") {
-    // Basic category check using the local-shopify tags or title since full schema isn't exported as Product here,
-    // usually tags correspond to category or design category.
-    // However, our local-data/catalog.json adds them to tags or we can filter by the title/description
-    // We'll safely check if the tags include the category
     products = products.filter((p) =>
       p.tags.some((t) => t.toLowerCase() === category.toLowerCase())
     );
   }
 
-  if (design && design !== "all") {
+  if (world && world !== "all") {
     products = products.filter((p) =>
-      p.tags.some((t) => t.toLowerCase() === design.toLowerCase())
+      p.tags.some((t) => t.toLowerCase() === world.toLowerCase())
+    );
+  }
+
+  if (sub && sub !== "all") {
+    products = products.filter((p) =>
+      p.tags.some((t) => t.toLowerCase() === sub.toLowerCase())
     );
   }
 
@@ -64,10 +65,6 @@ export default async function StorePage({
         </p>
         
         <Search />
-        
-        <div className="mt-8">
-          <StoreFilters />
-        </div>
 
         <p className="mt-6">
           Mostrando{" "}

@@ -2,6 +2,7 @@ import Footer from 'components/layout/footer';
 import Collections from 'components/layout/search/collections';
 import FilterList from 'components/layout/search/filter';
 import { sorting } from 'lib/constants';
+import { Suspense } from 'react';
 
 export default function StoreLayout({
   children,
@@ -13,8 +14,10 @@ export default function StoreLayout({
       <div className="mx-auto flex max-w-(--breakpoint-2xl) flex-col gap-8 px-4 py-6 text-black dark:text-white">
         {/* Filters + Content */}
         <div className="flex flex-col gap-8 md:flex-row">
-          <div className="order-first w-full flex-none md:max-w-[125px]">
-            <Collections />
+          <div className="order-first w-full flex-none md:max-w-[200px]">
+            <Suspense fallback={<div className="h-20 w-full animate-pulse bg-neutral-800 rounded-lg"></div>}>
+              <Collections />
+            </Suspense>
           </div>
           <div className="order-last min-h-screen w-full md:order-none">
             {children}
