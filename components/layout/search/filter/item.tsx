@@ -38,10 +38,19 @@ function SortFilterItem({ item }: { item: SortFilterItem }) {
   const searchParams = useSearchParams();
   const active = searchParams.get('sort') === item.slug;
   const q = searchParams.get('q');
+  
+  // Get current category filters
+  const category = searchParams.get('category');
+  const world = searchParams.get('world');
+  const sub = searchParams.get('sub');
+
   const href = createUrl(
     pathname,
     new URLSearchParams({
       ...(q && { q }),
+      ...(category && { category }),
+      ...(world && { world }),
+      ...(sub && { sub }),
       ...(item.slug && item.slug.length && { sort: item.slug })
     })
   );
