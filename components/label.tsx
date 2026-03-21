@@ -4,11 +4,13 @@ import Price from './price';
 const Label = ({
   title,
   amount,
+  originalAmount,
   currencyCode,
   position = 'bottom'
 }: {
   title: string;
   amount: string;
+  originalAmount?: string;
   currencyCode: string;
   position?: 'bottom' | 'center';
 }) => {
@@ -23,6 +25,7 @@ const Label = ({
         <Price
           className="flex-none rounded-full bg-[#f2cd4e] p-2 text-[#272512]"
           amount={amount}
+          originalAmount={originalAmount}
           currencyCode={currencyCode}
           currencyCodeClassName="hidden @[275px]/label:inline"
         />

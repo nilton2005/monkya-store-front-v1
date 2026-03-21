@@ -26,6 +26,12 @@ function validateCatalogPayload(input: unknown): input is CatalogPayload {
     if (typeof product.basePrice !== "number" || Number.isNaN(product.basePrice)) {
       return false;
     }
+    if (
+      product.originalPrice !== undefined &&
+      (typeof product.originalPrice !== "number" || Number.isNaN(product.originalPrice))
+    ) {
+      return false;
+    }
     if (!product.category || typeof product.category !== "string") return false;
     if (!Array.isArray(product.colors) || product.colors.length === 0) return false;
 

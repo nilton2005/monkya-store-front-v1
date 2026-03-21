@@ -37,6 +37,7 @@ export default function ProductGridItems({ products }: { products: Product[] }) 
                   label={{
                     title: product.title,
                     amount: product.priceRange.maxVariantPrice.amount,
+                    originalAmount: product.priceRange.compareAtMaxVariantPrice?.amount,
                     currencyCode: product.priceRange.maxVariantPrice.currencyCode
                   }}
                   src={product.featuredImage?.url}

@@ -174,6 +174,7 @@ function generateFullProduct(
     title,
     description,
     basePrice,
+    originalPrice,
     category,
     colors,
     sizes = STORE_CONFIG.defaultSizes,
@@ -201,6 +202,12 @@ function generateFullProduct(
 
   let minPrice = Infinity;
   let maxPrice = 0;
+  let minCompareAtPrice = Infinity;
+  let maxCompareAtPrice = 0;
+  const compareAtDelta =
+    typeof originalPrice === "number" && originalPrice > basePrice
+      ? originalPrice - basePrice
+      : undefined;
 
   // Generar variantes para cada combinación talla-color
   sizes.forEach((size, sizeIndex) => {
@@ -211,10 +218,16 @@ function generateFullProduct(
         color.name,
         simpleProduct,
       );
+      const variantCompareAtPrice =
+        compareAtDelta !== undefined ? variantPrice + compareAtDelta : undefined;
       const variantId = generateVariantId(index, sizeIndex, colorIndex);
 
       minPrice = Math.min(minPrice, variantPrice);
       maxPrice = Math.max(maxPrice, variantPrice);
+      if (variantCompareAtPrice !== undefined) {
+        minCompareAtPrice = Math.min(minCompareAtPrice, variantCompareAtPrice);
+        maxCompareAtPrice = Math.max(maxCompareAtPrice, variantCompareAtPrice);
+      }
 
       variants.push({
         id: variantId,
@@ -228,6 +241,14 @@ function generateFullProduct(
           amount: variantPrice.toFixed(2),
           currencyCode: STORE_CONFIG.currency,
         },
+        ...(variantCompareAtPrice !== undefined
+          ? {
+              compareAtPrice: {
+                amount: variantCompareAtPrice.toFixed(2),
+                currencyCode: STORE_CONFIG.currency,
+              },
+            }
+          : {}),
       });
     });
   });
@@ -279,6 +300,18 @@ function generateFullProduct(
         amount: minPrice.toFixed(2),
         currencyCode: STORE_CONFIG.currency,
       },
+      ...(compareAtDelta !== undefined
+        ? {
+            compareAtMaxVariantPrice: {
+              amount: maxCompareAtPrice.toFixed(2),
+              currencyCode: STORE_CONFIG.currency,
+            },
+            compareAtMinVariantPrice: {
+              amount: minCompareAtPrice.toFixed(2),
+              currencyCode: STORE_CONFIG.currency,
+            },
+          }
+        : {}),
     },
     variants,
     options,

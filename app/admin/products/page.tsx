@@ -88,6 +88,7 @@ export default function AdminProductsPage() {
   const [selectedIndex, setSelectedIndex] = useState<number>(-1);
   const [draftProduct, setDraftProduct] = useState<SimpleProduct>(createEmptyProduct());
   const [basePriceInput, setBasePriceInput] = useState("0");
+  const [originalPriceInput, setOriginalPriceInput] = useState("");
   const [uploadingKey, setUploadingKey] = useState<string | null>(null);
   const [canWrite, setCanWrite] = useState(false);
   const [storageMode, setStorageMode] = useState<CatalogResponse["storageMode"]>("read-only");
@@ -104,6 +105,12 @@ export default function AdminProductsPage() {
   useEffect(() => {
     setBasePriceInput(String(draftProduct.basePrice));
   }, [draftProduct.basePrice]);
+
+  useEffect(() => {
+    setOriginalPriceInput(
+      typeof draftProduct.originalPrice === "number" ? String(draftProduct.originalPrice) : "",
+    );
+  }, [draftProduct.originalPrice]);
 
   async function loadCatalog() {
     setIsLoading(true);
@@ -149,6 +156,9 @@ export default function AdminProductsPage() {
     setSelectedIndex(index);
     setDraftProduct(selected);
     setBasePriceInput(String(selected.basePrice));
+    setOriginalPriceInput(
+      typeof selected.originalPrice === "number" ? String(selected.originalPrice) : "",
+    );
     setError(null);
     setSuccess(null);
   }
@@ -184,6 +194,7 @@ export default function AdminProductsPage() {
     setSelectedIndex(-1);
     setDraftProduct(createEmptyProduct());
     setBasePriceInput("0");
+    setOriginalPriceInput("");
     setSuccess(null);
     setError(null);
   }
@@ -206,6 +217,28 @@ export default function AdminProductsPage() {
     const safePrice = Math.max(0, parsed);
     setDraftProduct((prev) => ({ ...prev, basePrice: safePrice }));
     setBasePriceInput(String(safePrice));
+  }
+
+  function syncOriginalPriceFromInput(rawValue: string) {
+    const normalized = rawValue.trim().replace(",", ".");
+
+    if (normalized === "") {
+      setDraftProduct((prev) => ({ ...prev, originalPrice: undefined }));
+      setOriginalPriceInput("");
+      return;
+    }
+
+    const parsed = Number(normalized);
+    if (Number.isNaN(parsed)) {
+      setOriginalPriceInput(
+        typeof draftProduct.originalPrice === "number" ? String(draftProduct.originalPrice) : "",
+      );
+      return;
+    }
+
+    const safePrice = Math.max(0, parsed);
+    setDraftProduct((prev) => ({ ...prev, originalPrice: safePrice }));
+    setOriginalPriceInput(String(safePrice));
   }
 
   async function uploadImageForColor(
@@ -501,6 +534,19 @@ export default function AdminProductsPage() {
               onChange={(e) => setBasePriceInput(e.target.value)}
               onBlur={(e) => syncBasePriceFromInput(e.target.value)}
               placeholder="0"
+              className="rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-700 dark:bg-neutral-950"
+            />
+          </label>
+
+          <label className="grid gap-1 text-sm">
+            Precio original (visual)
+            <input
+              type="text"
+              inputMode="decimal"
+              value={originalPriceInput}
+              onChange={(e) => setOriginalPriceInput(e.target.value)}
+              onBlur={(e) => syncOriginalPriceFromInput(e.target.value)}
+              placeholder="Opcional"
               className="rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-700 dark:bg-neutral-950"
             />
           </label>

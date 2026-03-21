@@ -38,6 +38,7 @@ export function ProductDescription({ product, isAIProduct }: { product: Product;
         >
           <Price
             amount={product.priceRange.maxVariantPrice.amount}
+            originalAmount={product.priceRange.compareAtMaxVariantPrice?.amount}
             currencyCode={product.priceRange.maxVariantPrice.currencyCode}
           />
         </motion.div>
