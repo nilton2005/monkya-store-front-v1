@@ -15,6 +15,17 @@ import {
   uploadImageToCloudinary,
 } from "services/cloudinaryService";
 
+function getOriginalLineAmount(item: {
+  quantity: number;
+  merchandise: { compareAtPrice?: { amount: string } };
+}): string | undefined {
+  const unitOriginal = item.merchandise.compareAtPrice?.amount;
+  if (!unitOriginal) return undefined;
+
+  const amount = Number(unitOriginal) * item.quantity;
+  return Number.isFinite(amount) ? amount.toFixed(2) : undefined;
+}
+
 export default function CheckoutPage() {
   const { cart } = useCart();
   const router = useRouter();
@@ -28,6 +39,11 @@ export default function CheckoutPage() {
   // Estado para manejar la carga mientras se suben las imágenes
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState("");
+
+  const originalSubtotal = cart?.lines.reduce((sum, line) => {
+    const lineOriginal = getOriginalLineAmount(line);
+    return sum + (lineOriginal ? Number(lineOriginal) : 0);
+  }, 0);
 
   if (!cart || cart.lines.length === 0) {
     return (
@@ -442,6 +458,7 @@ export default function CheckoutPage() {
                         <span className="font-semibold text-[#f2cd4e]">
                           <Price
                             amount={item.cost.totalAmount.amount}
+                            originalAmount={getOriginalLineAmount(item)}
                             currencyCode={item.cost.totalAmount.currencyCode}
                           />
                         </span>
@@ -458,6 +475,12 @@ export default function CheckoutPage() {
                   <span className="text-white">
                     <Price
                       amount={cart.cost.subtotalAmount.amount}
+                      originalAmount={
+                        originalSubtotal &&
+                        originalSubtotal > Number(cart.cost.subtotalAmount.amount)
+                          ? originalSubtotal.toFixed(2)
+                          : undefined
+                      }
                       currencyCode={cart.cost.subtotalAmount.currencyCode}
                     />
                   </span>
@@ -473,6 +496,12 @@ export default function CheckoutPage() {
                   <span className="text-lg font-bold text-[#f2cd4e]">
                     <Price
                       amount={cart.cost.totalAmount.amount}
+                      originalAmount={
+                        originalSubtotal &&
+                        originalSubtotal > Number(cart.cost.totalAmount.amount)
+                          ? originalSubtotal.toFixed(2)
+                          : undefined
+                      }
                       currencyCode={cart.cost.totalAmount.currencyCode}
                     />
                   </span>

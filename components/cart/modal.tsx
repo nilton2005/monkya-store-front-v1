@@ -21,6 +21,17 @@ type MerchandiseSearchParams = {
   [key: string]: string;
 };
 
+function getOriginalLineAmount(item: {
+  quantity: number;
+  merchandise: { compareAtPrice?: { amount: string } };
+}): string | undefined {
+  const unitOriginal = item.merchandise.compareAtPrice?.amount;
+  if (!unitOriginal) return undefined;
+
+  const amount = Number(unitOriginal) * item.quantity;
+  return Number.isFinite(amount) ? amount.toFixed(2) : undefined;
+}
+
 export default function CartModal() {
   const { cart, updateCartItem } = useCart();
   const [isOpen, setIsOpen] = useState(false);
@@ -46,6 +57,11 @@ export default function CartModal() {
       quantityRef.current = cart?.totalQuantity;
     }
   }, [isOpen, cart?.totalQuantity, quantityRef]);
+
+  const originalCartTotal = cart?.lines.reduce((sum, line) => {
+    const lineOriginal = getOriginalLineAmount(line);
+    return sum + (lineOriginal ? Number(lineOriginal) : 0);
+  }, 0);
 
   return (
     <>
@@ -169,6 +185,7 @@ export default function CartModal() {
                                 <Price
                                   className="flex justify-end space-y-2 text-right text-sm"
                                   amount={item.cost.totalAmount.amount}
+                                  originalAmount={getOriginalLineAmount(item)}
                                   currencyCode={
                                     item.cost.totalAmount.currencyCode
                                   }
@@ -214,6 +231,12 @@ export default function CartModal() {
                       <Price
                         className="text-right text-base text-black dark:text-white"
                         amount={cart.cost.totalAmount.amount}
+                        originalAmount={
+                          originalCartTotal &&
+                          originalCartTotal > Number(cart.cost.totalAmount.amount)
+                            ? originalCartTotal.toFixed(2)
+                            : undefined
+                        }
                         currencyCode={cart.cost.totalAmount.currencyCode}
                       />
                     </div>

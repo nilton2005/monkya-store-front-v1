@@ -123,6 +123,8 @@ function createOrUpdateCartItem(
     merchandise: {
       id: variant.id,
       title: variant.title,
+      price: variant.price,
+      compareAtPrice: variant.compareAtPrice,
       selectedOptions: variant.selectedOptions,
       product: {
         id: product.id,

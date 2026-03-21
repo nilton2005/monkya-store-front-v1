@@ -105,6 +105,8 @@ export async function getLocalCart(): Promise<Cart | undefined> {
       merchandise: {
         id: cookieItem.merchandiseId,
         title: variant.title,
+        price: variant.price,
+        compareAtPrice: variant.compareAtPrice,
         selectedOptions: variant.selectedOptions,
         product: {
           id: product.id,

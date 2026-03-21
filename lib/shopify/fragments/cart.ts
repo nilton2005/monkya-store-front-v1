@@ -33,6 +33,14 @@ const cartFragment = /* GraphQL */ `
             ... on ProductVariant {
               id
               title
+              price {
+                amount
+                currencyCode
+              }
+              compareAtPrice {
+                amount
+                currencyCode
+              }
               selectedOptions {
                 name
                 value
