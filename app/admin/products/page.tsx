@@ -89,6 +89,10 @@ export default function AdminProductsPage() {
   const [draftProduct, setDraftProduct] = useState<SimpleProduct>(createEmptyProduct());
   const [basePriceInput, setBasePriceInput] = useState("0");
   const [originalPriceInput, setOriginalPriceInput] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterCategory, setFilterCategory] = useState<ProductCategory | "all">("all");
+  const [filterDesignCategory, setFilterDesignCategory] = useState<DesignCategory | "all">("all");
+  const [filterDesignSubcategory, setFilterDesignSubcategory] = useState<string>("all");
   const [uploadingKey, setUploadingKey] = useState<string | null>(null);
   const [canWrite, setCanWrite] = useState(false);
   const [storageMode, setStorageMode] = useState<CatalogResponse["storageMode"]>("read-only");
@@ -348,6 +352,70 @@ export default function AdminProductsPage() {
     return { total: products.length, active, inactive };
   }, [products]);
 
+  const availableSubcategories = useMemo(() => {
+    if (filterDesignCategory === "all") {
+      return Array.from(
+        new Set(
+          products
+            .map((product) => product.designSubcategory)
+            .filter((value): value is string => Boolean(value)),
+        ),
+      ).sort();
+    }
+
+    return DESIGN_SUBCATEGORY_CONFIG[filterDesignCategory] ?? [];
+  }, [filterDesignCategory, products]);
+
+  const filteredProducts = useMemo(() => {
+    const normalizedSearch = searchTerm.trim().toLowerCase();
+
+    return products
+      .map((product, index) => ({ product, index }))
+      .filter(({ product }) => {
+        if (filterCategory !== "all" && product.category !== filterCategory) {
+          return false;
+        }
+
+        if (
+          filterDesignCategory !== "all" &&
+          (product.designCategory ?? "") !== filterDesignCategory
+        ) {
+          return false;
+        }
+
+        if (
+          filterDesignSubcategory !== "all" &&
+          (product.designSubcategory ?? "") !== filterDesignSubcategory
+        ) {
+          return false;
+        }
+
+        if (!normalizedSearch) {
+          return true;
+        }
+
+        const text = [
+          product.title,
+          product.description,
+          product.category,
+          product.designCategory,
+          product.designSubcategory,
+          ...(product.tags ?? []),
+        ]
+          .filter(Boolean)
+          .join(" ")
+          .toLowerCase();
+
+        return text.includes(normalizedSearch);
+      });
+  }, [
+    products,
+    filterCategory,
+    filterDesignCategory,
+    filterDesignSubcategory,
+    searchTerm,
+  ]);
+
   if (isLoading) {
     return <div className="mx-auto max-w-6xl p-6">Cargando panel de productos...</div>;
   }
@@ -391,8 +459,61 @@ export default function AdminProductsPage() {
           </button>
         </div>
 
+        <div className="mt-4 space-y-2">
+          <input
+            type="search"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Buscar por titulo, tag o categoria"
+            className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm dark:border-neutral-700 dark:bg-neutral-950"
+          />
+          <select
+            value={filterCategory}
+            onChange={(e) => setFilterCategory(e.target.value as ProductCategory | "all")}
+            className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm dark:border-neutral-700 dark:bg-neutral-950"
+          >
+            <option value="all">Todas las categorias</option>
+            {categories.map((category) => (
+              <option key={category} value={category}>
+                {category}
+              </option>
+            ))}
+          </select>
+          <select
+            value={filterDesignCategory}
+            onChange={(e) => {
+              const nextCategory = e.target.value as DesignCategory | "all";
+              setFilterDesignCategory(nextCategory);
+              setFilterDesignSubcategory("all");
+            }}
+            className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm dark:border-neutral-700 dark:bg-neutral-950"
+          >
+            <option value="all">Todas las categorias de diseño</option>
+            {designCategories.map((designCategory) => (
+              <option key={designCategory} value={designCategory}>
+                {designCategory}
+              </option>
+            ))}
+          </select>
+          <select
+            value={filterDesignSubcategory}
+            onChange={(e) => setFilterDesignSubcategory(e.target.value)}
+            className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm dark:border-neutral-700 dark:bg-neutral-950"
+          >
+            <option value="all">Todas las subcategorias</option>
+            {availableSubcategories.map((subcategory) => (
+              <option key={subcategory} value={subcategory}>
+                {subcategory}
+              </option>
+            ))}
+          </select>
+          <p className="text-xs text-neutral-500 dark:text-neutral-400">
+            Mostrando {filteredProducts.length} de {products.length} productos
+          </p>
+        </div>
+
         <ul className="mt-4 space-y-2">
-          {products.map((product, index) => (
+          {filteredProducts.map(({ product, index }) => (
             <li
               key={`${product.title}-${index}`}
               className={`rounded-lg border p-3 ${
