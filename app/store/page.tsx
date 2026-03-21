@@ -35,19 +35,19 @@ export default async function StorePage({
   // Filter dynamically by category, world and sub
   if (category && category !== "all") {
     products = products.filter((p) =>
-      p.tags.some((t) => t.toLowerCase() === category.toLowerCase())
+      p.tags.some((t) => t.toLowerCase().includes(category.toLowerCase()))
     );
   }
 
   if (world && world !== "all") {
     products = products.filter((p) =>
-      p.tags.some((t) => t.toLowerCase() === world.toLowerCase())
+      p.tags.some((t) => t.toLowerCase().includes(world.toLowerCase()))
     );
   }
 
   if (sub && sub !== "all") {
     products = products.filter((p) =>
-      p.tags.some((t) => t.toLowerCase() === sub.toLowerCase())
+      p.tags.some((t) => t.toLowerCase().includes(sub.toLowerCase()))
     );
   }
 

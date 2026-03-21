@@ -185,9 +185,15 @@ function generateFullProduct(
   const handle = generateHandle(title, category);
   const id = generateId(index);
 
-  // Combinar tags automáticos con tags personalizados
+  // Combinar tags automáticos (category/desigCategory/etc) con tags personalizados
   const categoryConfig = CATEGORY_CONFIG[category];
-  const allTags = [...(categoryConfig?.defaultTags || []), ...tags];
+  const allTags = [
+    category, 
+    ...(simpleProduct.designCategory ? [simpleProduct.designCategory] : []),
+    ...(simpleProduct.designSubcategory ? [simpleProduct.designSubcategory] : []),
+    ...(categoryConfig?.defaultTags || []), 
+    ...tags
+  ];
 
   // Generar todas las variantes
   const variants: ProductVariant[] = [];
