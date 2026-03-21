@@ -18,7 +18,7 @@ export function AIDesignButton() {
         "relative flex items-center justify-center transition-all duration-300",
         "bg-[#f2cd4e] text-[#272512] border-2 border-[#f2cd4e]",
         "rounded-2xl px-3 py-1.5 sm:px-6 sm:py-2",
-        "hover:scale-105 hover:shadow-[0_0_15px_rgba(242,205,78,0.4)]",
+        "hover:scale-105 hover:shadow-[0_0_15px_rgba(242,205,78,0.4)] animate-bounce",
         fontHand.className,
       )}
       aria-label="Diseñar con IA"
