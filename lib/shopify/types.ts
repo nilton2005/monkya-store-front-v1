@@ -28,6 +28,8 @@ export type CartItem = {
   merchandise: {
     id: string;
     title: string;
+    price?: Money;
+    compareAtPrice?: Money;
     selectedOptions: {
       name: string;
       value: string;
