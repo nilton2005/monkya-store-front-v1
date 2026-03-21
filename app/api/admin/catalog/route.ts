@@ -1,5 +1,6 @@
+import { isAdminSessionValid, ADMIN_COOKIE_NAME } from "lib/admin-auth";
 import { SimpleProduct } from "lib/local-data/simple-products";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
@@ -44,7 +45,17 @@ async function readCatalog(): Promise<CatalogPayload> {
   return JSON.parse(fileContents) as CatalogPayload;
 }
 
-export async function GET() {
+function isAuthorized(req: NextRequest): boolean {
+  const sessionToken = req.cookies.get(ADMIN_COOKIE_NAME)?.value;
+
+  return isAdminSessionValid(sessionToken);
+}
+
+export async function GET(req: NextRequest) {
+  if (!isAuthorized(req)) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
     const catalog = await readCatalog();
 
@@ -59,7 +70,11 @@ export async function GET() {
   }
 }
 
-export async function PUT(req: Request) {
+export async function PUT(req: NextRequest) {
+  if (!isAuthorized(req)) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   if (!isWriteAllowed()) {
     return NextResponse.json(
       {

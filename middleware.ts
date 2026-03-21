@@ -1,8 +1,32 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 export function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  // Gate para rutas admin y API admin (excepto login/logout)
+  const isAdminPage = pathname.startsWith('/admin');
+  const isAdminApi = pathname.startsWith('/api/admin');
+  const isAuthRoute = pathname.startsWith('/api/admin/auth/');
+  const isLoginPage = pathname === '/admin/login';
+
+  if ((isAdminPage || isAdminApi) && !isAuthRoute && !isLoginPage) {
+    const expectedSession = process.env.ADMIN_SESSION_TOKEN;
+    const currentSession = request.cookies.get('admin_session')?.value;
+
+    const isAuthorized = Boolean(expectedSession) && currentSession === expectedSession;
+
+    if (!isAuthorized) {
+      if (isAdminApi) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      }
+
+      const loginUrl = new URL('/admin/login', request.url);
+      return NextResponse.redirect(loginUrl);
+    }
+  }
+
   // Handle placeholder images
-  if (request.nextUrl.pathname.startsWith('/placeholder-')) {
+  if (pathname.startsWith('/placeholder-')) {
     // Return a simple PNG data URL instead of SVG
     const name = request.nextUrl.pathname.replace('/placeholder-', '').replace('.jpg', '');
     
@@ -25,5 +49,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: '/placeholder-:path*.jpg',
+  matcher: ['/placeholder-:path*.jpg', '/admin/:path*', '/api/admin/:path*'],
 };

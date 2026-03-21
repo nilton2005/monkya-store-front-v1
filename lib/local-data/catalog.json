@@ -5,7 +5,8 @@
       "description": "Camiseta exclusiva con diseño Anthropic. Disponible en estilos para hombre y mujer. Algodón premium de alta calidad.",
       "basePrice": 35,
       "category": "camiseta",
-      "subcategory": "security / hacking",
+      "designCategory": "dev",
+      "designSubcategory": "security / hacking",
       "colors": [
         {
           "name": "Negro",
@@ -34,7 +35,8 @@
       "description": "Camiseta divertida con mensaje \"Free WiFi\". Perfecta para desarrolladores y tech lovers. Diseño moderno y cómodo.",
       "basePrice": 35,
       "category": "camiseta",
-      "subcategory": "security / hacking",
+      "designCategory": "dev",
+      "designSubcategory": "comunity",
       "colors": [
         {
           "name": "Negro",
@@ -64,6 +66,8 @@
       "description": "Sudadera con capucha estilo Void. Diseño minimalista y elegante. Perfecta para el frío y estilo urbano.",
       "basePrice": 60,
       "category": "hoodie",
+      "designCategory": "dev",
+      "designSubcategory": "3d",
       "colors": [
         {
           "name": "Verde petroleo",
@@ -94,6 +98,8 @@
       "description": "Sudadera con capucha inspirada en Wakanda. Diseño único y llamativo. Calidad excepcional y estilo distintivo.",
       "basePrice": 52,
       "category": "hoodie",
+      "designCategory": "dev",
+      "designSubcategory": "3d hacking",
       "colors": [
         {
           "name": "Negro",
@@ -126,7 +132,8 @@
       "description": "Tu diseño único generado con Inteligencia Artificial. Impreso en nuestra camiseta premium de algodón.",
       "basePrice": 35,
       "category": "camiseta",
-      "subcategory": "3D / realidad virtual",
+      "designCategory": "dev",
+      "designSubcategory": "ia",
       "colors": [
         {
           "name": "Negro",

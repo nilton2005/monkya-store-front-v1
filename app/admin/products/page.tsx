@@ -1,6 +1,11 @@
 "use client";
 
-import { SimpleProduct } from "lib/local-data/simple-products";
+import {
+  DESIGN_SUBCATEGORY_CONFIG,
+  DesignCategory,
+  SimpleProduct,
+} from "lib/local-data/simple-products";
+import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
 type CatalogResponse = {
@@ -12,7 +17,7 @@ type CatalogResponse = {
 const DRAFT_KEY = "admin-products-draft-v1";
 
 type ProductCategory = SimpleProduct["category"];
-type ProductSubcategory = NonNullable<SimpleProduct["subcategory"]>;
+const designCategories = Object.keys(DESIGN_SUBCATEGORY_CONFIG) as DesignCategory[];
 
 const categories: ProductCategory[] = [
   "camiseta",
@@ -22,18 +27,18 @@ const categories: ProductCategory[] = [
   "accesorios",
 ];
 
-const subcategories: ProductSubcategory[] = [
-  "security / hacking",
-  "3D / realidad virtual",
-];
-
 function createEmptyProduct(): SimpleProduct {
+  const defaultDesignCategory: DesignCategory = "dev";
+  const defaultDesignSubcategory =
+    DESIGN_SUBCATEGORY_CONFIG[defaultDesignCategory][0] ?? "por definir";
+
   return {
     title: "",
     description: "",
     basePrice: 0,
     category: "camiseta",
-    subcategory: "security / hacking",
+    designCategory: defaultDesignCategory,
+    designSubcategory: defaultDesignSubcategory,
     colors: [{ name: "Negro", code: "#000000" }],
     sizes: ["S", "M", "L"],
     tags: [],
@@ -73,6 +78,7 @@ function slugify(input: string): string {
 }
 
 export default function AdminProductsPage() {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -297,6 +303,12 @@ export default function AdminProductsPage() {
     }
   }
 
+  async function logout() {
+    await fetch("/api/admin/auth/logout", { method: "POST" });
+    router.replace("/admin/login");
+    router.refresh();
+  }
+
   const summary = useMemo(() => {
     const active = products.filter((product) => product.available !== false).length;
     const inactive = products.length - active;
@@ -337,6 +349,13 @@ export default function AdminProductsPage() {
           >
             {isSaving ? "Guardando..." : "Guardar JSON"}
           </button>
+          <button
+            type="button"
+            onClick={logout}
+            className="rounded-md border border-neutral-300 px-3 py-2 text-sm font-medium dark:border-neutral-700"
+          >
+            Salir
+          </button>
         </div>
 
         <ul className="mt-4 space-y-2">
@@ -356,9 +375,10 @@ export default function AdminProductsPage() {
               >
                 <p className="font-medium">{product.title}</p>
                 <p className="text-xs text-neutral-600 dark:text-neutral-300">{product.category}</p>
-                {product.subcategory && (
+                {product.designCategory && (
                   <p className="text-xs text-neutral-500 dark:text-neutral-400">
-                    {product.subcategory}
+                    {product.designCategory}
+                    {product.designSubcategory ? ` / ${product.designSubcategory}` : ""}
                   </p>
                 )}
               </button>
@@ -413,19 +433,47 @@ export default function AdminProductsPage() {
           </label>
 
           <label className="grid gap-1 text-sm">
-            Subcategoria
+            Categoria de diseño
             <select
-              value={draftProduct.subcategory ?? ""}
+              value={draftProduct.designCategory ?? "dev"}
               onChange={(e) =>
                 setDraftProduct({
                   ...draftProduct,
-                  subcategory: (e.target.value || undefined) as ProductSubcategory | undefined,
+                  designCategory: e.target.value as DesignCategory,
+                  designSubcategory:
+                    DESIGN_SUBCATEGORY_CONFIG[e.target.value as DesignCategory]?.[0] ??
+                    "por definir",
                 })
               }
               className="rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-700 dark:bg-neutral-950"
             >
-              <option value="">Sin subcategoria</option>
-              {subcategories.map((subcategory) => (
+              {designCategories.map((designCategory) => (
+                <option key={designCategory} value={designCategory}>
+                  {designCategory}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <label className="grid gap-1 text-sm">
+            Subcategoria de diseño
+            <select
+              value={
+                draftProduct.designSubcategory ??
+                DESIGN_SUBCATEGORY_CONFIG[draftProduct.designCategory ?? "dev"]?.[0] ??
+                "por definir"
+              }
+              onChange={(e) =>
+                setDraftProduct({
+                  ...draftProduct,
+                  designSubcategory: e.target.value,
+                })
+              }
+              className="rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-700 dark:bg-neutral-950"
+            >
+              {(DESIGN_SUBCATEGORY_CONFIG[draftProduct.designCategory ?? "dev"] ?? [
+                "por definir",
+              ]).map((subcategory) => (
                 <option key={subcategory} value={subcategory}>
                   {subcategory}
                 </option>

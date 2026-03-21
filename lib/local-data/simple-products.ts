@@ -1,12 +1,33 @@
 import catalogData from "./catalog.json";
 
+export type DesignCategory = "dev" | "medic" | "lawyer" | "deport";
+
+export const DESIGN_SUBCATEGORY_CONFIG: Record<DesignCategory, string[]> = {
+  dev: [
+    "front",
+    "back",
+    "3d",
+    "ia",
+    "quantum computing",
+    "security / hacking",
+    "3d hacking",
+    "comunity",
+  ],
+  medic: ["por definir"],
+  lawyer: ["por definir"],
+  deport: ["por definir"],
+};
+
 export interface SimpleProduct {
   title: string; // "Camiseta Básica"
   description: string; // "Camiseta de algodón..."
   basePrice: number; // 20 (precio base en PEN)
 
   category: "camiseta" | "hoodie" | "pantalon" | "zapatos" | "accesorios";
-  subcategory?: "security / hacking" | "3D / realidad virtual";
+
+  // Taxonomía de diseño por dominio (independiente a category de producto)
+  designCategory?: DesignCategory;
+  designSubcategory?: string;
 
   colors: {
     name: string; // "Blanco", "Negro", "Azul"
