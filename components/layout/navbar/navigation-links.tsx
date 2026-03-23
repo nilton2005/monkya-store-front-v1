@@ -19,7 +19,9 @@ export interface NavLink {
 export const navLinks: NavLink[] = [
   { title: "Inicio", path: "/", ariaLabel: "Ir a inicio" },
   { title: "Tienda", path: "/store", ariaLabel: "Ir a tienda" },
+  {title: "Algodon Pima", path: "pima", ariaLabel: "Conocer sobre el algodón pima"},
   { title: "Comunidad", path: "/comunidad", ariaLabel: "Ver comunidad" },
+  
 ];
 
 interface NavigationLinksProps {
