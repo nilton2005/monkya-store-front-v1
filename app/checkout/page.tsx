@@ -47,7 +47,11 @@ export default function CheckoutPage() {
 
   if (!cart || cart.lines.length === 0) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#1a1810] via-[#0d0c08] to-[#1a1810]">
+      <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-[#1a1810] via-[#0d0c08] to-[#1a1810]">
+        <div className="pointer-events-none absolute inset-0 opacity-60">
+          <div className="absolute -left-20 top-20 h-56 w-56 rounded-full bg-[#f2cd4e]/10 blur-3xl" />
+          <div className="absolute bottom-10 right-10 h-64 w-64 rounded-full bg-[#f2cd4e]/5 blur-3xl" />
+        </div>
         <div className="h-1 w-full bg-gradient-to-r from-transparent via-[#f2cd4e] to-transparent" />
         <div className="mx-auto max-w-screen-2xl px-4">
           <div className="flex flex-col items-center justify-center py-32">
@@ -253,11 +257,16 @@ export default function CheckoutPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#1a1810] via-[#0d0c08] to-[#1a1810] text-white">
+    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-[#1a1810] via-[#0d0c08] to-[#1a1810] text-white">
+      <div className="pointer-events-none absolute inset-0 opacity-60">
+        <div className="absolute -left-24 top-10 h-72 w-72 rounded-full bg-[#f2cd4e]/10 blur-3xl" />
+        <div className="absolute right-0 top-48 h-56 w-56 rounded-full bg-[#f2cd4e]/5 blur-3xl" />
+        <div className="absolute bottom-0 left-1/3 h-64 w-64 -translate-x-1/2 rounded-full bg-[#f2cd4e]/5 blur-3xl" />
+      </div>
       {/* Monkya branded header bar */}
       <div className="h-1 w-full bg-gradient-to-r from-transparent via-[#f2cd4e] to-transparent" />
 
-      <div className="mx-auto max-w-screen-xl px-4 py-8 md:py-12">
+      <div className="relative mx-auto max-w-screen-xl px-4 py-8 md:py-12">
         {/* Header */}
         <div className="mb-8 md:mb-12">
           <a
@@ -279,7 +288,7 @@ export default function CheckoutPage() {
             </svg>
             Volver a la tienda
           </a>
-          <div className="flex items-center gap-4">
+          <div className="flex flex-wrap items-center gap-4">
             <Image
               src="/bannerMonkya.webp"
               alt="Monkya"
@@ -287,12 +296,64 @@ export default function CheckoutPage() {
               height={40}
               className="h-8 w-auto object-contain"
             />
-            <div>
+            <div className="flex-1 min-w-[240px]">
               <h1 className="text-3xl md:text-4xl font-bold text-white">
                 Finalizar Compra
               </h1>
               <p className="mt-1 text-gray-400">
                 Completa tus datos para enviar el pedido por WhatsApp
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <span className="rounded-full border border-[#f2cd4e]/30 bg-[#f2cd4e]/10 px-3 py-1 text-xs font-medium text-[#f2cd4e]">
+                Pago coordinado
+              </span>
+              <span className="rounded-full border border-emerald-400/30 bg-emerald-400/10 px-3 py-1 text-xs font-medium text-emerald-300">
+                Envio por WhatsApp
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Banner de disponibilidad regional */}
+        <div className="mb-8 rounded-2xl border border-[#f2cd4e]/20 bg-gradient-to-r from-[#f2cd4e]/5 to-[#f2cd4e]/0 p-5 md:p-6">
+          <div className="flex gap-4 items-start">
+            <div className="flex-shrink-0 mt-0.5">
+              <svg
+                className="h-6 w-6 text-[#f2cd4e]"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+              </svg>
+            </div>
+            <div className="flex-1 min-w-0">
+              <h3 className="text-base font-semibold text-[#f2cd4e] mb-1">
+                Por ahora, solo operamos en Arequipa
+              </h3>
+              <p className="text-sm text-gray-300 mb-3">
+                Estamos creciendo con cuidado para mantener la calidad que nos define. Si quieres ser el primero en saber cuándo llegamos a tu ciudad,{" "}
+                <a
+                  href="https://wa.me/930913160"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[#f2cd4e] hover:underline font-medium"
+                >
+                  escríbenos por WhatsApp
+                </a>
+                {" "}y te avisamos.
               </p>
             </div>
           </div>
@@ -301,7 +362,8 @@ export default function CheckoutPage() {
         <div className="grid gap-8 lg:grid-cols-5">
           {/* Formulario de contacto - 3 columnas */}
           <div className="lg:col-span-3 order-2 lg:order-1">
-            <div className="bg-[#1a1810] rounded-2xl shadow-xl shadow-black/30 border border-gray-800 p-6 md:p-8">
+            <div className="relative overflow-hidden rounded-2xl border border-[#f2cd4e]/20 bg-[#1a1810]/80 p-6 shadow-2xl shadow-black/30 backdrop-blur-xl md:p-8">
+              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(242,205,78,0.08),transparent_45%)]" />
               <div className="flex items-center gap-3 mb-6">
                 <div className="flex items-center justify-center w-10 h-10 rounded-full bg-[#f2cd4e]/10">
                   <svg
@@ -323,7 +385,7 @@ export default function CheckoutPage() {
                 </h2>
               </div>
 
-              <div className="space-y-5">
+              <div className="space-y-5 relative">
                 <div>
                   <label
                     htmlFor="name"
@@ -339,7 +401,7 @@ export default function CheckoutPage() {
                       setCustomerInfo({ ...customerInfo, name: e.target.value })
                     }
                     placeholder="Ej: Juan Pérez"
-                    className="block w-full rounded-xl border-0 bg-gray-900/50 px-4 py-3.5 text-white ring-1 ring-inset ring-gray-700 placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-[#f2cd4e] transition-all"
+                    className="block w-full rounded-xl border border-transparent bg-gray-900/60 px-4 py-3.5 text-white ring-1 ring-inset ring-gray-700 placeholder:text-gray-500 transition-all focus:border-[#f2cd4e]/30 focus:ring-2 focus:ring-inset focus:ring-[#f2cd4e]"
                     required
                   />
                 </div>
@@ -363,14 +425,14 @@ export default function CheckoutPage() {
                       })
                     }
                     placeholder="Ej: 999 888 777"
-                    className="block w-full rounded-xl border-0 bg-gray-900/50 px-4 py-3.5 text-white ring-1 ring-inset ring-gray-700 placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-[#f2cd4e] transition-all"
+                    className="block w-full rounded-xl border border-transparent bg-gray-900/60 px-4 py-3.5 text-white ring-1 ring-inset ring-gray-700 placeholder:text-gray-500 transition-all focus:border-[#f2cd4e]/30 focus:ring-2 focus:ring-inset focus:ring-[#f2cd4e]"
                     required
                   />
                 </div>
               </div>
 
               {/* Información adicional */}
-              <div className="mt-8 p-4 rounded-xl bg-[#f2cd4e]/5 border border-[#f2cd4e]/20">
+              <div className="mt-8 rounded-xl border border-[#f2cd4e]/20 bg-[#f2cd4e]/5 p-4">
                 <div className="flex gap-3">
                   <span className="text-lg flex-shrink-0">🐵</span>
                   <div>
@@ -390,7 +452,7 @@ export default function CheckoutPage() {
 
           {/* Resumen del pedido - 2 columnas */}
           <div className="lg:col-span-2 order-1 lg:order-2">
-            <div className="bg-[#1a1810] rounded-2xl shadow-xl shadow-black/30 border border-gray-800 p-6 md:p-8 sticky top-4">
+            <div className="sticky top-4 rounded-2xl border border-[#f2cd4e]/20 bg-[#1a1810]/85 p-6 shadow-2xl shadow-black/30 backdrop-blur-xl md:p-8">
               <div className="flex items-center gap-3 mb-6">
                 <div className="flex items-center justify-center w-10 h-10 rounded-full bg-[#f2cd4e]/10">
                   <svg
@@ -419,7 +481,7 @@ export default function CheckoutPage() {
                 {cart.lines.map((item) => (
                   <div
                     key={item.id || item.merchandise.id}
-                    className="flex gap-4 p-3 rounded-xl bg-gray-900/30 border border-gray-800/50 hover:border-gray-700 transition-colors"
+                    className="group flex gap-4 rounded-xl border border-gray-800/70 bg-gray-900/30 p-3 transition-all hover:-translate-y-0.5 hover:border-[#f2cd4e]/30"
                   >
                     <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg bg-gray-800">
                       <ProductImageFallback
@@ -437,7 +499,7 @@ export default function CheckoutPage() {
                         }
                       />
                       {item.customImage && (
-                        <div className="absolute top-1 right-1 bg-[#f2cd4e] text-[#272512] text-xs px-1.5 py-0.5 rounded-md font-bold">
+                        <div className="absolute right-1 top-1 rounded-md bg-[#f2cd4e] px-1.5 py-0.5 text-xs font-bold text-[#272512]">
                           IA
                         </div>
                       )}
@@ -451,7 +513,7 @@ export default function CheckoutPage() {
                           {item.merchandise.title}
                         </p>
                       )}
-                      <div className="flex items-center justify-between mt-2">
+                      <div className="mt-2 flex items-center justify-between">
                         <span className="text-sm text-gray-500">
                           Cant: {item.quantity}
                         </span>
@@ -469,7 +531,7 @@ export default function CheckoutPage() {
               </div>
 
               {/* Totals */}
-              <div className="mt-6 pt-6 border-t border-gray-800 space-y-3">
+              <div className="mt-6 space-y-3 border-t border-gray-800 pt-6">
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-400">Subtotal</span>
                   <span className="text-white">
@@ -489,7 +551,7 @@ export default function CheckoutPage() {
                   <span className="text-gray-400">Envío</span>
                   <span className="text-gray-500 italic">A coordinar</span>
                 </div>
-                <div className="flex justify-between pt-3 border-t border-gray-800">
+                <div className="flex justify-between border-t border-gray-800 pt-3">
                   <span className="text-lg font-semibold text-white">
                     Total
                   </span>
@@ -512,12 +574,15 @@ export default function CheckoutPage() {
               <button
                 onClick={handleWhatsAppOrder}
                 disabled={isUploading}
-                className={`mt-6 w-full flex items-center justify-center gap-3 rounded-xl px-6 py-4 font-semibold text-lg shadow-lg transition-all transform hover:scale-[1.02] active:scale-[0.98] ${
+                className={`group relative mt-6 flex w-full items-center justify-center gap-3 overflow-hidden rounded-xl px-6 py-4 text-lg font-semibold shadow-lg transition-all transform hover:scale-[1.02] active:scale-[0.98] ${
                   isUploading
                     ? "bg-gray-700 text-gray-400 cursor-not-allowed shadow-none"
                     : "bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white shadow-green-500/25"
                 }`}
               >
+                {!isUploading && (
+                  <span className="pointer-events-none absolute inset-y-0 -left-24 w-24 rotate-12 bg-white/20 blur-md transition-all duration-700 group-hover:left-[110%]" />
+                )}
                 {isUploading ? (
                   <>
                     <svg
@@ -562,8 +627,14 @@ export default function CheckoutPage() {
                   : "Tus datos están seguros. Solo se usarán para contactarte."}
               </p>
 
+              {isUploading && (
+                <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-gray-800">
+                  <div className="h-full w-1/2 animate-pulse rounded-full bg-gradient-to-r from-[#f2cd4e] to-emerald-400" />
+                </div>
+              )}
+
               {/* Monkya footer branding */}
-              <div className="mt-6 pt-4 border-t border-gray-800 flex items-center justify-center gap-2">
+              <div className="mt-6 flex items-center justify-center gap-2 border-t border-gray-800 pt-4">
                 <Image
                   src="/bannerMonkya.webp"
                   alt="Monkya"

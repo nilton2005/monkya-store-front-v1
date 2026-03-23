@@ -43,5 +43,9 @@ export const faqData: FAQData = {
       question: "¿Qué hacen con mi diseño original?",
       answer: "Tus diseños son tuyos. Respetamos tu propiedad intelectual y creatividad. No usamos tus diseños para otros productos ni los compartimos. Sin embargo, si deseas compartir tu creación con la comunidad Monkya, tenemos una opción para publicar en nuestra galería y otros usuarios podrán inspirarse en tu arte.",
     },
+    {
+      question: "¿Están disponibles en todo el Perú?",
+      answer: "Por ahora, operamos exclusivamente en Arequipa, Estamos creciendo con cuidado para mantener la calidad que nos define. Si quieres que Monkya llegue a tu ciudad, escríbenos a monkya-store@monkya.com y te avisamos antes que nadie."
+    },
   ],
 };
